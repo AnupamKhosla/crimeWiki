@@ -1,0 +1,4 @@
+# ignore logs folder and its contents  
+# logs folder is used for apache on local machine
+
+logs/*
