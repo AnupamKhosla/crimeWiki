@@ -81,8 +81,16 @@
           </ul>
 
         </div>
-        <div class="col-md-9 col-lg-10 content py-3">
-          <h2 class="text-center title">CrimeWiki Admin Panel</h2>
+
+        <div class="col-md-9 col-lg-10 content d-flex justify-content-between flex-column">
+          <main>
+            <h1 class="text-center title font-weight-lighter h4">CrimeWiki Admin Panel</h1>
+          </main>
+          <footer class="py-3">
+            <p class="text-center m-0 copy">
+              Designed and developed by <a class="author" href="https://au.linkedin.com/in/anupamkhosla">Anupam Khosla</a> | All rights reserved
+            </p>
+          </footer>
         </div>
       </div>
     </div>

@@ -1,0 +1,97 @@
+
+body {
+	background-color: var(--white-bg-dark);
+}
+
+.sidebar {
+	background-color: var(--theme-pm);
+}
+
+
+
+.sidebar .cut-top {
+	border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+
+.sidebar .cut-bottom {
+	border-top: 1px solid rgba(256, 256, 256, 0.2);
+}
+
+.sidebar .logo-container {
+	margin: 20px 0;
+}
+
+.logo {
+	width: 110px;	
+	transform: scale(-1,1);
+}
+
+.sidebar .nav {
+	padding: 8px 0;
+}
+
+.sidebar .nav-item {
+	width: 100%;
+}
+
+.sidebar .nav-link {
+	display: flex;
+	align-items: center;
+	border-radius: 0;
+	color: #fff;
+	transition: background-color ease .3s;
+	white-space: nowrap;
+	font-size: 0.875rem;
+}
+
+
+.sidebar .nav-link .icon {
+	margin-right: 5px;
+	margin-bottom: -1px;
+	width: 20px;
+	height: auto;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link,
+.sidebar .nav-link:hover {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+.content {
+	width: auto;
+	padding-top: 1.5rem;
+}
+
+.content .title {
+	color: var(--theme-pm);
+}
+
+footer {	
+	
+	& {
+		margin: 0 -15px;
+		background-color: var(--theme-pm);
+	}
+
+	.copy {
+		color: var(--text-dark);
+	}
+
+	.author {
+		color: var(--text-x-dark);
+	}
+
+	.author:hover {
+		color: var(--text-x-dark);
+		text-decoration: underline;
+	}
+
+}
+
+@media (min-width: 768px) {
+	.sidebar {
+		min-height: 100vh;
+	}
+}

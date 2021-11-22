@@ -1,0 +1,69 @@
+// login file and sign up
+
+.login {
+	display: block;
+}
+
+.login {
+	body {
+		background-color: var(--theme-pm);
+		color: #fff;		
+	}
+
+	.main-container {
+		min-height: 100%;
+	}
+
+	header {
+		padding-top: 2rem;
+	}
+
+	main {
+		.card {
+			max-width: 400px;
+			color: #444;
+			background-color: var(--white-bg-dark);
+			border: 5px solid var(--theme-pm-dark);
+			border-radius: 10px;
+			
+		}
+
+		.form-control {			
+			font-size: 0.875rem;
+		}
+
+		.form-check-input {
+			top: 2px;
+		}
+
+		.submit {
+			background-color: var(--theme-pm);
+			display: block;
+			margin: auto;
+		}
+
+		.form-control:focus {
+			box-shadow: 0 0 0 0.2rem var(--theme-pm-x-light);
+			border-color: var(--theme-pm-x-light);
+		}
+
+		.submit:focus {
+			box-shadow: 0 0 0 0.2rem var(--theme-pm-x-light);
+		}
+
+		.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+			background-color: green!important;
+		}
+
+		.custom-checkbox .custom-control-input:checked:focus ~ .custom-control-label::before {
+			box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(0, 255, 0, 0.25)
+		}
+		.custom-checkbox .custom-control-input:focus ~ .custom-control-label::before {
+			box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(0, 0, 0, 0.25)
+		}
+		.custom-checkbox .custom-control-input:active ~ .custom-control-label::before {
+			background-color: #C8FFC8; 
+		}
+	}
+
+}

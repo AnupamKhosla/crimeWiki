@@ -1,84 +1,168 @@
 /*admin css file*/
-
 :root {
-	--theme-pm: #E92222;
-	--white-bg-dark: #f0f0f0;	
+  --theme-pm: #E92222;
+  --theme-pm-dark: #d12121;
+  --theme-pm-x-light: #febfbf;
+  --white-bg-dark: #f6f6f6;
+  --white-bg: #fff;
+  --text-dark: #9f1b1b;
+  --text-x-dark: #680c0c;
+  height: 100%;
 }
 
 body {
-	background-color: #fff;
+  height: 100%;
+}
+
+body {
+  background-color: var(--white-bg-dark);
 }
 
 .sidebar {
-	background-color: var(--theme-pm);
-}
-
-
-.sidebar .cut {
-	
+  background-color: var(--theme-pm);
 }
 
 .sidebar .cut-top {
-	border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-
 .sidebar .cut-bottom {
-	border-top: 1px solid rgba(256, 256, 256, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .sidebar .logo-container {
-	margin: 20px 0;
+  margin: 20px 0;
 }
 
-.sidebar .logo {
-	width: 110px;	
-	transform: scale(-1,1);
+.logo {
+  width: 110px;
+  transform: scale(-1, 1);
 }
 
 .sidebar .nav {
-	padding: 8px 0;
+  padding: 8px 0;
 }
 
 .sidebar .nav-item {
-	width: 100%;
+  width: 100%;
 }
 
 .sidebar .nav-link {
-	display: flex;
-	align-items: center;
-	border-radius: 0;
-	color: #fff;
-	transition: background-color ease .3s;
-	white-space: nowrap;
-	font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  border-radius: 0;
+  color: #fff;
+  transition: background-color ease .3s;
+  white-space: nowrap;
+  font-size: 0.875rem;
 }
 
-
 .sidebar .nav-link .icon {
-	margin-right: 5px;
-	margin-bottom: -1px;
-	width: 20px;
-	height: auto;
+  margin-right: 5px;
+  margin-bottom: -1px;
+  width: 20px;
+  height: auto;
 }
 
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link,
 .sidebar .nav-link:hover {
-	background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .content {
-	padding-top: ;
+  width: auto;
+  padding-top: 1.5rem;
 }
 
 .content .title {
-	color: var(--theme-pm);
+  color: var(--theme-pm);
 }
 
+footer {
+  margin: 0 -15px;
+  background-color: var(--theme-pm);
+}
 
-@media (min-width: 767px) {
-	.sidebar {
-		min-height: 100vh;
-	}
+footer .copy {
+  color: var(--text-dark);
+}
+
+footer .author {
+  color: var(--text-x-dark);
+}
+
+footer .author:hover {
+  color: var(--text-x-dark);
+  text-decoration: underline;
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    min-height: 100vh;
+  }
+}
+
+.login {
+  display: block;
+}
+
+.login body {
+  background-color: var(--theme-pm);
+  color: #fff;
+}
+
+.login .main-container {
+  min-height: 100%;
+}
+
+.login header {
+  padding-top: 2rem;
+}
+
+.login main .card {
+  max-width: 400px;
+  color: #444;
+  background-color: var(--white-bg-dark);
+  border: 5px solid var(--theme-pm-dark);
+  border-radius: 10px;
+}
+
+.login main .form-control {
+  font-size: 0.875rem;
+}
+
+.login main .form-check-input {
+  top: 2px;
+}
+
+.login main .submit {
+  background-color: var(--theme-pm);
+  display: block;
+  margin: auto;
+}
+
+.login main .form-control:focus {
+  box-shadow: 0 0 0 0.2rem var(--theme-pm-x-light);
+  border-color: var(--theme-pm-x-light);
+}
+
+.login main .submit:focus {
+  box-shadow: 0 0 0 0.2rem var(--theme-pm-x-light);
+}
+
+.login main .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+  background-color: green !important;
+}
+
+.login main .custom-checkbox .custom-control-input:checked:focus ~ .custom-control-label::before {
+  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(0, 255, 0, 0.25);
+}
+
+.login main .custom-checkbox .custom-control-input:focus ~ .custom-control-label::before {
+  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(0, 0, 0, 0.25);
+}
+
+.login main .custom-checkbox .custom-control-input:active ~ .custom-control-label::before {
+  background-color: #C8FFC8;
 }

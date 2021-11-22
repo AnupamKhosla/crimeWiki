@@ -9,7 +9,10 @@
     "build": "parcel build index.html",
     "dev": "parcel index.html --open",
     "start": "npm run build && npm run dev",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test2": "npm run scss-compile",
+    "scss-compile": "node-sass -w assets/scss -o assets/css --output-style expanded",  
+    "watch": "npm run scss-compile"
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.4"
