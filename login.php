@@ -1,44 +1,137 @@
 <?php
 // Start the session
 session_start();
-$error = "";
-require_once('config.php');
+$_GLOBAL["logged_in"] = false;
+$setup_error = false;
+require_once('include/config.php');
+
+/*
 
 $conn = new mysqli($_SERVER['SERVER_NAME'], $username, $password);
-    if ($conn->connect_error) {
-      echo "error";
-      die("Connection failed: " . $conn->connect_error);
-    }
-    echo "Connected successfully1";
+if ($conn->connect_error) {
+  echo "error";
+  die("Connection failed: " . $conn->connect_error);
+}
+echo "Connected successfully1 ";
+
+if($conn->select_db($db_name)) { //check if db already setup
+  $_GLOBAL["db_setup"] = true;
+  //use login form then
+}
+else {
+  $_GLOBAL["db_setup"] = false;
+  //use setupe website form then
+}
 
     //check if signed_up is true in database  
     //else allow user registeration  
     //if already registered show login page straight up
+*/
+
+$db_form_vis = "";  
+$rg_form_vis = "d-none";
+$lg_form_vis = "d-none";
+
+if(SETUP) {
+
+  $db_form_vis = "d-none";
+
+  //use register first time admin form then
+  $conn = new mysqli($_SERVER['SERVER_NAME'], DB_USER_NAME, DB_PASSWORD, DB_NAME);
+  if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+  }
 
 
-if( !empty($_POST["username"]) && !empty($_POST["password1"]) && !empty($_POST["password2"]) ) {
+  $sql = "SELECT 1 FROM `admins` LIMIT 1";
+  $result = $conn->query($sql);
+  //check admin exists or not
 
-  echo $_POST["username"];
+  if($result) {
+    //start login form. Admin already exists
+    
+    $lg_form_vis = "";   
 
-  $username = htmlspecialchars($_POST["username"]);
-  $password1 = htmlspecialchars($_POST["password1"]);
-  $password2 = htmlspecialchars($_POST["password2"]);
-  if($password1 == $password2) {
-    $password = $password1;
-    $conn = new mysqli($_SERVER['SERVER_NAME'], $username, $password);
-    if ($conn->connect_error) {
-      echo "error";
-      die("Connection failed: " . $conn->connect_error);
-    }
-    echo "Connected successfully";
   }
   else {
-    $error = '<div class="alert alert-danger" role="alert">
-    This is a danger alert—check it out!
-    </div>';
-    echo $error;
+    //show register admin form instead.
+    $rg_form_vis = "";    
+    $identifier = htmlspecialchars(isset($_POST["identifier"]) ? $_POST["identifier"] : "");
+    
+    if( ($identifier == 'register') && !empty($_POST["admin_name"]) && !empty($_POST["admin_password1"]) && !empty($_POST["admin_password2"]) ) {
+
+      $admin_name = htmlspecialchars($_POST["admin_name"]);
+      $admin_pass1 = htmlspecialchars($_POST["admin_password1"]);
+      $admin_pass2 = htmlspecialchars($_POST["admin_password2"]);
+      if($admin_pass1 == $admin_pass2) {
+          //create table now
+        $sql = "CREATE TABLE `admins`";  
+        $result = $conn->query($sql);
+
+        if($result){
+          //show the login form now
+          $rg_form_vis = "d-none";  
+          $lg_form_vis = "";
+        }
+        else{
+          echo $conn->connect_error, $result;
+        }
+        
+      }      
+      else {
+        echo "Passwords did not match";
+      }
+    }
+    else if($identifier == 'register'){
+      echo "All fields must be filled";
+    }    
+
+  }
+
+}
+
+else {
+  //use setupe website form then
+  if( !empty($_POST["username"]) && !empty($_POST["password1"]) && !empty($_POST["password2"]) ) {
+
+    $username = (htmlspecialchars($_POST["username"]));
+    $password1 = (htmlspecialchars($_POST["password1"]));
+    $password2 = (htmlspecialchars($_POST["password2"]));
+    if($password1 == $password2) {
+      $password = $password1;
+
+      $conn = new mysqli($_SERVER['SERVER_NAME'], $username, $password);
+      if ($conn->connect_error) {
+        echo "Wrong database name or/and password";
+        $setup_error = "Wrong database name or/and password";
+        
+      }
+      else {
+
+        $config_file = fopen("include/config.php", "w");
+        $db_credentials = <<<EOB
+        <?php
+        const DB_NAME = '$username';
+        const DB_NAME = '';
+        const DB_PASSWORD = '$password'; 
+        const SETUP = true; //checks if databases have been setup or not
+        ?>
+        EOB;
+
+        fwrite($config_file, $db_credentials);
+        fclose($config_file);
+      }
+    }
+    else {      
+      echo "Passwords did not match";
+    }
+  }
+  else {
+    echo "ERROR: All fields must be non-empty";
   }
 }
+
+
 
 
 
@@ -99,7 +192,10 @@ else {
             <h5 class="card-title text-center mb-3 mb-sm-4 font-weight-lighter">
               <?php echo $page_title ?>
             </h5>
-            <form method="post" action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>
+
+            <!-- Setup database form -->
+            <form method="post" class="<?php echo $db_form_vis ?>" 
+              action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?> >
               <div class="form-group mb-3">
                 <label for="username">Database User Name</label>
                 <input name="username" type="text" class="form-control" id="username" placeholder="crimewiki">                
@@ -109,9 +205,47 @@ else {
                 <input name="password1" type="password" class="form-control" id="password1" placeholder="">                
               </div>
               <div class="form-group mb-3">
-                <label for="floatingPassword">Confirm Password</label>
-                <input name="password2" type="password2" class="form-control" id="password2" placeholder="Password">    
+                <label for="password2">Confirm Password</label>
+                <input name="password2" type="password" class="form-control" id="password2" placeholder="Password">    
               </div>
+              <button class="submit btn btn-login text-white" type="submit" name="identifier" value="setup">
+                Submit
+              </button>
+            </form>
+
+            <!-- Register first time user form -->
+            <form method="post" class="<?php echo $rg_form_vis ?>" 
+              action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>
+              <div class="form-group mb-3">
+                <label for="admin_name">Admin User Name</label>
+                <input name="admin_name" type="text" class="form-control" id="admin_name" placeholder="crimewiki">                
+              </div>
+              <div class="form-group mb-3">
+                <label for="admin_password1">Admin Password</label>
+                <input name="admin_password1" type="password" class="form-control" id="admin_password1" placeholder="">                
+              </div>
+              <div class="form-group mb-3">
+                <label for="admin_password2">Admin Password</label>
+                <input name="admin_password2" type="admin_password2" class="form-control" id="admin_password2" placeholder="Password">    
+              </div>   
+                       
+              
+              <button class="submit btn btn-login text-white" type="submit" name="identifier" value="register">
+                Submit
+              </button>
+            </form>
+
+            <!-- Login form --> 
+            <form method="post" class="<?php echo $lg_form_vis ?>" 
+              action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>
+              <div class="form-group mb-3">
+                <label for="login_name">Admin User Name</label>
+                <input name="login_name" type="text" class="form-control" id="login_name" placeholder="crimewiki">                
+              </div>
+              <div class="form-group mb-3">
+                <label for="login_pasword">Admin Password</label>
+                <input name="login_pasword" type="password" class="form-control" id="login_pasword" placeholder="">                
+              </div>              
 
               <div class="form-check mb-3">
                 <input class="form-check-input" type="checkbox" value="" id="rememberPasswordCheck">
@@ -120,10 +254,12 @@ else {
                 </label>
               </div>
               
-              <button class="submit btn btn-login text-white" type="submit">
+              <button class="submit btn btn-login text-white" type="submit" name="identifier" value="login">
                 Submit
               </button>
             </form>
+
+
           </div>
         </div>
       </main>

@@ -128,12 +128,16 @@ footer .author:hover {
   border-radius: 10px;
 }
 
+.login main form {
+  margin: 0;
+}
+
 .login main .form-control {
   font-size: 0.875rem;
 }
 
 .login main .form-check-input {
-  top: 2px;
+  top: 1px;
 }
 
 .login main .submit {

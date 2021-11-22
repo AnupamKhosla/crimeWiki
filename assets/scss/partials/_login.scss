@@ -28,12 +28,16 @@
 			
 		}
 
+		form {
+			margin: 0; 
+		}
+
 		.form-control {			
 			font-size: 0.875rem;
 		}
 
 		.form-check-input {
-			top: 2px;
+			top: 1px; 
 		}
 
 		.submit {
