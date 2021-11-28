@@ -1,10 +1,12 @@
-<?php require_once("include/setup.php") ?>
-
-
+<?php 
+require_once("include/sessions.php");
+require_once('include/config.php');
+require_once('include/functions.php');
+require_once("include/setup.php");
+?>
 
 <!doctype html>
   <html class="no-js login" lang="">
-
   <head>
     <meta charset="utf-8">
     <title>
@@ -50,15 +52,15 @@
               action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?> >
               <div class="form-group mb-3">
                 <label for="username">Database User Name</label>
-                <input name="username" type="text" class="form-control" id="username" placeholder="crimewiki">                
+                <input name="username" type="text" class="form-control" id="username" placeholder="crimewiki" required>                
               </div>
               <div class="form-group mb-3">
                 <label for="db_name">Set Database Name</label>
-                <input name="db_name" type="text" class="form-control" id="db_name" placeholder="Database Name">                
+                <input name="db_name" type="text" class="form-control" id="db_name" placeholder="Database Name" required>                
               </div>
               <div class="form-group mb-3">
                 <label for="password1">Database User Password</label>
-                <input name="password1" type="password" class="form-control" id="password1" placeholder="">                
+                <input name="password1" type="password" class="form-control" id="password1" placeholder="" required>                
               </div>
               
               <button class="submit btn btn-login text-white" type="submit" name="identifier" value="setup">
@@ -71,18 +73,16 @@
               action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>
               <div class="form-group mb-3">
                 <label for="admin_name">Admin User Name</label>
-                <input name="admin_name" type="text" class="form-control" id="admin_name" placeholder="crimewiki">                
+                <input name="admin_name" type="text" class="form-control" id="admin_name" placeholder="crimewiki" required>                
               </div>
               <div class="form-group mb-3">
                 <label for="admin_password1">Admin Password</label>
-                <input name="admin_password1" type="password" class="form-control" id="admin_password1" placeholder="">                
+                <input name="admin_password1" type="password" class="form-control" id="admin_password1" placeholder="" required>                
               </div>
               <div class="form-group mb-3">
                 <label for="admin_password2">Admin Password</label>
-                <input name="admin_password2" type="admin_password2" class="form-control" id="admin_password2" placeholder="Password">    
-              </div>   
-
-              
+                <input name="admin_password2" type="password" class="form-control" id="admin_password2" placeholder="Password" required>    
+              </div>                 
               <button class="submit btn btn-login text-white" type="submit" name="identifier" value="register">
                 Submit
               </button>
@@ -93,11 +93,11 @@
               action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>>
               <div class="form-group mb-3">
                 <label for="login_name">Admin User Name</label>
-                <input name="login_name" type="text" class="form-control" id="login_name" placeholder="crimewiki">                
+                <input name="login_name" type="text" class="form-control" id="login_name" placeholder="crimewiki" required>                
               </div>
               <div class="form-group mb-3">
                 <label for="login_password">Admin Password</label>
-                <input name="login_password" type="password" class="form-control" id="login_password" placeholder="">                
+                <input name="login_password" type="password" class="form-control" id="login_password" placeholder="" required>                
               </div>              
 
               <div class="form-check mb-3">

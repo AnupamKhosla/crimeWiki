@@ -1,29 +1,28 @@
 <?php
-// Start the session
-session_start();
-require_once('include/config.php');
 
 //Three different forms' visibility
 $db_form_vis = "";  
 $rg_form_vis = "d-none";
 $lg_form_vis = "d-none";
 $page_title = "Setup database";
-$identifier = htmlspecialchars(isset($_POST["identifier"]) ? $_POST["identifier"] : "");
-$logged_in = isset($_SESSION["logged_in"]) ? $_SESSION["logged_in"] : FALSE;
-
 
 if(SETUP) { //if db already setup
   $db_form_vis = "d-none";
   //use register first time admin form then
-  $conn = new mysqli($_SERVER['HTTP_HOST'], DB_USER_NAME, DB_PASSWORD, DB_NAME);
+  $conn = make_db_connection();
   if ($conn->connect_error) {
     echo "Match config file database details with your servers' db details";
     die("Connection failed: " . $conn->connect_error);
   }
   $sql = "SELECT 1 FROM admins LIMIT 1";
-  $result = $conn->query($sql);
+  try{
+    $result = $conn->query($sql); //handle errors myself
+  }
+  catch (Exception $e) {
+    $result = false; //if mysql_error_reporting kicks in
+  }
   
-  if($result !== false) { //if superuser already registered 
+  if($result !== false && $result->num_rows > 0) { //if superuser already registered 
     //start login form. Admin already exists 
     $lg_form_vis = "";  
     $page_title = "User Login"; 
@@ -76,10 +75,19 @@ if(SETUP) { //if db already setup
           username VARCHAR(30) NOT NULL,
           password VARCHAR(30) NOT NULL,
           reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        );';  
-        $result = $conn->query($sql);
+        );
+        CREATE TABLE categories (
+          id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+          datetime VARCHAR(50) NOT NULL, 
+          name VARCHAR(100) NOT NULL,
+          creatorname VARCHAR(200) NOT NULL
+        );
+        ';  
+        $result = $conn->multi_query($sql);
         if($result) {
-          $stmt = $conn->prepare("INSERT INTO admins (username, password) VALUES (?, ?)");
+          $conn->next_result(); //flush second $sql result          
+          $stmt = $conn->prepare("INSERT INTO `admins` (username, password) VALUES (?, ?)");
+          var_dump($conn->error);
           $stmt->bind_param("ss", $admin_name, $admin_pass1);
           if($stmt->execute()) { //create table admins with input data     
           //super user has been created 

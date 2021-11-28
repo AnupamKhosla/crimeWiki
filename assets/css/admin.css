@@ -18,6 +18,10 @@ body {
   background-color: var(--white-bg-dark);
 }
 
+.text-pm {
+  color: var(--theme-pm);
+}
+
 .sidebar {
   background-color: var(--theme-pm);
 }
@@ -31,7 +35,7 @@ body {
 }
 
 .sidebar .logo-container {
-  margin: 20px 0;
+  margin: 1.5rem 0;
 }
 
 .logo {
@@ -40,7 +44,7 @@ body {
 }
 
 .sidebar .nav {
-  padding: 8px 0;
+  padding: 0.5rem 0;
 }
 
 .sidebar .nav-item {
@@ -71,12 +75,22 @@ body {
 }
 
 .content {
-  width: auto;
   padding-top: 1.5rem;
 }
 
-.content .title {
-  color: var(--theme-pm);
+main .submit {
+  background-color: var(--theme-pm);
+  display: block;
+  margin: auto;
+}
+
+main .form-control:focus {
+  box-shadow: 0 0 0 0.2rem var(--theme-pm-x-light);
+  border-color: var(--theme-pm-x-light);
+}
+
+main .submit:focus {
+  box-shadow: 0 0 0 0.2rem var(--theme-pm-x-light);
 }
 
 footer {

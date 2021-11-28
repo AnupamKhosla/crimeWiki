@@ -1,3 +1,6 @@
+<?php 
+require_once("include/sessions.php");
+require_once("include/check_login.php") ?>
 <!doctype html>
   <html class="no-js" lang="">
 
@@ -20,8 +23,7 @@
     <meta name="theme-color" content="#fafafa">
   </head>
 
-  <body>
-
+  <body>    
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-3 col-lg-2 sidebar p-0">
@@ -37,7 +39,7 @@
 
           <ul class="nav flex-column nav-pills">
             <li class="nav-item">
-              <a class="nav-link active" href="#">
+              <a class="nav-link active" href="dashboard.php">
                 <img class="icon mb-n1px" src="assets/icons/dashboard_alt.svg" alt="dashboard icon">
                 Dashboard
               </a>
@@ -49,7 +51,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="categories.php">
                 <img class="icon mb-n1px" src="assets/icons/category.svg" alt="category icon"> 
                 Categories
               </a>
@@ -83,14 +85,10 @@
         </div>
 
         <div class="col-md-9 col-lg-10 content d-flex justify-content-between flex-column">
-          <main>
-            <h1 class="text-center title font-weight-lighter h4">CrimeWiki Admin Panel</h1>
+          <main class="pb-5">
+            <h1 class="text-center text-pm font-weight-lighter h4">CrimeWiki Admin Panel</h1>
           </main>
-          <footer class="py-3">
-            <p class="text-center m-0 copy">
-              Designed and developed by <a class="author" href="https://au.linkedin.com/in/anupamkhosla">Anupam Khosla</a> | All rights reserved
-            </p>
-          </footer>
+          <?php require_once("include/footer.php") ?>
         </div>
       </div>
     </div>
