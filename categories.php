@@ -96,12 +96,12 @@ require_once("include/category_code.php");
             <hr>
             <h2 class="text-pm h5 text-center my-4">Manage Categories</h2>
 
-            <form action="categories.php" method="post">
+            <form method="post" action=<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?> >
               <div class="form-row">
                 <div class="col-md-8 col-xl-10">
-                  <input name="category_input" type="text" class="form-control <?php echo $error_status ?> " placeholder="Category Name" >
-                  <div  class=" <?php echo $error_class ?> ">
-                    <?php echo error_message(), success_message(); ?>
+                  <input name="category_input" type="text" class="form-control <?php echo validation_status(); ?> " placeholder="Category Name" >
+                  <div  class=" <?php echo validation_class(); ?> ">
+                    <?php echo validation_txt(); ?>
                   </div>
                 </div>
                 

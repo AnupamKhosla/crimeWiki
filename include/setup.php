@@ -28,7 +28,7 @@ if(SETUP) { //if db already setup
     $page_title = "User Login"; 
     if($logged_in == true) { //if already logged-in through a different tab
       //redirect to dashboard
-      header("Location:" . "dashboard.php"); /* Redirect browser */
+      header("Location: dashboard.php", true, 303); 
       exit();
     }
 
@@ -44,7 +44,7 @@ if(SETUP) { //if db already setup
         $stmt->store_result();
         if($result && ($stmt->num_rows > 0)) {
           $_SESSION["logged_in"] = true;
-          header("Location:" . "dashboard.php"); /* Redirect browser */
+          header("Location: {$_SERVER['REQUEST_URI']}", true, 303); 
           exit();
         }
         else {                
@@ -92,7 +92,7 @@ if(SETUP) { //if db already setup
           if($stmt->execute()) { //create table admins with input data     
           //super user has been created 
             echo "super user create | db created | reload this page again";            
-            header("Location:" . $_SERVER['REQUEST_URI']); /* Reload page to show login details */
+            header("Location: {$_SERVER['REQUEST_URI']}", true, 303); 
             exit();
           } 
           else {
@@ -140,7 +140,7 @@ else {
         fwrite($config_file, $db_credentials);
         fclose($config_file);        
         $conn->query("CREATE DATABASE $db_name");        
-        header('Location: '. $_SERVER['REQUEST_URI']);
+        header("Location: {$_SERVER['REQUEST_URI']}", true, 303); 
         exit();
       }
    
