@@ -5,31 +5,39 @@ if(!isset($_SESSION["Validation"])) {
 	$_SESSION["Validation"] = array( "txt" => "", "class" => "d-none", "status" => "" );
 }
 
-if(isset($_POST["category_input"])) { //category form has been submitted
+if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //add post form has been submitted	
 	
-	$category = mysqli_real_escape_string($conn, trim($_POST["category_input"]));	
-	if(empty($category)) {
+	$post_title = mysqli_real_escape_string($conn, trim($_POST["post_title"]));	
+	$choose_image = $_FILES["choose_image"]["name"];
+	$content = mysqli_real_escape_string($conn, trim($_POST["content"]));
+
+	if(empty($post_title) || empty($choose_image) || empty($content)) {
 		$_SESSION["Validation"]["txt"] = "All fields must be filled";	
 		$_SESSION["Validation"]["class"]  = "invalid-feedback d-block"; //make eror message visible
 		$_SESSION["Validation"]["status"] = "is-invalid";	
 	}
-	else if(strlen($category) > 99) {
-		$_SESSION["Validation"]["txt"] = "Category Name should not be more than 99 characters";
+	else if(strlen($post_title) > 99 || strlen($post_title) < 2) {
+		$_SESSION["Validation"]["txt"] = "Post Title should be between 2 - 99 characters";
+		$_SESSION["Validation"]["class"]  = "invalid-feedback d-block"; //make eror message visible
+		$_SESSION["Validation"]["status"] = "is-invalid";
+	}
+	else if(strlen($content) > 499999 || strlen($post_title) < 2) {
+		$_SESSION["Validation"]["txt"] = "Content should be between 2 - 499999 characters";
 		$_SESSION["Validation"]["class"]  = "invalid-feedback d-block"; //make eror message visible
 		$_SESSION["Validation"]["status"] = "is-invalid";
 	}
 	else {// everything is fine; update categories now		
-		$stmt = $conn->prepare("INSERT INTO `categories` (datetime, name, creatorname) VALUES (?, ?, ?)");
+		$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, creatorname, image, content) VALUES (?, ?, ?, ?, ?)");
 		$creator = "Anupam";
-        $stmt->bind_param("sss", $date_time, $category, $creator);
+        $stmt->bind_param("sssss", $date_time, $post_title, $creator, $choose_image, $content);
         $result = $stmt->execute();
         if($result) {        	
-        	$_SESSION["Validation"]["txt"] = "Category added successfully";
+        	$_SESSION["Validation"]["txt"] = "New Post added successfully";
 					$_SESSION["Validation"]["class"]  = "valid-feedback d-block"; //make eror message visible
 					$_SESSION["Validation"]["status"] = "is-valid";									
         }
         else { //some error in adding category
-        	die("Failed to add new category" . $stmt->error);
+        	die("Failed to add new post" . $stmt->error);
         }
 	}
 
@@ -38,7 +46,7 @@ if(isset($_POST["category_input"])) { //category form has been submitted
   exit();
 }
 
-$category_table_content = "			  			
+$posts_table_content = "			  			
               <tr>
                 <th scope='row'>NULL</th>
                 <td>NULL</td>
@@ -47,17 +55,17 @@ $category_table_content = "
               </tr>
             	";
 
-$sql = "SELECT * FROM `categories` ORDER BY datetime DESC";
+$sql = "SELECT datetime, title, creatorname FROM `posts` ORDER BY datetime DESC";
 $result = $conn->query($sql);
 
 if($result != false) { //query was successful
 	if($row = $result->fetch_assoc()) { //first iteration only to nemove NULL table values 
 
-		$row_name = htmlspecialchars($row['name']);
+		$row_name = htmlspecialchars($row['title']);
 		$row_creator = htmlspecialchars($row['creatorname']);
 		$row_datetime = htmlspecialchars($row['datetime']);
 
-		$category_table_content = "<tr>
+		$post_title_table_content = "<tr>
                 <th scope='row'>1</th>
                 <td>$row_name</td>
                 <td>$row_creator</td>
@@ -68,11 +76,11 @@ if($result != false) { //query was successful
 	$count = 2;
 	while($row = $result->fetch_assoc()) {
 
-		$row_name = htmlspecialchars($row['name']);
+		$row_name = htmlspecialchars($row['title']);
 		$row_creator = htmlspecialchars($row['creatorname']);
 		$row_datetime = htmlspecialchars($row['datetime']);
 
-		$category_table_content .= "<tr>
+		$post_title_table_content .= "<tr>
                 <th scope='row'>$count</th>
                 <td>$row_name</td>
                 <td>$row_creator</td>

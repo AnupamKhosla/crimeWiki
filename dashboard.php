@@ -45,7 +45,7 @@ require_once("include/check_login.php") ?>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="addpost.php">
                 <img class="icon " src="assets/icons/add_post.svg" alt="add post icon">               
                 Add Post
               </a>

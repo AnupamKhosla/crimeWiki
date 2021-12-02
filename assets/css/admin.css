@@ -78,15 +78,19 @@ body {
   padding-top: 1.5rem;
 }
 
-main .submit {
-  background-color: var(--theme-pm);
-  display: block;
-  margin: auto;
+main .choose-image {
+  cursor: pointer;
 }
 
 main .form-control:focus {
   box-shadow: 0 0 0 0.2rem var(--theme-pm-x-light);
   border-color: var(--theme-pm-x-light);
+}
+
+main .submit {
+  background-color: var(--theme-pm);
+  display: block;
+  margin: auto;
 }
 
 main .submit:focus {

@@ -69,10 +69,8 @@ body {
 
 main {
 
-	.submit {
-		background-color: var(--theme-pm);
-		display: block;
-		margin: auto;
+	.choose-image {
+		cursor: pointer;
 	}
 
 	.form-control:focus {
@@ -80,6 +78,12 @@ main {
 		border-color: var(--theme-pm-x-light);
 	}
 
+	.submit {
+		background-color: var(--theme-pm);
+		display: block;
+		margin: auto;
+	}
+	
 	.submit:focus {
 		box-shadow: 0 0 0 0.2rem var(--theme-pm-x-light);
 	}

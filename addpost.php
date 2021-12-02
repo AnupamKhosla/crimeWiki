@@ -4,7 +4,7 @@ require_once("include/sessions.php");
 require_once('include/config.php');
 require_once('include/functions.php');
 require_once("include/check_login.php");
-require_once("include/category_code.php");
+require_once("include/addpost_code.php");
 
 ?>
 
@@ -52,13 +52,13 @@ require_once("include/category_code.php");
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="addpost.php">
-                <img class="icon" src="assets/icons/add_post.svg" alt="add post icon">               
+              <a class="nav-link active" href="addpost.php">
+                <img class="icon " src="assets/icons/add_post.svg" alt="add post icon">               
                 Add Post
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="categories.php">
+              <a class="nav-link" href="categories.php">
                 <img class="icon mb-n1px" src="assets/icons/category.svg" alt="category icon"> 
                 Categories
               </a>
@@ -94,20 +94,27 @@ require_once("include/category_code.php");
           <main class="pb-5">
             <h1 class="text-center title text-pm font-weight-lighter h4">CrimeWiki Admin Panel</h1>
             <hr>
-            <h2 class="text-pm h5 text-center my-4">Manage Categories</h2>
+            <h2 class="text-pm h5 text-center my-4">Add New Post</h2>
 
-            <form method="post" action=<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?> >
+            <form method="post" action=<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?> enctype="multipart/form-data">
               <div class="form-row">
-                <div class="col-md-8 col-xl-10">
-                  <input name="category_input" type="text" class="form-control <?php echo validation_status(); ?> " placeholder="Category Name" >
+                <div class="col-12">
+                  <label for="post_title">Post title</label>
+                  <input name="post_title" type="text" id="post_title" class="form-control <?php echo validation_status(); ?> " placeholder="Post Title" >
                   <div  class=" <?php echo validation_class(); ?> ">
                     <?php echo validation_txt(); ?>
                   </div>
+                </div> 
+                <div class="col-12 mt-3  d-flex align-items-center">                  
+                  <input name="choose_image" type="file" accept="image/*" id="choose_image" class="form-control-file choose-image" >                  
+                </div>  
+                <div class="col-12 mt-3">
+                  <label for="content">Content</label>
+                  <textarea name="content" id="content" class="form-control"  rows="10"></textarea>
                 </div>
-                
-                <div class="col-md-4 col-xl-2">
-                  <button class="submit btn btn-login text-white w-100 mt-3 mt-md-0 " type="submit" name="identifier" value="category_form">
-                    Add Category
+                 <div class="col-12 mt-3">
+                  <button class="submit btn btn-login text-white px-5" type="submit" name="identifier" value="add_post_form">
+                    Add Post
                   </button>
                 </div>
               </div>
@@ -117,12 +124,12 @@ require_once("include/category_code.php");
               <thead>
                 <tr>
                   <th scope="col">Sr no.</th>
-                  <th scope="col">Category Name</th>
+                  <th scope="col">Post Title</th>
                   <th scope="col">Creator Name</th>                  
                   <th scope="col">Date & Time</th>
                 </tr>
               </thead>
-              <tbody> <?php echo $category_table_content ?> </tbody>
+              <tbody> <?php echo $posts_table_content ?> </tbody>
             </table>
 
           </main>

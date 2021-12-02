@@ -82,10 +82,18 @@ if(SETUP) { //if db already setup
           name VARCHAR(100) NOT NULL,
           creatorname VARCHAR(200) NOT NULL
         );
-        ';  
+        CREATE TABLE posts (
+          id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+          datetime VARCHAR(50) NOT NULL, 
+          title VARCHAR(100) NOT NULL,
+          creatorname VARCHAR(200) NOT NULL,  
+          image VARCHAR(200) NOT NULL,  
+          content VARCHAR(500000)
+        );';  
         $result = $conn->multi_query($sql);
         if($result) {
-          $conn->next_result(); //flush second $sql result          
+          $conn->next_result(); //flush second $sql result
+          $conn->next_result(); //flush third $sql result          
           $stmt = $conn->prepare("INSERT INTO `admins` (username, password) VALUES (?, ?)");
           var_dump($conn->error);
           $stmt->bind_param("ss", $admin_name, $admin_pass1);
