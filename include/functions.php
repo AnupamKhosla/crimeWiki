@@ -23,5 +23,23 @@ function validation_status() {
 		return $output;	
 }
 
+function category_select() {
+	global $conn;
+
+	$list = "";
+	$result = $conn->query("SELECT name FROM `categories`");
+	if($result != false) {
+		while($row = $result->fetch_assoc()) {
+			
+			$row_name = htmlspecialchars($row['name']);
+			$list .= "<option>$row_name</option>";
+		}
+	}
+	else {
+		die("Can't fetch names from categories tabele" . $conn->error);
+	}
+	return $list;
+}
+
 
 ?>

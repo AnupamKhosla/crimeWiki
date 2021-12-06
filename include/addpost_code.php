@@ -8,10 +8,13 @@ if(!isset($_SESSION["Validation"])) {
 if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //add post form has been submitted	
 	
 	$post_title = mysqli_real_escape_string($conn, trim($_POST["post_title"]));	
-	$choose_image = $_FILES["choose_image"]["name"];
 	$content = mysqli_real_escape_string($conn, trim($_POST["content"]));
+	$post_category = mysqli_real_escape_string($conn, trim($_POST["category_select"]));
+	$post_meta = mysqli_real_escape_string($conn, trim($_POST["meta"]));
+	$choose_image = basename($_FILES["choose_image"]["name"]);
+	$target = "Uploads/".$choose_image;
 
-	if(empty($post_title) || empty($choose_image) || empty($content)) {
+	if(empty($post_title) || empty($choose_image) || empty($content) || empty($post_category) || empty($post_meta)) {
 		$_SESSION["Validation"]["txt"] = "All fields must be filled";	
 		$_SESSION["Validation"]["class"]  = "invalid-feedback d-block"; //make eror message visible
 		$_SESSION["Validation"]["status"] = "is-invalid";	
@@ -27,11 +30,12 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
 		$_SESSION["Validation"]["status"] = "is-invalid";
 	}
 	else {// everything is fine; update categories now		
-		$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, creatorname, image, content) VALUES (?, ?, ?, ?, ?)");
+		$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, creatorname, categoryname, image, content, postmeta) VALUES (?, ?, ?, ?, ?, ?, ?)");
 		$creator = "Anupam";
-        $stmt->bind_param("sssss", $date_time, $post_title, $creator, $choose_image, $content);
+        $stmt->bind_param("sssssss", $date_time, $post_title, $creator, $post_category, $choose_image, $content, $post_meta);
         $result = $stmt->execute();
-        if($result) {        	
+        if($result) {    
+        	move_uploaded_file($_FILES["choose_image"]["tmp_name"], $target);   	
         	$_SESSION["Validation"]["txt"] = "New Post added successfully";
 					$_SESSION["Validation"]["class"]  = "valid-feedback d-block"; //make eror message visible
 					$_SESSION["Validation"]["status"] = "is-valid";									
@@ -51,25 +55,28 @@ $posts_table_content = "
                 <th scope='row'>NULL</th>
                 <td>NULL</td>
                 <td>NULL</td>
-                <td>@NULL</td>
+                <td>NULL</td>
+                <td>NULL</td>
               </tr>
             	";
 
-$sql = "SELECT datetime, title, creatorname FROM `posts` ORDER BY datetime DESC";
+$sql = "SELECT datetime, title, creatorname, categoryname FROM `posts` ORDER BY datetime DESC";
 $result = $conn->query($sql);
 
 if($result != false) { //query was successful
-	if($row = $result->fetch_assoc()) { //first iteration only to nemove NULL table values 
+	if($row = $result->fetch_assoc()) { //first iteration only to nemove NULL table valuesand set $count
 
 		$row_name = htmlspecialchars($row['title']);
 		$row_creator = htmlspecialchars($row['creatorname']);
 		$row_datetime = htmlspecialchars($row['datetime']);
+		$row_category = htmlspecialchars($row['categoryname']);
 
-		$post_title_table_content = "<tr>
+		$posts_table_content = "<tr>
                 <th scope='row'>1</th>
                 <td>$row_name</td>
-                <td>$row_creator</td>
+                <td>$row_category</td>                
                 <td>$row_datetime</td>
+                <td>$row_creator</td>
               </tr>                
            		";
 	}
@@ -79,12 +86,14 @@ if($result != false) { //query was successful
 		$row_name = htmlspecialchars($row['title']);
 		$row_creator = htmlspecialchars($row['creatorname']);
 		$row_datetime = htmlspecialchars($row['datetime']);
+		$row_category = htmlspecialchars($row['categoryname']);
 
-		$post_title_table_content .= "<tr>
+		$posts_table_content .= "<tr>
                 <th scope='row'>$count</th>
                 <td>$row_name</td>
-                <td>$row_creator</td>
+                <td>$row_category</td>                
                 <td>$row_datetime</td>
+                <td>$row_creator</td>
               </tr>                
            		";
            		$count++;

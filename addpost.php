@@ -14,7 +14,7 @@ require_once("include/addpost_code.php");
 
   <head>
     <meta charset="utf-8">
-    <title>Categories</title>
+    <title>Add Post</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -105,11 +105,62 @@ require_once("include/addpost_code.php");
                     <?php echo validation_txt(); ?>
                   </div>
                 </div> 
-                <div class="col-12 mt-3  d-flex align-items-center">                  
-                  <input name="choose_image" type="file" accept="image/*" id="choose_image" class="form-control-file choose-image" >                  
+                <div class="col-12 mt-3">  
+                  <div class="row">
+                    <div class="col-12 col-sm-5 d-flex align-items-center">
+                      <input name="choose_image" type="file" accept="image/*" id="choose_image" class="form-control-file choose-image" >  
+                    </div>
+                    <div class="col-12 col-sm-7 input-group mt-3 mt-sm-0">
+                      <div class="input-group-prepend">
+                        <label class="input-group-text" for="category_select">Category</label>
+                      </div>
+                      <select name="category_select" class="custom-select" id="category_select">
+                        <option selected disabled>Choose...</option>
+                        <?php echo category_select(); ?>                        
+                      </select>  
+                    </div> 
+                  </div>
                 </div>  
                 <div class="col-12 mt-3">
-                  <label for="content">Content</label>
+                  <label for="content">Post Meta</label>
+                  <textarea name="meta" id="meta" class="form-control"  rows="10">
+<profile-data>
+  <th>Crimes</th>
+  <td>34</td>  
+  <th>Born On</th>
+  <td>March 10, 1957</td>
+  <th>Died On</th>
+  <td>March 15, 2007</td>
+  <th>Known For</th>
+  <td>9/11 Attack</td>
+  <th>Jail Time</th>
+  <td>None</td>
+</profile-data>
+<personal-details>
+  <th>Criminal Status</th>
+  <td>Executed</td>
+  <th>Victims</th>
+  <td>4</td>
+</personal-details>
+<related-criminals>
+  <ul>
+    <li><a href="/posts?id=23">Robel Puch</a></li>
+    <li><a href="/posts?id=67">Paula Danier</a></li>
+    <li><a href="/posts?id=23">Kanthelin freeman</a></li>
+    <li><a href="/posts?id=23">Leonard fraser</a></li>
+  </ul>
+</related-criminals>
+<sources>
+  <ul>
+    <li><a href="#">News Article</a> on <a href="chanel7.com">chanel7.com</a></li>
+    <li><a href="#">Video tape</a> on <a href="chanel7.com">youtube.com</a></li>
+    <li><a href="#">News Pulished</a> on <a href="aajtak.com">aajtak.com</a></li>                        
+  </ul>
+</sources>
+                  </textarea>
+                </div>
+                <div class="col-12 mt-3">
+                  <label for="content">Post Content</label>
                   <textarea name="content" id="content" class="form-control"  rows="10"></textarea>
                 </div>
                  <div class="col-12 mt-3">
@@ -125,8 +176,9 @@ require_once("include/addpost_code.php");
                 <tr>
                   <th scope="col">Sr no.</th>
                   <th scope="col">Post Title</th>
-                  <th scope="col">Creator Name</th>                  
+                  <th scope="col">Category</th>                               
                   <th scope="col">Date & Time</th>
+                  <th scope="col">Creator Name</th>     
                 </tr>
               </thead>
               <tbody> <?php echo $posts_table_content ?> </tbody>

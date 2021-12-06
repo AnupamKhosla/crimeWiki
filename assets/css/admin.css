@@ -82,7 +82,7 @@ main .choose-image {
   cursor: pointer;
 }
 
-main .form-control:focus {
+main .form-control:focus, main .custom-select:focus {
   box-shadow: 0 0 0 0.2rem var(--theme-pm-x-light);
   border-color: var(--theme-pm-x-light);
 }

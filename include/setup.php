@@ -80,7 +80,8 @@ if(SETUP) { //if db already setup
           id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
           datetime VARCHAR(50) NOT NULL, 
           name VARCHAR(100) NOT NULL,
-          creatorname VARCHAR(200) NOT NULL
+          creatorname VARCHAR(200) NOT NULL,
+          UNIQUE (name)
         );
         CREATE TABLE posts (
           id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -88,7 +89,10 @@ if(SETUP) { //if db already setup
           title VARCHAR(100) NOT NULL,
           creatorname VARCHAR(200) NOT NULL,  
           image VARCHAR(200) NOT NULL,  
-          content VARCHAR(500000)
+          content VARCHAR(500000),
+          categoryname VARCHAR(100) NOT NULL,
+          postmeta VARCHAR(1000) NOT NULL,
+          FOREIGN KEY (categoryname) REFERENCES categories(name)
         );';  
         $result = $conn->multi_query($sql);
         if($result) {

@@ -1,4 +1,6 @@
 
+//all dashboard pages
+
 body {
 	background-color: var(--white-bg-dark);
 }
@@ -73,7 +75,7 @@ main {
 		cursor: pointer;
 	}
 
-	.form-control:focus {
+	.form-control:focus, .custom-select:focus {
 		box-shadow: 0 0 0 0.2rem var(--theme-pm-x-light);
 		border-color: var(--theme-pm-x-light);
 	}
@@ -87,7 +89,6 @@ main {
 	.submit:focus {
 		box-shadow: 0 0 0 0.2rem var(--theme-pm-x-light);
 	}
-
 
 }
 
