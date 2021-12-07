@@ -1,0 +1,67 @@
+
+/*global overrides*/
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration { display: none; }
+
+.form-control:focus, .custom-select:focus {
+	box-shadow: 0 0 0 0.2rem var(--theme-pm-dark);
+	border-color: var(--theme-pm-dark);
+}
+
+.selectric {
+	background-color: rgba(44,44,44,0.3);
+	border-radius: 50px;
+	text-align: center;
+	transition: background-color .3s ease; 
+}
+
+.selectric-focus .selectric, 
+.selectric-hover .selectric {
+	background-color: var(--theme-pm-x-dark);
+}
+
+.selectric-items {
+	background-color: var(--theme-pm-dark);
+	border: 1px solid var(--theme-pm-x-dark);
+	transition: transform .3s ease;
+}
+
+.selectric-open .selectric-items {
+	transform: translateY(10px);
+}
+
+.selectric-items li.selected {
+	background-color: rgba(0,0,0,0.05);
+}
+
+.selectric-items li:hover {
+	background-color: rgba(0,0,0,0.05);
+}
+
+.selectric .label {
+	display: inline;
+	margin: 0;
+}
+
+.selectric .label:after {
+	content: url("../icons/dropdown.svg");
+	margin: 0px 0 0 10px;
+	position: relative;
+	top: -1px;
+}
+
+.selectric .label,  
+.selectric-items ul, 
+.selectric-items li {
+	font-size: 0.875rem;
+}
+
+.selectric b.button {	
+	display: none;
+}
+
+
+
+/*global overrides finishes*/

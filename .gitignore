@@ -2,3 +2,4 @@
 # logs folder is used for apache on local machine
 
 logs/*
+node_modules/*
