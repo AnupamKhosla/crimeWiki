@@ -88,41 +88,128 @@
         </nav>
         <form action="" class="filters">  
           <div class="row">
-            <div class="col-md-7 d-flex">
-              <h1 class="h3 mb-0 font-weight-lighter w-100 text-center">A Wikipedea of world-wide crime</h1>
+            <div class="col-lg-5 col-md-12 offset-lg-1 d-flex mb-4 mb-lg-0">
+              <h1 class="main-title h3 mt-3 mt-sm-0 mb-0 font-weight-lighter w-100 text-center">A Wikipedea of world-wide crime</h1>
             </div>
-            <div class="col-md-2 pl-0">
-              <select name="Choose_Catgory">
-                <option value="">Category</option>
-                <option value="saab">Saab</option>
-                <option value="opel">Opel</option>
-                <option value="audi">Audi</option>
-              </select>
-            </div>    
-            <div class="col-md-2 pl-0">
-              <select name="filter_by">
-                <option value="">Filter By</option>
-                <option value="saab">Saab</option>
-                <option value="opel">Opel</option>
-                <option value="audi">Audi</option>
-              </select>
-            </div>
-            <div class="col-md-1 pl-0">
-              <button class="go btn text-white d-flex align-items-center">
-                Go 
-                <img class="ml-2 arrow-right" src="../assets/icons/arrow_right.svg" alt="arrow right icon">
+            <div class="col-sm-6 col-xs-12 offset-sm-3 d-md-none">
+              <button type="button" class="go sort btn text-white d-flex align-items-center justify-content-center w-100">
+                Sort By 
+                <img class="ml-2 " src="../assets/icons/sort_down.svg" alt="sort down icon">
               </button>
+            </div>
+            <div class="w-100 d-md-none"></div>
+            <div class="col pl-lg-0">
+              <div class="row sort-dropdown d-none d-md-flex">
+                <div class="col-sm-6 offset-sm-3 col-md-3 offset-md-2 col-lg-5 offset-lg-0 pl-lg-0 mt-3 mt-md-0">
+                  <select class="w-100" name="Choose_Catgory">
+                    <option value="">Category</option>
+                    <option value="saab">Criminal</option>
+                    <option value="opel">Gang</option>
+                    <option value="audi">Crime</option>
+                  </select>
+                </div>    
+                <div class="col-sm-6 offset-sm-3 col-md-3 offset-md-0 col-lg-5 pl-lg-0 mt-3 mt-md-0">
+                  <select class="w-100" name="filter_by">
+                    <option value="">Sort By</option>
+                    <option value="saab">Latest</option>
+                    <option value="opel">Popular</option>
+                    <option value="audi">Country</option>
+                  </select>
+                </div>
+                <div class="col-sm-6 offset-sm-3 offset-md-0 col-lg-2 col-md-2 pl-lg-0 mt-3 mt-md-0">
+                  <button class="go btn text-white d-flex align-items-center justify-content-center w-100">
+                    Go 
+                    <img class="ml-2 arrow-right" src="../assets/icons/arrow_right.svg" alt="arrow right icon">
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </form>
-        <div class="slider">
-          <div class="slick" data-slick='{"slidesToShow": 4, "slidesToScroll": 4}'>
-            <div><h3>1</h3></div>
-            <div><h3>2</h3></div>
-            <div><h3>3</h3></div>
-            <div><h3>4</h3></div>
-            <div><h3>5</h3></div>
-            <div><h3>6</h3></div>
+        <div class="slider row ">
+          <div class="col-md-10 offset-md-1">
+            <div class="slick">
+              <div class="slide">
+                <div class="card">
+                  <img src="../Uploads/tony_montana.jpg" class="card-img-top post-pic" alt="profile pic">
+                  <div class="card-body">                
+                    <a href="#" class="">Tony Montana</a>
+                  </div>
+                </div>
+              </div>
+              <div class="slide">
+                <div class="card">
+                  <img src="../Uploads/Pablo.jpg" class="card-img-top post-pic" alt="profile pic">
+                  <div class="card-body">                
+                    <a href="#" class="">Pablo Escobar</a>
+                  </div>
+                </div>
+              </div>
+              <div class="slide">
+                <div class="card">
+                  <img src="../Uploads/osama.jpg" class="card-img-top post-pic" alt="profile pic">
+                  <div class="card-body">                
+                    <a href="#" class="">Osama Bin Laden</a>
+                  </div>
+                </div>
+              </div>
+              <div class="slide">
+                <div class="card">
+                  <img src="../Uploads/tony_montana.jpg" class="card-img-top post-pic" alt="profile pic">
+                  <div class="card-body">                
+                    <a href="#" class="">Go somewhere</a>
+                  </div>
+                </div>
+              </div>
+              <div class="slide">
+                <div class="card">
+                  <img src="../Uploads/tony_montana.jpg" class="card-img-top post-pic" alt="profile pic">
+                  <div class="card-body">                
+                    <a href="#" class="">Go somewhere</a>
+                  </div>
+                </div>
+              </div>
+              <div class="slide">
+                <div class="card">
+                  <img src="../Uploads/tony_montana.jpg" class="card-img-top post-pic" alt="profile pic">
+                  <div class="card-body">                
+                    <a href="#" class="">Go somewhere</a>
+                  </div>
+                </div>
+              </div>
+              <div class="slide">
+                <div class="card">
+                  <img src="../Uploads/tony_montana.jpg" class="card-img-top post-pic" alt="profile pic">
+                  <div class="card-body">                
+                    <a href="#" class="">Go somewhere</a>
+                  </div>
+                </div>
+              </div>
+              <div class="slide">
+                <div class="card">
+                  <img src="../Uploads/tony_montana.jpg" class="card-img-top post-pic" alt="profile pic">
+                  <div class="card-body">                
+                    <a href="#" class="">Go somewhere</a>
+                  </div>
+                </div>
+              </div>
+              <div class="slide">
+                <div class="card">
+                  <img src="../Uploads/tony_montana.jpg" class="card-img-top post-pic" alt="profile pic">
+                  <div class="card-body">                
+                    <a href="#" class="">Go somewhere</a>
+                  </div>
+                </div>
+              </div>
+              <div class="slide">
+                <div class="card">
+                  <img src="../Uploads/tony_montana.jpg" class="card-img-top post-pic" alt="profile pic">
+                  <div class="card-body">                
+                    <a href="#" class="">Go somewhere</a>
+                  </div>
+                </div>
+              </div>    
+            </div>        
           </div>
         </div>
         <br>
