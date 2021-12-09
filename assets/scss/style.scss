@@ -184,7 +184,7 @@
     }
     .slider{
       .slide {
-        width: 247px;
+        width: 261.5px; 
 
       }
       .slide:not(.slick-slide):nth-child(n+4) {
@@ -206,7 +206,7 @@
         /*Using rems to match bootstrap marin on h1*/
       }
       .slide {
-        width: 278px;
+        width: 292.5px;
 
       }
       .slide:not(.slick-slide):nth-child(n+3) {
@@ -229,12 +229,9 @@
         margin-left: auto;
       }
       .slide {
-        width: 223px;
+        width: 222.5px;
 
-      }
-      .slide:not(.slick-slide):nth-child(n+5) {
-        display: none;
-      }
+      }      
       .post-pic {
         height: 264px;
       }
@@ -261,9 +258,9 @@
         width: 100%;        
       }
       .slide {
-        width: auto;
+        width: calc(100vw - 45px);
       }
-      .slide:not(.slick-slide):nth-child(n+5) {
+      .slide:not(.slick-slide):nth-child(n+2) {
         display: none;
       }
       .post-pic {

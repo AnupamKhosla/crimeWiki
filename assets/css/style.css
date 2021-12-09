@@ -276,7 +276,7 @@ input[type="search"]::-webkit-search-results-decoration {
     font-size: 1.5rem;
   }
   .hero .slider .slide {
-    width: 247px;
+    width: 261.5px;
   }
   .hero .slider .slide:not(.slick-slide):nth-child(n+4) {
     display: none;
@@ -292,7 +292,7 @@ input[type="search"]::-webkit-search-results-decoration {
     /*Using rems to match bootstrap marin on h1*/
   }
   .hero .slider .slide {
-    width: 278px;
+    width: 292.5px;
   }
   .hero .slider .slide:not(.slick-slide):nth-child(n+3) {
     display: none;
@@ -309,10 +309,7 @@ input[type="search"]::-webkit-search-results-decoration {
     margin-left: auto;
   }
   .hero .slider .slide {
-    width: 223px;
-  }
-  .hero .slider .slide:not(.slick-slide):nth-child(n+5) {
-    display: none;
+    width: 222.5px;
   }
   .hero .slider .post-pic {
     height: 264px;
@@ -335,9 +332,9 @@ input[type="search"]::-webkit-search-results-decoration {
     width: 100%;
   }
   .hero .slider .slide {
-    width: auto;
+    width: calc(100vw - 45px);
   }
-  .hero .slider .slide:not(.slick-slide):nth-child(n+5) {
+  .hero .slider .slide:not(.slick-slide):nth-child(n+2) {
     display: none;
   }
   .hero .slider .post-pic {
