@@ -18,6 +18,10 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 	box-shadow: 0 0 0 0.2rem var(--theme-pm-dark);
 	border-color: var(--theme-pm-dark);
 }
+
+.navbar-dark .navbar-toggler {
+	border: 0;
+}
 /*bootstrap overrides finishes*/
 
 .selectric {

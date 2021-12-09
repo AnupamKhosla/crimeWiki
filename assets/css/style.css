@@ -35,6 +35,10 @@ input[type="search"]::-webkit-search-results-decoration {
   border-color: var(--theme-pm-dark);
 }
 
+.navbar-dark .navbar-toggler {
+  border: 0;
+}
+
 /*bootstrap overrides finishes*/
 .selectric {
   background-color: rgba(44, 44, 44, 0.3);
@@ -287,6 +291,11 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 
 @media (max-width: 992.8px) {
+  .hero .search-form {
+    margin-left: 0;
+    position: relative;
+    display: inline-flex;
+  }
   .hero .slider {
     margin-top: 1.5rem;
     /*Using rems to match bootstrap marin on h1*/
@@ -315,9 +324,10 @@ input[type="search"]::-webkit-search-results-decoration {
     height: 264px;
   }
   .hero .slider .slick-arrow {
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     right: -43px;
+    border: 3px solid var(--theme-pm-x-dark);
   }
   .hero .slider .slick-prev {
     left: -43px;
