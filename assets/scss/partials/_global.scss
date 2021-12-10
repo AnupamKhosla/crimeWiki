@@ -13,9 +13,20 @@
 	}
 }
 
-.btn:focus, .btn.focus { 
-    box-shadow: none; 
+a {
+	color: var(--theme-pm);
+	transition: color .3s ease;
 }
+
+a:hover {
+	color: var(--theme-pm-dark);
+}
+
+.btn:focus, .btn:hover { 
+    box-shadow: none; 
+    color: white;
+}
+
 
 .dropdown-toggle::after {
 	vertical-align: middle;
@@ -25,7 +36,7 @@ input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
-	display: none; 
+	display: none;  
 }
 
 .form-control:focus, .custom-select:focus {
@@ -35,6 +46,10 @@ input[type="search"]::-webkit-search-results-decoration {
 
 .navbar-dark .navbar-toggler {
 	border: 0;
+}
+
+.m-auto2 {
+	margin: auto;
 }
 
 .ml-2 {
@@ -52,12 +67,30 @@ input[type="search"]::-webkit-search-results-decoration {
 
 /*bootstrap overrides finishes*/
 
+.bg-pm {
+	background-color: var(--theme-pm);
+}
+
+.bg-pm-dark {
+	background-color: var(--theme-pm-dark);
+}
+
 .btn-pm {
 	background-color: var(--theme-pm);
+	display: block;
+	transition: background-color .3s ease;
 	color: #fff;
 	height: 38px;
 	padding: 0 60px;
 	font-size: 0.875rem; 
+}
+
+.btn-pm:focus, .btn-pm:hover {
+	background-color: var(--theme-pm-dark);
+}
+
+.text-pm {
+	color: var(--theme-pm);
 }
 
 .selectric {

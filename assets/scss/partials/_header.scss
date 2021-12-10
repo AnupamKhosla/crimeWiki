@@ -172,10 +172,9 @@
 			transform: scaleX(-1);
 			margin-left: -1px;
 		}
-		.slick-arrow:hover,
-		.slick-arrow:focus {
-			background-color: white;
-
+		.slick-arrow:not(.slick-disabled):hover,
+		.slick-arrow:not(.slick-disabled):focus {
+			background-color: white; 
 		}
 	}
 }
@@ -288,7 +287,12 @@
 @media (max-width: 575.8px) {
 	.hero {
 		.search-form {
-			width: 100%;
+			& {
+				width: 100%;
+			}
+			.form-control {
+				min-width: 0;
+			}
 		}
 		.slider {
 			& {

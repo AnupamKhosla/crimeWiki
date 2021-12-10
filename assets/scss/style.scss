@@ -3,52 +3,10 @@
 @import "partials/_colours.scss";
 @import "partials/_global.scss";
 @import "partials/_header.scss";
+@import "partials/_homepage.scss";
+@import "partials/_footer.scss"; 
 
 
-.about {
-	& {
-		background-color: var(--white-bg-dark);
-		padding: 50px 0 60px 0;
-		font-weight: 500;
-	}
-	.logo-double {
-		mix-blend-mode: multiply;
-	}
-	.logo-text {
-		color: var(--theme-pm);
-		margin-bottom: 16px;
-	}
-	.cta {
-		margin: 26px auto 0 auto;
-	}
-}
-
-@media (max-width: 991.8px) {
-	.about {
-		& {
-			padding: 35px 0 45px
-		}
-		.logo-text {
-			margin-bottom: 13.5px;
-		}
-		.logo-double {
-			max-width: 200px;
-			margin-bottom: 15px !important;
-		}
-	}
-} 
-
-@media (max-width: 575.8px) {
-	.about {
-		& {
-			padding: 20px 0 30px; 
-		}
-		.logo-text {
-			font-size: 2rem;
-			margin-bottom: 10px;
-		}
-		.logo-double {
-			margin-bottom: 7.5px !important;
-		}
-	}
+* {
+	     
 }
