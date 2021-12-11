@@ -1,4 +1,5 @@
 
+
 .hero {
 	& {
 		background-color: var(--theme-pm);
@@ -90,6 +91,9 @@
 			width: 217px;
 			float: left;
 		}
+		.post-pic {
+			height: 256px;	
+		}
 		.slide:not(.slick-slide):nth-child(n+6) {
 			display: none;
 		}
@@ -106,43 +110,7 @@
 			opacity: 1;
 			transition: opacity .3s ease-in-out;
 		}
-		.card {
-			margin: 0 7.5px;
-			border: 5px solid var(--theme-pm-x-dark);
-			background-color: var(--theme-pm-x-dark);
-			border-radius: 5px;
-			transition: border-color .3s ease, background-color .3s ease;
-		}
-		.card:hover {
-			background-color: var(--white-bg-dark);
-			border-color: var(--white-bg-dark);
-		}
-		.post-pic {
-			height: 256px;			
-			object-fit: cover;
-			object-position: center top;
-			border-radius: 5px;
-		}
-		.card-body {
-			& {
-				position: absolute;
-				bottom: 0;
-				width: 100%;
-				background-color: rgba(0,0,0,0.85);
-				height: 45px;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				padding: 0 15px;
-			}
-
-			a {
-				color: white;
-				text-overflow: ellipsis;
-				white-space: nowrap;
-				overflow: hidden;				
-			}
-		}
+		
 		.slick-arrow {
 			width: 45px;
 			height: 45px;

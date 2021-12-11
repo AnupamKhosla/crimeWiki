@@ -1,0 +1,14 @@
+// post scss file  
+
+.spacer {
+		height: 300px;		
+		width: 100%;
+		background-color: var(--theme-pm);
+	}
+
+.post {
+	.offset-y {
+		position: relative;
+		top: -240px;
+	}
+}
