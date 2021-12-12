@@ -1,14 +1,89 @@
 // post scss file  
 
 .spacer {
-		height: 300px;		
+		height: 290px;		
 		width: 100%;
 		background-color: var(--theme-pm);
 	}
 
 .post {
-	.offset-y {
-		position: relative;
-		top: -240px;
+
+	& {
+		padding-bottom: 45px;
+		background-color: var(--white-bg-less-dark);
+	}	
+	.offset-y {		
+		margin-top: -230px; 
+	}
+	.sources {
+		margin-bottom: 15px;
+	}
+	.post-content {
+		padding-left: 30px;
+	}
+
+	th {
+			font-weight: 500;
+			vertical-align: top;
+		}
+
+	.intro-table {
+		& {
+			margin-bottom: 77px;
+			margin-top: 20px;
+		}		
+		
+		td {
+			padding-left: 30px; 
+		}
+		a {
+			color: white;
+		} 
+	}
+	.details {
+		table {
+			font-size: 0.875rem;			
+			border-collapse:separate; 
+  		border-spacing: 0 5px; 
+		}
+		th + td {
+			padding-left: 30px;
+		}
+		
+	}
+	h2 {
+		color: var(--theme-pm);
+		margin-bottom: 19px;
+		font-size: 1.5rem;
+	}
+	p {
+		margin-bottom: 8px;
+	}
+	hr {
+		margin: 24px 0;
+	}
+	h3 {
+		font-size: 1.125rem;
+		padding-top: 8px; 
+	}
+}
+
+@media (max-width: 991.8px) {
+	.post {
+		.container-original {
+			max-width: 540px; 
+		}
+		.intro-table {
+			padding: 22.5px 15px;
+			margin: 0 -15px;
+			background-color: var(--theme-pm);
+			border-radius: 5px; 
+		}
+
+		.details {
+			th + td {
+				padding-left: 15px;
+			}
+		}
 	}
 }

@@ -10,6 +10,9 @@
 	.container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
     	max-width: 1320px;
 	}
+	.container-original {
+		max-width: 1140px;
+	}
 }
 
 a {
@@ -102,8 +105,8 @@ input[type="search"]::-webkit-search-results-decoration {
 
 /*theme ui elements starts*/
 .card {
-	border: 5px solid var(--theme-pm-x-dark);
-	background-color: var(--theme-pm-x-dark);
+	border: 5px solid var(--theme-pm-dark2);
+	background-color: var(--theme-pm-dark2);
 	border-radius: 5px;
 	transition: border-color .3s ease, background-color .3s ease;
 }
@@ -140,17 +143,20 @@ input[type="search"]::-webkit-search-results-decoration {
 
 .panel {
 	& {
-		background-color: var(--white-bg-dark);
+		background-color: var(--white-bg);
 	    border-radius: 5px;
 	    padding-bottom: 25px;
 	    display: flex;
 	    flex-direction: column;
-	    margin-top: 30px;
+	    margin-top: 45px;
 	}
 	.panel-title {
 		margin-top: 22.5px;
 	    margin-bottom: 17.5px;
 	    color: var(--theme-pm);
+	}
+	.panel-content {
+		padding: 0 30px;
 	}
 	.list {
 		padding-left: 45px;

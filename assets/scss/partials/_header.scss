@@ -102,6 +102,9 @@
 			opacity: .3;
 			transition: opacity .3s ease-in-out;
 		}
+		.slick-slide .card {
+			margin: 0 7.5px;
+		}
 		.slick-current {
 			opacity: 1;
 			transition: opacity .3s ease-in-out;
