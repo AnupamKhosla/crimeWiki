@@ -156,17 +156,50 @@ input[type="search"]::-webkit-search-results-decoration {
 	    color: var(--theme-pm);
 	}
 	.panel-content {
-		padding: 0 30px;
+		padding: 0 15px;
 	}
-	.list {
-		padding-left: 45px;
-	    overflow: auto;    
+	.list {		
+	    overflow-y: auto;
+	    max-height: 700px; 
+	    padding-right: 10px;	
+	    scrollbar-color: #ccc #f1f1f1;
+  		scrollbar-width: thin;    
+	}
+	ul:not(.list-unstyled) {
+		padding-left: 18px;
 	}
 	.publish-date {
 		color: #999;
 	    font-size: 0.875rem;
 	    padding-left: 45px;
 	    margin-top: auto;
+	}
+	.list::-webkit-scrollbar {
+	  width: 10px;
+	  
+	}
+
+	/* Track */
+	.list::-webkit-scrollbar-track {
+	  background: #f1f1f1;
+	}
+
+	/* Handle */
+	.list::-webkit-scrollbar-thumb {
+	  background: #ccc;
+	}
+
+	/* Handle on hover */
+	.list::-webkit-scrollbar-thumb:hover {
+	  background: #999;
+	}
+}
+
+@media (max-width: 991.8px) {
+	.panel {
+		&{
+			margin-top: 30px;
+		}
 	}
 }
  

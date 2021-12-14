@@ -49,8 +49,28 @@
 		th + td {
 			padding-left: 30px;
 		}
-		
+		div, span {
+			white-space: normal !important; 
+		}
+		.infobox-header, .infobox-subheader, .infobox-image, .infobox-full-data, .infobox-below {
+    	padding-left: 7.5px !important;     	
+		}
+		.infobox-header {
+			background: var(--theme-pm-x-light) !important;
+		}			
 	}
+	a[href$=".pdf"].external, a[href*=".pdf?"].external, a[href*=".pdf#"].external, a[href$=".PDF"].external, a[href*=".PDF?"].external, a[href*=".PDF#"].external  {
+	  background: url("//upload.wikimedia.org/wikipedia/commons/2/23/Icons-mini-file_acrobat.gif") no-repeat right;
+	  padding-right: 18px;
+	}
+
+	.panel ul li {
+		margin-bottom: 7.5px;
+	}
+	.panel ol {
+		padding: 0 15px;
+	}
+
 	h2 {
 		color: var(--theme-pm);
 		margin-bottom: 19px;
@@ -69,9 +89,23 @@
 }
 
 @media (max-width: 991.8px) {
+
+	.spacer {
+		height: 500px;
+	}
 	.post {
+		& {
+			padding-bottom: 30px;
+		}
+		.offset-y {
+			margin-top: -500px;
+		}
 		.container-original {
 			max-width: 540px; 
+		}
+		.post-profile {
+			max-width: 60%;
+			margin: auto;
 		}
 		.intro-table {
 			padding: 22.5px 15px;
@@ -79,11 +113,33 @@
 			background-color: var(--theme-pm);
 			border-radius: 5px; 
 		}
-
+		.intro-table table {
+			margin: auto;
+		}
+		.intro-table h1 {
+			margin-bottom: 18px;
+		}
 		.details {
 			th + td {
 				padding-left: 15px;
 			}
+		}
+		.post-content {
+			padding-top: 25px;
+		}
+		.related {
+			margin-top: 25px;
+		}
+	}
+}
+
+@media (max-width: 575.8px) {
+	.post {
+		& {
+			padding-bottom: 15px;
+		}
+		.post-profile {
+			max-width: none; 			
 		}
 	}
 }
