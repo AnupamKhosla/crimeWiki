@@ -90,8 +90,7 @@ if(SETUP) { //if db already setup
           creatorname VARCHAR(200) NOT NULL,  
           image VARCHAR(200) NOT NULL,  
           content VARCHAR(500000),
-          categoryname VARCHAR(100) NOT NULL,
-          postmeta VARCHAR(1000) NOT NULL,
+          categoryname VARCHAR(100) NOT NULL,          
           FOREIGN KEY (categoryname) REFERENCES categories(name)
         );';  
         $result = $conn->multi_query($sql);

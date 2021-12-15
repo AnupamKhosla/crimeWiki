@@ -57,6 +57,8 @@
 		}
 		.infobox-header {
 			background: var(--theme-pm-x-light) !important;
+			padding: 0.2em;
+			line-height: normal;
 		}			
 	}
 	a[href$=".pdf"].external, a[href*=".pdf?"].external, a[href*=".pdf#"].external, a[href$=".PDF"].external, a[href*=".PDF?"].external, a[href*=".PDF#"].external  {
@@ -117,7 +119,7 @@
 			margin: auto;
 		}
 		.intro-table h1 {
-			margin-bottom: 18px;
+			margin-bottom: 18px; 
 		}
 		.details {
 			th + td {
@@ -126,6 +128,7 @@
 		}
 		.post-content {
 			padding-top: 25px;
+			padding-left: 15px;
 		}
 		.related {
 			margin-top: 25px;

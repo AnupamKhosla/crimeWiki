@@ -122,46 +122,93 @@ require_once("include/addpost_code.php");
                   </div>
                 </div>  
                 <div class="col-12 mt-3">
-                  <label for="content">Post Meta</label>
-                  <textarea name="meta" id="meta" class="form-control"  rows="10">
-<profile-data>
-  <th>Crimes</th>
-  <td>34</td>  
-  <th>Born On</th>
-  <td>March 10, 1957</td>
-  <th>Died On</th>
-  <td>March 15, 2007</td>
-  <th>Known For</th>
-  <td>9/11 Attack</td>
-  <th>Jail Time</th>
-  <td>None</td>
-</profile-data>
-<personal-details>
-  <th>Criminal Status</th>
-  <td>Executed</td>
-  <th>Victims</th>
-  <td>4</td>
-</personal-details>
-<related-criminals>
-  <ul>
-    <li><a href="/posts?id=23">Robel Puch</a></li>
-    <li><a href="/posts?id=67">Paula Danier</a></li>
-    <li><a href="/posts?id=23">Kanthelin freeman</a></li>
-    <li><a href="/posts?id=23">Leonard fraser</a></li>
-  </ul>
-</related-criminals>
-<sources>
-  <ul>
-    <li><a href="#">News Article</a> on <a href="chanel7.com">chanel7.com</a></li>
-    <li><a href="#">Video tape</a> on <a href="chanel7.com">youtube.com</a></li>
-    <li><a href="#">News Pulished</a> on <a href="aajtak.com">aajtak.com</a></li>                        
-  </ul>
-</sources>
+                  <label for="intro_meta">Intro Meta</label>
+                  <textarea name="intro_meta" id="intro_meta" class="form-control"  rows="10">
+                    <intro-data>
+                      <tr>
+                        <th>Crimes</th>
+                        <td>34</td>  
+                      </tr>
+                      <tr>
+                        <th>Born On</th>
+                        <td>March 10, 1957</td>
+                      </tr>
+                      <tr>
+                        <th>Died On</th>
+                        <td>March 15, 2007</td>
+                      </tr>
+                      <tr>
+                        <th>Known For</th>
+                        <td>9/11 Attack</td>
+                      </tr>
+                      <tr>
+                        <th>Jail Time</th>
+                        <td>None</td>
+                      </tr>
+                    </intro-data>
                   </textarea>
                 </div>
                 <div class="col-12 mt-3">
-                  <label for="content">Post Content</label>
-                  <textarea name="content" id="content" class="form-control"  rows="10"></textarea>
+                  <label for="details_meta">Details Meta</label>
+                  <textarea name="details_meta" id="details_meta" class="form-control"  rows="10">                    
+                    <details>
+                      <tr>
+                        <th>Criminal Status</th>
+                        <td>Executed</td>
+                      </tr>
+                      <tr>
+                        <th>Victims</th>
+                        <td>4</td>
+                      </tr>
+                    </details>
+                  </textarea>
+                </div>
+                <div class="col-12 mt-3">
+                  <label for="sources_meta">Sources Meta</label>
+                  <textarea name="sources_meta" id="sources_meta" class="form-control"  rows="10">                   
+                    <sources>
+                      <ul>
+                        <li><a href="#">News Article</a> on <a href="chanel7.com">chanel7.com</a></li>
+                        <li><a href="#">Video tape</a> on <a href="chanel7.com">youtube.com</a></li>
+                        <li><a href="#">News Pulished</a> on <a href="aajtak.com">aajtak.com</a></li>                        
+                      </ul>
+                    </sources>
+                  </textarea>
+                </div>  
+                <div class="col-12 mt-3">
+                  <label for="sources_meta">Related Meta</label>
+                  <textarea name="related_meta" id="related_meta" class="form-control"  rows="10">                   
+                    <related>
+                      <ul>
+                        <li><a href="/posts?id=23">Robel Puch</a></li>
+                        <li><a href="/posts?id=67">Paula Danier</a></li>
+                        <li><a href="/posts?id=23">Kanthelin freeman</a></li>
+                        <li><a href="/posts?id=23">Leonard fraser</a></li>
+                      </ul>
+                    </related>
+                  </textarea>
+                </div>
+
+                <div class="col-12 mt-3">
+                  <label for="post_content">Post Content</label>
+                  <textarea name="post_content" id="post_content" class="form-control"  rows="10">
+                    <content>
+                      <section>
+                        <h2>Dummy heading</h2>
+                        <p>Dummy paragaph</p>
+                        <p>Dummy paragraph 2</p>
+                      </section>
+                      <hr></hr>
+                      <section>
+                        <h2>Section2 heading</h2>
+                        <p>Section2 pargraph1</p>
+                          <h3>Subheading 1 </h3>
+                          <p>Sub paragraph1</p>
+                          <h3>Subheading2</h3>
+                          <p>Sub para 3</p>
+                      </section>
+                    </content>
+                  </textarea>
                 </div>
                  <div class="col-12 mt-3">
                   <button class="submit btn btn-login text-white px-5" type="submit" name="identifier" value="add_post_form">

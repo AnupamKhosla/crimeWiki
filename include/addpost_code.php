@@ -8,13 +8,32 @@ if(!isset($_SESSION["Validation"])) {
 if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //add post form has been submitted	
 	
 	$post_title = mysqli_real_escape_string($conn, trim($_POST["post_title"]));	
-	$content = mysqli_real_escape_string($conn, trim($_POST["content"]));
-	$post_category = mysqli_real_escape_string($conn, trim($_POST["category_select"]));
-	$post_meta = mysqli_real_escape_string($conn, trim($_POST["meta"]));
+
+	if(empty($_POST["post_content"]) || empty($_POST["intro_meta"]) || empty($_POST["details_meta"]) || empty($_POST["related_meta"]) || empty($_POST["sources_meta"])) {
+		$content = NULL;
+	}
+	else {
+		$str = trim($_POST["intro_meta"]) . trim($_POST["details_meta"]) . trim($_POST["related_meta"]) . trim($_POST["sources_meta"]) . trim($_POST["post_content"]);
+		$content = "<xml>" . $str . "</xml>"; 
+		//$content cannot be escaped mysqli_escape because of xml structure
+		function check_xml($content) {		
+			//libxml_use_internal_errors(true);	
+			$x = simplexml_load_string($content);
+			if(isset($x->{'intro-data'}) && isset($x->details) && isset($x->sources) && isset($x->content) && isset($x->related)) {
+				return true;
+			}
+			else {	
+				return false;
+			}
+		}
+	}
+			
+	
+	$post_category = mysqli_real_escape_string($conn, trim($_POST["category_select"]));	
 	$choose_image = basename($_FILES["choose_image"]["name"]);
 	$target = "Uploads/".$choose_image;
 
-	if(empty($post_title) || empty($choose_image) || empty($content) || empty($post_category) || empty($post_meta)) {
+	if(empty($post_title) || empty($choose_image) || empty($content) || empty($post_category) ) {
 		$_SESSION["Validation"]["txt"] = "All fields must be filled";	
 		$_SESSION["Validation"]["class"]  = "invalid-feedback d-block"; //make eror message visible
 		$_SESSION["Validation"]["status"] = "is-invalid";	
@@ -29,10 +48,15 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
 		$_SESSION["Validation"]["class"]  = "invalid-feedback d-block"; //make eror message visible
 		$_SESSION["Validation"]["status"] = "is-invalid";
 	}
+	else if(!check_xml($content)) {
+		$_SESSION["Validation"]["txt"] = "All fields must have appropriate xml tags";	
+		$_SESSION["Validation"]["class"]  = "invalid-feedback d-block"; //make eror message visible
+		$_SESSION["Validation"]["status"] = "is-invalid";	
+	}
 	else {// everything is fine; update categories now		
 		$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, creatorname, categoryname, image, content, postmeta) VALUES (?, ?, ?, ?, ?, ?, ?)");
 		$creator = "Anupam";
-        $stmt->bind_param("sssssss", $date_time, $post_title, $creator, $post_category, $choose_image, $content, $post_meta);
+        $stmt->bind_param("sssssss", $date_time, $post_title, $creator, $post_category, $choose_image, $content, $content);
         $result = $stmt->execute();
         if($result) {    
         	move_uploaded_file($_FILES["choose_image"]["tmp_name"], $target);   	

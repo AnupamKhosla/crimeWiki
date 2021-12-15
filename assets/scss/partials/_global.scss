@@ -141,7 +141,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	}
 }
 
-.panel {
+.panel { 
 	& {
 		background-color: var(--white-bg);
 	    border-radius: 5px;
@@ -149,7 +149,11 @@ input[type="search"]::-webkit-search-results-decoration {
 	    display: flex;
 	    flex-direction: column;
 	    margin-top: 45px;
+	    overflow: auto;
 	}
+	.table-responsive {
+		display: table;
+	}  
 	.panel-title {
 		margin-top: 22.5px;
 	    margin-bottom: 17.5px;
