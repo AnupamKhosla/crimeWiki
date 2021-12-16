@@ -2,9 +2,7 @@
 require_once("include/sessions.php");
 require_once('include/config.php');
 require_once('include/functions.php');
-require_once("include/check_login.php");
 require_once("include/post_code.php");
-
 ?>
 
 <!doctype html>
@@ -105,11 +103,11 @@ require_once("include/post_code.php");
             <div class="intro-table text-white d-block d-lg-none">
                 <h1 class="h3 font-weight-normal text-center"> <?php echo $title; ?> </h1>
                 <table>
-                  <?php echo $content->{'intro-data'}->asXML() ?>
+                  <?php echo $introData; ?>
                 </table>
               </div>
               <div class="card post-profile ">
-                <img src="../Uploads/osama.jpg" class="card-img-top post-pic" alt="profile pic">
+                <img src="Uploads/<?php echo $image ?>" class="card-img-top post-pic" alt="profile pic">
                 <div class="card-body">                
                   <a href="#" class=""> <?php echo $title; ?> </a>
                 </div>
@@ -121,7 +119,7 @@ require_once("include/post_code.php");
                 <div class="panel-content">
                   <table class="table-responsive">
                     <tbody>
-                      <?php echo substr($content->details->asXML(), 9, -10); ?>
+                      <?php echo $details; ?>
                     </tbody>
                   </table>
                 </div>
@@ -131,7 +129,7 @@ require_once("include/post_code.php");
                   <h4>Related</h4>
                 </div>
                 <div class="panel-content">
-                  <?php echo substr($content->related->asXML(), 9, -10); ?>
+                  <?php echo $related; ?>
                 </div>
               </div>
               <div class="panel sources d-none d-lg-block">
@@ -139,7 +137,7 @@ require_once("include/post_code.php");
                   <h4>Sources</h4>
                 </div>
                 <div class="panel-content">
-                  <?php echo substr($content->sources->asXML(), 9, -10); ?>
+                  <?php echo $sources; ?>
                 </div>
               </div>
             </div>
@@ -147,17 +145,17 @@ require_once("include/post_code.php");
               <div class="intro-table text-white d-none d-lg-block">
                 <h1 class="h3 font-weight-normal"> <?php echo $title; ?></h1>
                 <table>
-                  <?php echo substr($content->{'intro-data'}->asXML(), 12, -13); ?>
+                  <?php echo $introData; ?>
                 </table>
               </div>
-              <?php echo substr($content->content->asXML(), 9, -10); ?>
+              <?php echo $content2; ?>
               <!-- after dynamic sections repipitive dom elements because of masonary layout. No css-only solution found-->
               <div class="panel related d-lg-none">
                 <div class="panel-title text-center">
                   <h4>Related</h4>
                 </div>
                 <div class="panel-content">
-                  <?php echo substr($content->related->asXML(), 9, -10); ?>
+                  <?php echo $related; ?>
                 </div>
               </div>
               <div class="panel sources d-lg-none">
@@ -165,7 +163,7 @@ require_once("include/post_code.php");
                   <h4>Sources</h4>
                 </div>
                 <div class="panel-content">
-                  <?php echo substr($content->sources->asXML(), 9, -10); ?>
+                  <?php echo $sources; ?>
                 </div>
               </div>
             </div>

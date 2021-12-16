@@ -167,7 +167,7 @@ require_once("include/addpost_code.php");
                   <label for="sources_meta">Sources Meta</label>
                   <textarea name="sources_meta" id="sources_meta" class="form-control"  rows="10">                   
                     <sources>
-                      <ul>
+                      <ul class="list">
                         <li><a href="#">News Article</a> on <a href="chanel7.com">chanel7.com</a></li>
                         <li><a href="#">Video tape</a> on <a href="chanel7.com">youtube.com</a></li>
                         <li><a href="#">News Pulished</a> on <a href="aajtak.com">aajtak.com</a></li>                        
@@ -179,12 +179,12 @@ require_once("include/addpost_code.php");
                   <label for="sources_meta">Related Meta</label>
                   <textarea name="related_meta" id="related_meta" class="form-control"  rows="10">                   
                     <related>
-                      <ul>
+                      <ol class="list list-unstyled">
                         <li><a href="/posts?id=23">Robel Puch</a></li>
                         <li><a href="/posts?id=67">Paula Danier</a></li>
                         <li><a href="/posts?id=23">Kanthelin freeman</a></li>
                         <li><a href="/posts?id=23">Leonard fraser</a></li>
-                      </ul>
+                      </ol>
                     </related>
                   </textarea>
                 </div>

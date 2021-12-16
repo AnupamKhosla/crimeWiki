@@ -14,16 +14,22 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
 	}
 	else {
 		$str = trim($_POST["intro_meta"]) . trim($_POST["details_meta"]) . trim($_POST["related_meta"]) . trim($_POST["sources_meta"]) . trim($_POST["post_content"]);
-		$content = "<xml>" . $str . "</xml>"; 
+		$content = $str; 
 		//$content cannot be escaped mysqli_escape because of xml structure
 		function check_xml($content) {		
-			//libxml_use_internal_errors(true);	
-			$x = simplexml_load_string($content);
-			if(isset($x->{'intro-data'}) && isset($x->details) && isset($x->sources) && isset($x->content) && isset($x->related)) {
+			
+			libxml_use_internal_errors(true); // important
+			$x = new DOMDocument();
+			$x->loadHTML($content);
+			
+			if(!empty($x->getElementsByTagName('intro-data')) && !empty($x->getElementsByTagName('details')) && !empty($x->getElementsByTagName('sources')) && !empty($x->getElementsByTagName('content')) && !empty($x->getElementsByTagName('related'))) {
 				return true;
 			}
-			else {	
+			else {
+			var_dump($x);
+			die();	
 				return false;
+
 			}
 		}
 	}
@@ -54,9 +60,9 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
 		$_SESSION["Validation"]["status"] = "is-invalid";	
 	}
 	else {// everything is fine; update categories now		
-		$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, creatorname, categoryname, image, content, postmeta) VALUES (?, ?, ?, ?, ?, ?, ?)");
+		$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, creatorname, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?)");
 		$creator = "Anupam";
-        $stmt->bind_param("sssssss", $date_time, $post_title, $creator, $post_category, $choose_image, $content, $content);
+        $stmt->bind_param("ssssss", $date_time, $post_title, $creator, $post_category, $choose_image, $content);
         $result = $stmt->execute();
         if($result) {    
         	move_uploaded_file($_FILES["choose_image"]["tmp_name"], $target);   	
