@@ -23,6 +23,14 @@ if( isset($_GET["id"]) ) {
 			$content = new DOMDocument();
 			$content->loadHTML($row['content']);	
 
+			$introData = $content->getElementsByTagName("intro-data")[0]->getElementsByTagName('br');
+
+			while ($introData->length != 0) {	//remove all <br> tags	    
+			    $node = $introData->item(0);			    
+	        $node->parentNode->removeChild($node);	        	   
+			}
+			
+
 			$introData = $content->saveHTML( ($content->getElementsByTagName('intro-data')[0]) );
 			$introData = substr($introData, 12, -13);
 

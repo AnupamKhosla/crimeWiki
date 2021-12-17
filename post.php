@@ -107,7 +107,7 @@ require_once("include/post_code.php");
                 </table>
               </div>
               <div class="card post-profile ">
-                <img src="Uploads/<?php echo $image ?>" class="card-img-top post-pic" alt="profile pic">
+                <img src="<?php echo $image ?>" class="card-img-top post-pic" alt="profile pic">
                 <div class="card-body">                
                   <a href="#" class=""> <?php echo $title; ?> </a>
                 </div>
