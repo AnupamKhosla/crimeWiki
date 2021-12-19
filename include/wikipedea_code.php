@@ -86,6 +86,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form") {
 					return $obj;
 				}
 			}		
+
 			function extract_intro($xpath, $value, &$intro, $field1, $field2, $field3, $field4, $field_default) {
 				$intro["th"] = xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]//tr[th='$field1']/th")) ?? xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]//tr[th='$field2']/th")) ?? xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]//tr[th='$field3']/th")) ?? xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]//tr[th='$field3']/th")) ?? $field_default;
 
@@ -103,8 +104,9 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form") {
 			extract_intro($xpath, $value, $intro1, "Victims",   "Deaths","Injured",    "Ethnicity", "Victims");
 			extract_intro($xpath, $value, $intro2, "Born", "Born", "Location", "Founded", "Born");
 			extract_intro($xpath, $value, $intro3, "Died", "Injured","Result", "Ethnicity", "Died");
-			extract_intro($xpath, $value, $intro4, "Known for", "Date", "Leader", "Leaders", "Known for");
-			//<0xa0> is important in Known<0xa0>for
+			extract_intro($xpath, $value, $intro4, "Known\xc2\xa0for", "Date", "Leader", "Leaders", "Known\xc2\xa0for");
+			extract_intro($xpath, $value, $intro5, "Criminal penalty", "Jail time", "Charges", "Country", "Criminal penalty");
+			//\xc2\xa0 is important in Known<0xa0>for
 
 
 			$related_tmp = $xpath->query("//h2[span[@id='See_also']]/following-sibling::ul");
@@ -125,41 +127,85 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form") {
 			}
 			
 			$content = $value->createElement("content");
+			$hr = $value->createElement("hr");
+			$hr2 = $value->createElement("hr");
 			$tmp_nxt = $details[0]->nextSibling;
-			var_dump($tmp_nxt->nextSibling);
 			
-
-			function validContent($node, &$content) {
-				if($node === NULL) {
+			function validContent($node, &$content, $hr) {			
+				if($node == NULL) {						
 					return false;
 				}
-				else if($node->nodeName != "h2") {
-					$content->appendChild($node);					
+				else if($node->nodeName !== "h2") {		
+							
+					$content->appendChild($node->cloneNode(true));					
 					return true;
 				}
-				if($node->nodeName == "h2") {
+				else if($node->nodeName == "h2") {
 					foreach($node->childNodes as $child) {
 						if($child->getAttribute("id") == "See_also" || $child->getAttribute("id") == "Citations" || $child->getAttribute("id") == "References" || $child->getAttribute("id") == "Notes" ) {
 							return false;
 						}
-					}
-					$content->appendChild($node);
-					$content->appendChild($value->createElement("hr"));
+					}	
+					$content->appendChild($node->cloneNode(true));
+					$content->appendChild($hr->cloneNode(true));	
+					return true;							
 				}
-				
+			}
+			
+			while(validContent($tmp_nxt, $content, $hr)) {				
+				$tmp_nxt = $tmp_nxt->nextSibling;				
 			}
 
-			while(validContent($tmp_nxt, $content)) {				
-				$tmp_nxt = $tmp_nxt->nextSibling;
-				
-			}
+			$details = $value->saveHTML($details[0]);
+			$content = $value->saveHTML($content);
+			$content_mysql = <<<EOF
+					<intro-data>
+            <tr>
+              {$intro1["th"]}
+              {$intro1["td"]} 
+            </tr>
+            <tr>
+              {$intro2["th"]}
+              {$intro2["td"]} 
+            </tr>
+            <tr>
+              {$intro3["th"]}
+              {$intro3["td"]} 
+            </tr>
+            <tr>
+              {$intro4["th"]}
+              {$intro4["td"]}
+            </tr>
+            <tr>
+              {$intro5["th"]}
+              {$intro5["td"]} 
+            </tr>
+          </intro-data>
+
+          <details>
+            {$details}
+          </details>
+        	<sources>
+            <ul class="list">
+              {$sources}                        
+            </ul>
+          </sources>
+          <related>
+            {$related}
+          </related>
+          <content>
+          	<h2>Introduction</h2>
+          	{$content}
+          </content>
+EOF;		
 
 
-			$content2 = $value->saveHTML($content);
+			//$title -- string, $intro[] -- html tags string, $pic_src -- string, $details[0], $content_mysql --> string xml
 
-			var_dump($content2);
-			echo "<br> <br> <br> ";
 
+	$creator = "Anu";
+	$cat = "criminals";
+										$conn->query("INSERT INTO `posts` (datetime, title, creatorname, categoryname, image, content) VALUES ('$date_time', '$title', '$creator', '$cat', '$pic_src', '$content_mysql')");
 
 		}
 		else {			
