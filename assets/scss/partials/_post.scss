@@ -52,13 +52,14 @@
 		div, span {
 			white-space: normal !important; 
 		}
-		.infobox-header, .infobox-subheader, .infobox-image, .infobox-full-data, .infobox-below {
-    	padding-left: 7.5px !important;     	
+		.infobox-header, .infobox-subheader, .infobox-full-data, .infobox-below {
+    	padding-left: 7.5px !important;
+    	background: var(--theme-pm-x-light) !important; 
+			padding: 0.2em;
+			line-height: normal;     	
 		}
 		.infobox-header {
-			background: var(--theme-pm-x-light) !important;
-			padding: 0.2em;
-			line-height: normal;
+			
 		}			
 	}
 	a[href$=".pdf"].external, a[href*=".pdf?"].external, a[href*=".pdf#"].external, a[href$=".PDF"].external, a[href*=".PDF?"].external, a[href*=".PDF#"].external  {

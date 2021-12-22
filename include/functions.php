@@ -1,7 +1,9 @@
 <?php 
 
 function make_db_connection(){
-	return (new mysqli($_SERVER['HTTP_HOST'], DB_USER_NAME, DB_PASSWORD, DB_NAME));
+	$conn = new mysqli($_SERVER['HTTP_HOST'], DB_USER_NAME, DB_PASSWORD, DB_NAME);
+	$conn->set_charset('utf8mb4'); // very important
+	return $conn;
 }
 
 function validation_txt() {		

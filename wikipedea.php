@@ -106,7 +106,7 @@ require_once("include/wikipedea_code.php");
                       <div class="input-group-prepend">
                         <label class="input-group-text" for="category_select">Category</label>
                       </div>
-                      <select name="category_select" class="custom-select" id="category_select">
+                      <select required name="category_select" class="custom-select" id="category_select">
                         <option selected disabled>Choose...</option>
                         <?php echo category_select(); ?>                        
                       </select>  

@@ -89,7 +89,7 @@ if(SETUP) { //if db already setup
           title VARCHAR(100) NOT NULL,
           creatorname VARCHAR(200) NOT NULL,  
           image VARCHAR(200) NOT NULL,  
-          content VARCHAR(500000),
+          content VARCHAR(10000000),
           categoryname VARCHAR(100) NOT NULL,          
           FOREIGN KEY (categoryname) REFERENCES categories(name)
         );';  

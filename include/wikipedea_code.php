@@ -1,18 +1,57 @@
 <?php 
 
 $conn = make_db_connection();
+
 if(!isset($_SESSION["Validation"])) {
 	$_SESSION["Validation"] = array( "txt" => "", "class" => "d-none", "status" => "" );
 }
 
-if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form") {		
-
-
+if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && isset($_POST["category_select"])) {		
 
 	libxml_use_internal_errors(true); //important
 	
 	$links_invalid = [];
 	$links =  explode( "\n", trim($_POST["wiki_links"]) );
+
+	function xpath_query($obj) {
+		if($obj->length == 0) {
+			return NULL;
+		}
+		else {
+			return $obj;
+		}
+	}	
+	function extract_intro($xpath, $value, &$intro, $field1, $field2, $field3, $field4, $field_default) {
+		$intro["th"] = xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]//tr[th='$field1']/th")) ?? xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]//tr[th='$field2']/th")) ?? xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]//tr[th='$field3']/th")) ?? xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]//tr[th='$field3']/th")) ?? "<th>".$field_default."</th>";
+		if(gettype($intro["th"]) == "object") {
+			$intro["td"] = $intro["th"][0]->nextSibling;
+			$intro["th"] = $value->saveHTML($intro["th"][0]);							
+			$intro["td"] = $value->saveHTML($intro["td"]);
+		}		
+		else {
+			$intro["td"] = "<td>Unknown</td>";
+		}
+	}
+	function validContent($node, &$content, $hr) {			
+		if($node == NULL) {						
+			return false;
+		}
+		else if($node->nodeName !== "h2") {		
+					
+			$content->appendChild($node->cloneNode(true));					
+			return true;
+		}
+		else if($node->nodeName == "h2") {
+			foreach($node->childNodes as $child) {
+				if($child->getAttribute("id") == "See_also" || $child->getAttribute("id") == "Citations" || $child->getAttribute("id") == "References" || $child->getAttribute("id") == "Notes" ) {
+					return false;
+				}
+			}	
+			$content->appendChild($hr->cloneNode(true));
+			$content->appendChild($node->cloneNode(true));				
+			return true;							
+		}
+	}
 
 	foreach ($links as $key => &$value) {		
 		$tmp = new DOMDocument();		
@@ -20,7 +59,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form") {
 		if(filter_var($value, FILTER_VALIDATE_URL) && (strpos(get_headers($value)[0],'200') !== false) && $tmp->loadHTMLFile($value) ) {
 			$link_str = $value;
 			$value = $tmp;	
-			$title = $value->saveHTML($value->getElementById("firstHeading"));	
+			$title = $value->getElementById("firstHeading")->nodeValue;	
 			$xpath = new DomXPath($value);
 
 			$details = $xpath->query("//table[@class[contains(.,'infobox')]]");
@@ -39,17 +78,24 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form") {
 			}
 			// remove navigation  
 			$toc = $value->getElementById("toc");
-			$toc->parentNode->removeChild($toc);
-			//remove all sup tags 
-			$sup = $value->getElementsByTagName("sup");
-			while($sup->length > 0) {				
-				$sup[0]->parentNode->removeChild($sup[0]);				
+			if(!empty($toc)) {
+				$toc->parentNode->removeChild($toc);	
+			}
+			
+			//remove all edit options
+			$edit_tags = $xpath->query("//span[@class='mw-editsection']");
+			foreach($edit_tags as $eTag) {				
+				$eTag->parentNode->removeChild($eTag);
 			}
 
+			//remove all sup tags with reference class
+			$sup = $xpath->query("//sup[@class='reference']"); 
+			foreach($sup as $supTag) {				
+				$supTag->parentNode->removeChild($supTag);				
+			}
 			
 			$details = $xpath->query("//table[@class[contains(.,'infobox')]]");
 			//reinitialise $details with fixed links and removed tags
-
 
 			$a = $xpath->query("//*[@href]"); //grab all elements like a link			
 			foreach ($a as $tag) {
@@ -64,42 +110,24 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form") {
 					$tag->setAttribute("href", $link_str . $href);
 				}
 			} //fixed all links
-
 			
 			$pic_object = $xpath->query("//td[@class='infobox-image']//img/@src");
-			if($pic_object->length == 0) {
+			if($pic_object->length == 0) {				
 				$pic_src = "Uploads/default.png";
 			}
 			else {
+				$infobox_image = $xpath->query("//table/tbody/tr[ td[@class[contains(.,'infobox-image')]] ]");	
+				$infobox_image[0]->parentNode->removeChild($infobox_image[0]);
 				$pic_src = $pic_object[0]->value;
 			}
+			$infobox_above = $xpath->query("//table/tbody/tr[ td[@class[contains(.,'infobox-above')]] ]");
+			if($infobox_above->length != 0) {
+				$infobox_above[0]->parentNode->removeChild($infobox_above[0]);
+			}
 
-			$infobox_image = $xpath->query("//table/tbody/tr[ td[@class[contains(.,'infobox-image')]] ]");	
-			$infobox_image[0]->parentNode->removeChild($infobox_image[0]);		
+					
 
 			$intro1 = $intro2 = $intro3 = $intro4 = $intro5 = [];		
-			function xpath_query($obj) {
-				if($obj->length == 0) {
-					return NULL;
-				}
-				else {
-					return $obj;
-				}
-			}		
-
-			function extract_intro($xpath, $value, &$intro, $field1, $field2, $field3, $field4, $field_default) {
-				$intro["th"] = xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]//tr[th='$field1']/th")) ?? xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]//tr[th='$field2']/th")) ?? xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]//tr[th='$field3']/th")) ?? xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]//tr[th='$field3']/th")) ?? $field_default;
-
-				if(gettype($intro["th"]) == "object") {
-					$intro["td"] = $intro["th"][0]->nextSibling;
-					$intro["th"] = $value->saveHTML($intro["th"][0]);							
-					$intro["td"] = $value->saveHTML($intro["td"]);
-				}		
-				else {
-					$intro["td"] = "Unknown";
-				}
-
-			}
 
 			extract_intro($xpath, $value, $intro1, "Victims",   "Deaths","Injured",    "Ethnicity", "Victims");
 			extract_intro($xpath, $value, $intro2, "Born", "Born", "Location", "Founded", "Born");
@@ -107,7 +135,6 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form") {
 			extract_intro($xpath, $value, $intro4, "Known\xc2\xa0for", "Date", "Leader", "Leaders", "Known\xc2\xa0for");
 			extract_intro($xpath, $value, $intro5, "Criminal penalty", "Jail time", "Charges", "Country", "Criminal penalty");
 			//\xc2\xa0 is important in Known<0xa0>for
-
 
 			$related_tmp = $xpath->query("//h2[span[@id='See_also']]/following-sibling::ul");
 			if($related_tmp->length == 0) {
@@ -127,30 +154,11 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form") {
 			}
 			
 			$content = $value->createElement("content");
-			$hr = $value->createElement("hr");
-			$hr2 = $value->createElement("hr");
-			$tmp_nxt = $details[0]->nextSibling;
-			
-			function validContent($node, &$content, $hr) {			
-				if($node == NULL) {						
-					return false;
-				}
-				else if($node->nodeName !== "h2") {		
-							
-					$content->appendChild($node->cloneNode(true));					
-					return true;
-				}
-				else if($node->nodeName == "h2") {
-					foreach($node->childNodes as $child) {
-						if($child->getAttribute("id") == "See_also" || $child->getAttribute("id") == "Citations" || $child->getAttribute("id") == "References" || $child->getAttribute("id") == "Notes" ) {
-							return false;
-						}
-					}	
-					$content->appendChild($node->cloneNode(true));
-					$content->appendChild($hr->cloneNode(true));	
-					return true;							
-				}
-			}
+			$hr = $value->createElement("hr");			
+			$h2 = $value->createElement("h2");
+			$h2->appendChild($value->createTextNode("Introduction"));
+			$content->appendChild($h2);
+			$tmp_nxt = $details[0]->nextSibling;	
 			
 			while(validContent($tmp_nxt, $content, $hr)) {				
 				$tmp_nxt = $tmp_nxt->nextSibling;				
@@ -159,59 +167,60 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form") {
 			$details = $value->saveHTML($details[0]);
 			$content = $value->saveHTML($content);
 			$content_mysql = <<<EOF
-					<intro-data>
-            <tr>
-              {$intro1["th"]}
-              {$intro1["td"]} 
-            </tr>
-            <tr>
-              {$intro2["th"]}
-              {$intro2["td"]} 
-            </tr>
-            <tr>
-              {$intro3["th"]}
-              {$intro3["td"]} 
-            </tr>
-            <tr>
-              {$intro4["th"]}
-              {$intro4["td"]}
-            </tr>
-            <tr>
-              {$intro5["th"]}
-              {$intro5["td"]} 
-            </tr>
-          </intro-data>
+															<intro-data>
+										            <tr>
+										              {$intro1["th"]}
+										              {$intro1["td"]}
+										            </tr>
+										            <tr>
+										              {$intro2["th"]}
+										              {$intro2["td"]}
+										            </tr>
+										            <tr>
+										              {$intro3["th"]}
+										              {$intro3["td"]}
+										            </tr>
+										            <tr>
+										              {$intro4["th"]}
+										              {$intro4["td"]}
+										            </tr>
+										            <tr>
+										              {$intro5["th"]}
+										              {$intro5["td"]}
+										            </tr>
+										          </intro-data>
 
-          <details>
-            {$details}
-          </details>
-        	<sources>
-            <ul class="list">
-              {$sources}                        
-            </ul>
-          </sources>
-          <related>
-            {$related}
-          </related>
-          <content>
-          	<h2>Introduction</h2>
-          	{$content}
-          </content>
-EOF;		
-
-
+										          <details>
+										            {$details}
+										          </details>
+										        	<sources>
+										            <ul class="list">
+										              {$sources}                        
+										            </ul>
+										          </sources>
+										          <related>
+										            {$related}
+										          </related>		          
+										          {$content}
+										         
+			EOF;
+			
+			echo strlen($content_mysql), mb_detect_encoding($content_mysql), " Success <br><br>";
 			//$title -- string, $intro[] -- html tags string, $pic_src -- string, $details[0], $content_mysql --> string xml
 
-
-	$creator = "Anu";
-	$cat = "criminals";
-										$conn->query("INSERT INTO `posts` (datetime, title, creatorname, categoryname, image, content) VALUES ('$date_time', '$title', '$creator', '$cat', '$pic_src', '$content_mysql')");
+				$creator = "Anupam K";
+				$category = $_POST["category_select"];
+				$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, creatorname, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?)");
+				$stmt->bind_param("ssssss", $date_time, $title, $creator, $category, $pic_src, $content_mysql);
+				$stmt->execute();
 
 		}
 		else {			
 			array_push($links_invalid, $value);
 			unset($links[$key]);
 		}
+		echo "Invalid links: <br>";
+		var_dump($links_invalid); 
 	}
 	
 	

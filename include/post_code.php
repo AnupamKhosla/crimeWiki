@@ -1,6 +1,8 @@
 <?php 
 
 $conn = make_db_connection();
+mysqli_query($conn, "SET NAMES utf8");
+mysqli_set_charset($conn, "utf8");
 if(!isset($_SESSION["Validation"])) {
 	$_SESSION["Validation"] = array( "txt" => "", "class" => "d-none", "status" => "" );
 }
@@ -19,15 +21,16 @@ if( isset($_GET["id"]) ) {
 			$category = htmlspecialchars($row['categoryname']);	
 			$image = htmlspecialchars($row['image']);
 
+
 			libxml_use_internal_errors(true); // important
 			$content = new DOMDocument();
 			$content->loadHTML($row['content']);	
-
+			$space = $content->createTextNode(" ");
 			$introData = $content->getElementsByTagName("intro-data")[0]->getElementsByTagName('br');
 
 			while ($introData->length != 0) {	//remove all <br> tags	    
 			    $node = $introData->item(0);			    
-	        $node->parentNode->removeChild($node);	        	   
+	        $node->parentNode->replaceChild($space, $node);	        	   
 			}
 			
 
