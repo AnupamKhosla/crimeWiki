@@ -21,6 +21,42 @@
 	.post-content {
 		padding-left: 30px;
 	}
+	.post-content table {
+		display: block; 
+		overflow: auto; 
+	}
+	.post-content img {
+		
+	}
+	.post-content .hatnote {
+		padding-left: 15px;
+    font-size: 0.875rem;
+    font-style: italic;
+    margin-bottom: 7.5px;
+	}
+	.post-profile a:hover, .post-profile a:focus {
+		color: var(--theme-pm);
+	}
+	.post-content .wikitable {
+		margin: 7.5px auto; 
+		padding: 7px;
+		background-color: var(--white-bg);
+	}
+	.post-content .wikitable td {
+		padding: 0 3px;
+	}
+	.post-content table.infobox {
+		margin: 7.5px 0 15px 7.5px;
+		padding: 7px;
+		float: right;
+		clear: right;
+		background-color: var(--white-bg);
+		border-radius: 4px;
+		font-size: 0.875rem;
+	}
+	.post-content table.infobox td {
+		padding-left: 15px;
+	}
 
 	th {
 			font-weight: 500;
@@ -32,13 +68,21 @@
 			margin-bottom: 77px;
 			margin-top: 20px;
 		}		
-		
+		.table-wrapper {
+			height: 130px;			
+			overflow: auto;
+		}		
 		td {
-			padding-left: 30px; 
+			padding-left: 30px;  
 		}
 		a {
-			color: white;
+			color: white; 
+			text-decoration: underline;
 		} 
+		a:focus, a:hover {
+    	color: var(--theme-pm-xx-dark);
+		}
+
 	}
 	.details {
 		table {
@@ -52,16 +96,17 @@
 		div, span {
 			white-space: normal !important; 
 		}
-		.infobox-header, .infobox-subheader, .infobox-full-data, .infobox-below {
+		.infobox-header, .infobox-subheader, .infobox-below, .infobox-above {
     	padding-left: 7.5px !important;
     	background: var(--theme-pm-x-light) !important; 
 			padding: 0.2em;
 			line-height: normal;     	
-		}
-		.infobox-header {
-			
-		}			
+		}				
 	}
+	.reference-text {
+		overflow-wrap: anywhere;
+	}
+
 	a[href$=".pdf"].external, a[href*=".pdf?"].external, a[href*=".pdf#"].external, a[href$=".PDF"].external, a[href*=".PDF?"].external, a[href*=".PDF#"].external  {
 	  background: url("//upload.wikimedia.org/wikipedia/commons/2/23/Icons-mini-file_acrobat.gif") no-repeat right;
 	  padding-right: 18px;
@@ -86,9 +131,76 @@
 		margin: 24px 0;
 	}
 	h3 {
-		font-size: 1.125rem;
+		font-size: 1.25rem;
 		padding-top: 8px; 
 	}
+	h4 {
+		font-size: 1.125rem;
+		margin-bottom: 0;
+	}
+	h5, h6 {
+		font-size: 1rem;
+		margin-bottom: 0;
+	}
+	/*Wikipedea stylesheet*/
+	.tright, .tleft {
+		background-color: var(--white-bg-less-dark);
+		float: right;
+		clear: right;
+		padding: 7.5px 0 7.5px 15px;
+		overflow: auto;
+	}
+	.tleft {		
+		float: left;
+		clear: left;		
+		padding: 7.5px 15px 7.5px 0;
+	}
+	.thumbinner {
+		max-width: 100%;
+		padding: 7px;
+		border-radius: 4px;
+		box-sizing: content-box;
+		background-color: var(--white-bg);
+	}
+	.thumbcaption {
+		text-align: left;
+		font-size: 0.875rem;
+		padding: 4px;
+		line-height: 1.4;
+	}
+	.magnify {
+    margin-left: 3px;
+    margin-right: 0;
+    float: right;
+	}
+	.magnify a {
+    display: block;
+    text-indent: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 15px;
+    height: 11px;
+    background-image: url("https://en.wikipedia.org/w/resources/src/mediawiki.skinning/images/magnify-clip-ltr.svg?8330e");
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+	}
+	.image img {
+		max-width: 100%;
+		display: block;
+		height: auto;		
+		margin: auto;	
+	}	
+	.mbox-image {
+		padding-right: 15px;
+	}
+	.tmulti .trow {
+    display: flex;
+  }
+  .tmulti .tsingle {
+    margin: 1px;
+  }
 }
 
 @media (max-width: 991.8px) {
@@ -114,10 +226,13 @@
 			padding: 22.5px 15px;
 			margin: 0 -15px;
 			background-color: var(--theme-pm);
-			border-radius: 5px; 
+			border-radius: 5px;			 
 		}
 		.intro-table table {
 			margin: auto;
+		}
+		.intro-table .table-wrapper {
+			height: auto;
 		}
 		.intro-table h1 {
 			margin-bottom: 18px; 
@@ -134,6 +249,32 @@
 		.related {
 			margin-top: 25px;
 		}
+	}
+}
+
+@media (max-width: 767.8px) {
+	.post {
+		.intro-table {
+			td {
+				padding-left: 15px;
+			}
+		}
+		.tright {
+			float: none;
+			padding: 7.5px 0;
+		}
+		.tleft {
+			float: none;
+			padding: 7.5px 0;
+		}
+		.thumbinner {
+			margin: auto;
+		}
+		.post-content table.infobox {
+			float: none;
+			margin: 7.5px auto;			
+		}
+		
 	}
 }
 

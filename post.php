@@ -11,7 +11,7 @@ require_once("include/post_code.php");
   <head>
     <meta charset="utf-8">
     <title>
-      <?php echo utf8_decode($title); ?>
+      <?php echo ($title); ?>
     </title>
     <meta name="description" content=" <?php echo $title; ?> ">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -101,28 +101,28 @@ require_once("include/post_code.php");
         <div class="row offset-y">
           <div class="col-lg-5 col-xl-4">
             <div class="intro-table text-white d-block d-lg-none">
-                <h1 class="h3 font-weight-normal text-center"> <?php echo utf8_decode($title); ?> </h1>
-                <table>
-                  <tbody>
-                    <?php echo utf8_decode($introData); ?>
-                  </tbody>
-                </table>
+                <h1 class="h3 font-weight-normal text-center"> <?php echo ($title); ?> </h1>
+                <div class="table-wrapper custom-scrollbar">
+                  <table>
+                    <tbody>
+                      <?php echo ($introData); ?>
+                    </tbody>
+                  </table>
+                </div>
               </div>
               <div class="card post-profile ">
                 <img src="<?php echo $image ?>" class="card-img-top post-pic" alt="profile pic">
                 <div class="card-body">                
-                  <a href="#" class=""> <?php echo utf8_decode($title); ?> </a>
+                  <a href="#" class=""> <?php echo ($title); ?> </a>
                 </div>
               </div>
               <div class="panel details">
                 <h4 class="panel-title text-center text-pm">
                   Details
                 </h4>
-                <div class="panel-content">
-                  <table class="table-responsive">
-                    <tbody>
-                      <?php echo utf8_decode($details); ?>
-                    </tbody>
+                <div class="panel-content ">
+                  <table class="table-responsive">                    
+                      <?php echo ($details); ?>                    
                   </table>
                 </div>
               </div>
@@ -130,42 +130,44 @@ require_once("include/post_code.php");
                 <div class="panel-title text-center">
                   <h4>Related</h4>
                 </div>
-                <div class="panel-content">
-                  <?php echo utf8_decode($related); ?>
+                <div class="panel-content ">
+                  <?php echo ($related); ?>
                 </div>
               </div>
               <div class="panel sources d-none d-lg-block">
                 <div class="panel-title text-center">
                   <h4>Sources</h4>
                 </div>
-                <div class="panel-content">
-                  <?php echo utf8_decode($sources); ?>
+                <div class="panel-content ">
+                  <?php echo ($sources); ?>
                 </div>
               </div>
             </div>
             <div class="col-lg-7 col-xl-8 post-content">
               <div class="intro-table text-white d-none d-lg-block">
-                <h1 class="h3 font-weight-normal"> <?php echo utf8_decode($title); ?></h1>
-                <table>
-                  <?php echo utf8_decode($introData); ?>
+                <h1 class="h3 font-weight-normal"> <?php echo ($title); ?></h1>
+                <div class="table-wrapper custom-scrollbar">
+                  <table>
+                  <?php echo ($introData); ?>
                 </table>
+                </div>
               </div>
-              <?php echo utf8_decode($content2); ?>
+              <?php echo ($content2); ?>
               <!-- after dynamic sections repipitive dom elements because of masonary layout. No css-only solution found-->
               <div class="panel related d-lg-none">
                 <div class="panel-title text-center">
                   <h4>Related</h4>
                 </div>
-                <div class="panel-content">
-                  <?php echo utf8_decode($related); ?>
+                <div class="panel-content ">
+                  <?php echo ($related); ?>
                 </div>
               </div>
               <div class="panel sources d-lg-none">
                 <div class="panel-title text-center">
                   <h4>Sources</h4>
                 </div>
-                <div class="panel-content">
-                  <?php echo utf8_decode($sources); ?>
+                <div class="panel-content ">
+                  <?php echo ($sources); ?>
                 </div>
               </div>
             </div>

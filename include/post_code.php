@@ -24,13 +24,14 @@ if( isset($_GET["id"]) ) {
 
 			libxml_use_internal_errors(true); // important
 			$content = new DOMDocument();
-			$content->loadHTML($row['content']);	
+			$content->loadHTML('<!DOCTYPE html><meta charset="UTF-8">' . $row['content']);			
+
 			$space = $content->createTextNode(" ");
 			$introData = $content->getElementsByTagName("intro-data")[0]->getElementsByTagName('br');
 
 			while ($introData->length != 0) {	//remove all <br> tags	    
 			    $node = $introData->item(0);			    
-	        $node->parentNode->replaceChild($space, $node);	        	   
+	        $node->parentNode->replaceChild($space->cloneNode(), $node);	        	   
 			}
 			
 

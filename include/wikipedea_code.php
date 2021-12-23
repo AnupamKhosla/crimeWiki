@@ -64,7 +64,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 
 			$details = $xpath->query("//table[@class[contains(.,'infobox')]]");
 			if($details[0] == NULL) {				
-				array_push($links_invalid, $value);
+				array_push($links_invalid, $link_str);
 				unset($links[$key]);
 				continue; 
 				// the page doesn't have biography, so skip the page
@@ -94,7 +94,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 				$supTag->parentNode->removeChild($supTag);				
 			}
 			
-			$details = $xpath->query("//table[@class[contains(.,'infobox')]]");
+			$details = $xpath->query("//table[@class[contains(.,'infobox')]]/tbody");
 			//reinitialise $details with fixed links and removed tags
 
 			$a = $xpath->query("//*[@href]"); //grab all elements like a link			
@@ -120,7 +120,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 				$infobox_image[0]->parentNode->removeChild($infobox_image[0]);
 				$pic_src = $pic_object[0]->value;
 			}
-			$infobox_above = $xpath->query("//table/tbody/tr[ td[@class[contains(.,'infobox-above')]] ]");
+			$infobox_above = $xpath->query("//table/tbody/tr[ *[@class[contains(.,'infobox-above')]] ]");
 			if($infobox_above->length != 0) {
 				$infobox_above[0]->parentNode->removeChild($infobox_above[0]);
 			}
@@ -129,11 +129,11 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 
 			$intro1 = $intro2 = $intro3 = $intro4 = $intro5 = [];		
 
-			extract_intro($xpath, $value, $intro1, "Victims",   "Deaths","Injured",    "Ethnicity", "Victims");
+			extract_intro($xpath, $value, $intro1, "Victims", "Deaths", "Charges", "Ethnicity", "Victims");
 			extract_intro($xpath, $value, $intro2, "Born", "Born", "Location", "Founded", "Born");
 			extract_intro($xpath, $value, $intro3, "Died", "Injured","Result", "Ethnicity", "Died");
 			extract_intro($xpath, $value, $intro4, "Known\xc2\xa0for", "Date", "Leader", "Leaders", "Known\xc2\xa0for");
-			extract_intro($xpath, $value, $intro5, "Criminal penalty", "Jail time", "Charges", "Country", "Criminal penalty");
+			extract_intro($xpath, $value, $intro5, "Criminal penalty", "Jail time", "Perpetrator", "Perpetrators", "Criminal penalty");
 			//\xc2\xa0 is important in Known<0xa0>for
 
 			$related_tmp = $xpath->query("//h2[span[@id='See_also']]/following-sibling::ul");
@@ -142,7 +142,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 			}
 			else {			
 				$related = $value->saveHTML($related_tmp[0]);
-				$related = "<ol class='list list-unstyled'>" . substr($related, 4, -5) . "</ol>";
+				$related = "<ol class='list list-unstyled custom-scrollbar'>" . substr($related, 4, -5) . "</ol>";
 			}
 
 			$sources_tmp = $xpath->query("//*[@class='reference-text']");
@@ -158,7 +158,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 			$h2 = $value->createElement("h2");
 			$h2->appendChild($value->createTextNode("Introduction"));
 			$content->appendChild($h2);
-			$tmp_nxt = $details[0]->nextSibling;	
+			$tmp_nxt = $details[0]->parentNode->nextSibling;	
 			
 			while(validContent($tmp_nxt, $content, $hr)) {				
 				$tmp_nxt = $tmp_nxt->nextSibling;				
@@ -194,7 +194,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 										            {$details}
 										          </details>
 										        	<sources>
-										            <ul class="list">
+										            <ul class="list custom-scrollbar">
 										              {$sources}                        
 										            </ul>
 										          </sources>
@@ -218,16 +218,14 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 		else {			
 			array_push($links_invalid, $value);
 			unset($links[$key]);
-		}
-		echo "Invalid links: <br>";
-		var_dump($links_invalid); 
+		}		
 	}
-	
-	
+	echo "<strong>Invalid links: </strong> <br><br>";
+	foreach ($links_invalid as $key => $value) {
+		echo $value, "<br>";
+	}
 
-	die();
-
-	
+	die();	
 	
 }
 

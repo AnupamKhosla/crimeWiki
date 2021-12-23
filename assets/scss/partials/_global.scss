@@ -66,6 +66,9 @@ input[type="search"]::-webkit-search-results-decoration {
 		margin-top: 0 !important;
 	}
 }
+ul ul {
+	padding-left: 0;
+}
 /*bootstrap overrides finishes*/
 
 
@@ -98,6 +101,35 @@ input[type="search"]::-webkit-search-results-decoration {
 .text-pm {
 	color: var(--theme-pm);
 }
+.custom-scrollbar {
+	@media not all and (hover: none) { /*non touch devices*/
+	    	& {
+	    		scrollbar-color: rgba(0,0,0,0.8) #f1f1f1; 
+  				scrollbar-width: thin;    
+	    	}	
+	    }
+}
+@media not all and (hover: none) {		
+		.custom-scrollbar::-webkit-scrollbar {
+		  width: 10px;
+		  
+		}
+
+		/* Track */
+		.custom-scrollbar::-webkit-scrollbar-track {
+		  background: rgba(0,0,0,0.1);
+		}
+
+		/* Handle */
+		.custom-scrollbar::-webkit-scrollbar-thumb {
+		  background: rgba(0,0,0,0.2);
+		}
+
+		/* Handle on hover */
+		.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+		  background: rgba(0,0,0,0.35);
+		}
+	}
 /*theme style finishes*/
 
 
@@ -165,14 +197,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	.list {		
 	    overflow-y: auto;
 	    max-height: 700px; 
-	    padding-right: 10px;	 
-	    @media not all and (hover: none) { /*non touch devices*/
-	    	& {
-	    		scrollbar-color: #ccc #f1f1f1;
-  				scrollbar-width: thin;    
-	    	}	
-	    }
-	    
+	    padding-right: 10px;
 	}
 	ul:not(.list-unstyled) {
 		padding-left: 18px;
@@ -182,28 +207,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	    font-size: 0.875rem;
 	    padding-left: 45px;
 	    margin-top: auto;
-	}
-	@media not all and (hover: none) {		
-		.list::-webkit-scrollbar {
-		  width: 10px;
-		  
-		}
-
-		/* Track */
-		.list::-webkit-scrollbar-track {
-		  background: #f1f1f1;
-		}
-
-		/* Handle */
-		.list::-webkit-scrollbar-thumb {
-		  background: #ccc;
-		}
-
-		/* Handle on hover */
-		.list::-webkit-scrollbar-thumb:hover {
-		  background: #999;
-		}
-	}
+	}	
 }
 
 @media (max-width: 991.8px) {
