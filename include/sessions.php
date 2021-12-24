@@ -6,6 +6,7 @@ $identifier = htmlspecialchars(isset($_POST["identifier"]) ? $_POST["identifier"
 $logged_in = isset($_SESSION["logged_in"]) ? $_SESSION["logged_in"] : FALSE;
 
 date_default_timezone_set("Asia/Kolkata");
+-- convert to unix taime in milliseconds
 $date_time = strftime("%d-%B-%Y %H-%M-%S", time());
 
 

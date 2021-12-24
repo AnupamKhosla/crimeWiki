@@ -86,8 +86,10 @@ if(SETUP) { //if db already setup
         CREATE TABLE posts (
           id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
           datetime VARCHAR(50) NOT NULL, 
-          title VARCHAR(100) NOT NULL,
-          creatorname VARCHAR(200) NOT NULL,  
+          title VARCHAR(500) NOT NULL,
+          wikilink VARCHAR(500),
+          titlerepeat INT(5),
+          creatorname VARCHAR(50) NOT NULL,  
           image VARCHAR(200) NOT NULL,  
           content VARCHAR(10000000),
           categoryname VARCHAR(100) NOT NULL,          

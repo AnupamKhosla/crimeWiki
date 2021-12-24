@@ -210,6 +210,12 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 
 				$creator = "Anupam K";
 				$category = $_POST["category_select"];
+
+				-- Add wikilink, repitition cols !!
+				-- make async loadhtml 
+				-- add $datetime by 1ms on every insert
+				-- make slugs work as well as post?id=NUMBER
+
 				$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, creatorname, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?)");
 				$stmt->bind_param("ssssss", $date_time, $title, $creator, $category, $pic_src, $content_mysql);
 				$stmt->execute();

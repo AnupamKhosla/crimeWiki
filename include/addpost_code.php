@@ -60,6 +60,9 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
 		$_SESSION["Validation"]["status"] = "is-invalid";	
 	}
 	else {// everything is fine; update categories now		
+
+		-- Add wikilink, repitition cols !!
+
 		$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, creatorname, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?)");
 		$creator = "Anupam";
         $stmt->bind_param("ssssss", $date_time, $post_title, $creator, $post_category, $choose_image, $content);
