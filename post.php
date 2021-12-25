@@ -110,11 +110,13 @@ require_once("include/post_code.php");
                   </table>
                 </div>
               </div>
-              <div class="card post-profile ">
-                <img src="<?php echo $image ?>" class="card-img-top post-pic" alt="profile pic">
+              <div class="card-container">
+                <div class="card post-profile ">
+                <img src="<?php echo image_path($image) ?>" class="card-img-top post-pic" alt="profile pic">
                 <div class="card-body">                
                   <a href="#" class=""> <?php echo ($title); ?> </a>
                 </div>
+              </div>
               </div>
               <div class="panel details">
                 <h4 class="panel-title text-center text-pm">

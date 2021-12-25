@@ -84,6 +84,9 @@
 		}
 
 	}
+	.card-container {
+		min-height: 230px; 
+	}
 	.details {
 		table {
 			font-size: 0.875rem;			
@@ -236,7 +239,7 @@
 		}
 		.intro-table h1 {
 			margin-bottom: 18px; 
-		}
+		}		
 		.details {
 			th + td {
 				padding-left: 15px;

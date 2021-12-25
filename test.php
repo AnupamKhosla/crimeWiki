@@ -4,12 +4,7 @@ require_once('include/config.php');
 require_once('include/functions.php');
 require_once("include/check_login.php");
 
+$x = isAbsolute("Uploads/https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/FEQ_July_2018_The_Weeknd_%2844778856382%29_%28cropped%29.jpg/220px-FEQ_July_2018_The_Weeknd_%2844778856382%29_%28cropped%29.jpg");
 
-$conn = make_db_connection();
-$result = $conn->query("SELECT datetime, HEX(title), creatorname, categoryname, image, HEX(content) FROM `posts` WHERE id=200");
-$row = $result->fetch_all()[0];
-echo "test <br>",  $row["1"], "<br>", $row[5], "<br>" ,  $row["1"], "<br>", $row[5];
-
-
-
- ?>
+echo echo var_dump(1);
+?>

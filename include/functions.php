@@ -43,5 +43,18 @@ function category_select() {
 	return $list;
 }
 
+function isAbsolute($url) {
+  return isset(parse_url($url)['host']);
+}
+
+function image_path($str) {
+	if(isAbsolute($str)) {
+		return $str;
+	}
+	else {
+		return "Uploads/" . $str;
+	}
+}
+
 
 ?>

@@ -87,7 +87,7 @@ if(SETUP) { //if db already setup
           id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
           datetime VARCHAR(50) NOT NULL, 
           title VARCHAR(500) NOT NULL,
-          wikilink VARCHAR(500),
+          wikilink VARCHAR(500) NULL UNIQUE,
           titlerepeat INT(5),
           creatorname VARCHAR(50) NOT NULL,  
           image VARCHAR(200) NOT NULL,  

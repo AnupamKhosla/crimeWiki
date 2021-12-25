@@ -96,6 +96,15 @@ require_once("include/wikipedea_code.php");
             <hr>
             <h2 class="text-pm h5 text-center my-4">Copy Wikipedea page(s)</h2>
 
+            <section class="response <?php echo $_SESSION["Response"]["display"]; ?> ">
+              <h2 class="text-pm h5 text-center my-4"> Database response </h2>
+              <h6>Repeated links</h6>
+              <p class="repeat-links"> <?php print_r($_SESSION["Response"]["repeat_links"]); ?>  </p>
+              <br><br>
+              <h6>Invalid links</h6>
+              <p class="invalid-links"> <?php print_r($_SESSION["Response"]["invalid_links"]); ?> </p>
+            </section>
+
             <form method="post" action=<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?> enctype="multipart/form-data">
               <div class="form-row">
                 
@@ -147,5 +156,10 @@ require_once("include/wikipedea_code.php");
       ga('create', 'UA-XXXXX-Y', 'auto'); ga('set', 'anonymizeIp', true); ga('set', 'transport', 'beacon'); ga('send', 'pageview')
     </script>
     <script src="https://www.google-analytics.com/analytics.js" async></script>
+
+    <?php reset_response(); ?>
+
   </body>
   </html>
+
+

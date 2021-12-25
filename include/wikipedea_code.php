@@ -1,4 +1,10 @@
 <?php 
+if(!isset($_SESSION["Response"])) {
+	$_SESSION["Response"] = array("repeat_links" => [], "invalid_links" => [], "display" => "d-none");
+}
+function reset_response() {	
+	$_SESSION["Response"] = array("repeat_links" => [], "invalid_links" => [], "display" => "d-none");	
+}
 
 $conn = make_db_connection();
 
@@ -6,13 +12,11 @@ if(!isset($_SESSION["Validation"])) {
 	$_SESSION["Validation"] = array( "txt" => "", "class" => "d-none", "status" => "" );
 }
 
-if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && isset($_POST["category_select"])) {		
-
-	libxml_use_internal_errors(true); //important
-	
+if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && isset($_POST["category_select"])) {	
+	libxml_use_internal_errors(true); //important	
 	$links_invalid = [];
+	$links_repeat = [];
 	$links =  explode( "\n", trim($_POST["wiki_links"]) );
-
 	function xpath_query($obj) {
 		if($obj->length == 0) {
 			return NULL;
@@ -54,9 +58,19 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 	}
 
 	foreach ($links as $key => &$value) {		
+		$value = trim($value);
+		$wikilink = preg_replace("(^https?://)", "", $value);
+		$stmt = $conn->prepare("SELECT 1 FROM `posts` WHERE wikilink = ?");
+		$stmt->bind_param("s", $wikilink);
+		$result = $stmt->execute();		
+		$get_result = $stmt->get_result();
+		$rows = $get_result->num_rows;
+		if($result && $rows != 0) {
+			$wikilink = false;			
+		}
 		$tmp = new DOMDocument();		
 		$value = trim($value);
-		if(filter_var($value, FILTER_VALIDATE_URL) && (strpos(get_headers($value)[0],'200') !== false) && $tmp->loadHTMLFile($value) ) {
+		if( ($wikilink != false) && filter_var($value, FILTER_VALIDATE_URL) && (strpos(get_headers($value)[0],'200') !== false) && $tmp->loadHTMLFile($value) ) {
 			$link_str = $value;
 			$value = $tmp;	
 			$title = $value->getElementById("firstHeading")->nodeValue;	
@@ -210,29 +224,43 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 
 				$creator = "Anupam K";
 				$category = $_POST["category_select"];
-
+				/*
 				-- Add wikilink, repitition cols !!
 				-- make async loadhtml 
 				-- add $datetime by 1ms on every insert
-				-- make slugs work as well as post?id=NUMBER
-
-				$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, creatorname, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?)");
-				$stmt->bind_param("ssssss", $date_time, $title, $creator, $category, $pic_src, $content_mysql);
+				-- 	make slugs work as well as post?id=NUMBER
+				*/
+				$title_repeat = NULL;
+				//check if title aready exists
+				$stmt = $conn->prepare("SELECT * FROM `posts` WHERE title=?");
+				$stmt->bind_param("s", $title);
+				$result = $stmt->execute();
+				$get_result =  $stmt->get_result();
+				$rows = $get_result->num_rows;		
+				if($result && $rows != 0) {
+					$title_repeat = $rows;			
+				}
+				$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, wikilink, titlerepeat, creatorname, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");	
+    		$stmt->bind_param("ssssssss", $date_time, $title, $wikilink, $title_repeat, $creator, $category, $pic_src, $content_mysql);
 				$stmt->execute();
-
 		}
-		else {			
-			array_push($links_invalid, $value);
+		else {		
+			if($wikilink == false) {
+				array_push($links_repeat, $value);
+			}	
+			else {
+				array_push($links_invalid, $value);
+			}			
 			unset($links[$key]);
 		}		
 	}
-	echo "<strong>Invalid links: </strong> <br><br>";
-	foreach ($links_invalid as $key => $value) {
-		echo $value, "<br>";
-	}
-
-	die();	
 	
+	$_SESSION["Response"]["display"] = "block";
+	$_SESSION["Response"]["repeat_links"] = $links_repeat;
+	$_SESSION["Response"]["invalid_links"] = $links_invalid;
+	//303 will allow bookmark and reload without resending post data
+	header("Location: {$_SERVER['REQUEST_URI']}", true, 303); 
+  exit();
 }
 
 
