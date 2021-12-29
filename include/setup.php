@@ -90,7 +90,7 @@ if(SETUP) { //if db already setup
           wikilink VARCHAR(500) NULL UNIQUE,
           titlerepeat INT(5),
           creatorname VARCHAR(50) NOT NULL,  
-          image VARCHAR(200) NOT NULL,  
+          image VARCHAR(500) NOT NULL,  
           content VARCHAR(10000000),
           categoryname VARCHAR(100) NOT NULL,          
           FOREIGN KEY (categoryname) REFERENCES categories(name)

@@ -1,5 +1,5 @@
 <?php
-
+ini_set('max_execution_time', '600'); //600 seconds = 10 minutes 
 require_once("include/sessions.php");
 require_once('include/config.php');
 require_once('include/functions.php');
@@ -99,8 +99,10 @@ require_once("include/wikipedea_code.php");
             <section class="response <?php echo $_SESSION["Response"]["display"]; ?> ">
               <h2 class="text-pm h5 text-center my-4"> Database response </h2>
               <h6>Repeated links</h6>
+              <p>Time taken: <?php echo $_SESSION["Response"]["time"]; ?> </p>
+              <br>
               <p class="repeat-links"> <?php print_r($_SESSION["Response"]["repeat_links"]); ?>  </p>
-              <br><br>
+              <br>
               <h6>Invalid links</h6>
               <p class="invalid-links"> <?php print_r($_SESSION["Response"]["invalid_links"]); ?> </p>
             </section>

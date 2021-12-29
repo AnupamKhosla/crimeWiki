@@ -1,12 +1,13 @@
 <?php 
 if(!isset($_SESSION["Response"])) {
-	$_SESSION["Response"] = array("repeat_links" => [], "invalid_links" => [], "display" => "d-none");
+	$_SESSION["Response"] = array("repeat_links" => [], "invalid_links" => [], "time" => "", "display" => "d-none");
 }
 function reset_response() {	
-	$_SESSION["Response"] = array("repeat_links" => [], "invalid_links" => [], "display" => "d-none");	
+	$_SESSION["Response"] = array("repeat_links" => [], "invalid_links" => [], "time" => "", "display" => "d-none");	
 }
 
 $conn = make_db_connection();
+$conn->query("SET GLOBAL max_allowed_packet=8000000;");	
 
 if(!isset($_SESSION["Validation"])) {
 	$_SESSION["Validation"] = array( "txt" => "", "class" => "d-none", "status" => "" );
@@ -17,6 +18,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 	$links_invalid = [];
 	$links_repeat = [];
 	$links =  explode( "\n", trim($_POST["wiki_links"]) );
+
 	function xpath_query($obj) {
 		if($obj->length == 0) {
 			return NULL;
@@ -40,8 +42,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 		if($node == NULL) {						
 			return false;
 		}
-		else if($node->nodeName !== "h2") {		
-					
+		else if($node->nodeName !== "h2") {
 			$content->appendChild($node->cloneNode(true));					
 			return true;
 		}
@@ -57,21 +58,71 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 		}
 	}
 
-	foreach ($links as $key => &$value) {		
+	$mh = curl_multi_init();
+	$time_total = 0;
+	foreach ($links as $key => &$value) {	
 		$value = trim($value);
-		$wikilink = preg_replace("(^https?://)", "", $value);
-		$stmt = $conn->prepare("SELECT 1 FROM `posts` WHERE wikilink = ?");
-		$stmt->bind_param("s", $wikilink);
-		$result = $stmt->execute();		
-		$get_result = $stmt->get_result();
-		$rows = $get_result->num_rows;
-		if($result && $rows != 0) {
-			$wikilink = false;			
+		if(filter_var($value, FILTER_VALIDATE_URL)) {
+			$wikilink = preg_replace("(^https?://)", "", $value);
+			$stmt = $conn->prepare("SELECT 1 FROM `posts` WHERE wikilink = ?");
+			$stmt->bind_param("s", $wikilink);
+			$result = $stmt->execute();		
+			$get_result = $stmt->get_result();
+			$rows = $get_result->num_rows;
+			if($result && $rows != 0) {
+				array_push($links_repeat, $value);
+				unset($links[$key]);	
+				continue;	
+				//skip current iteration
+			}
 		}
-		$tmp = new DOMDocument();		
-		$value = trim($value);
-		if( ($wikilink != false) && filter_var($value, FILTER_VALIDATE_URL) && (strpos(get_headers($value)[0],'200') !== false) && $tmp->loadHTMLFile($value) ) {
+		else {
+			array_push($links_invalid, $value);
+			unset($links[$key]);
+			continue;
+			//skip current iteration
+		}	
+
+		$chs[$key] = curl_init($value);
+    curl_setopt($chs[$key], CURLOPT_RETURNTRANSFER, true);  
+    curl_setopt($chs[$key], CURLOPT_FAILONERROR, true);
+    curl_multi_add_handle($mh, $chs[$key]);			
+	}
+
+	//running the requests
+	$running = null;
+	do {
+	  $status = curl_multi_exec($mh, $running);
+	  if ($running) {
+	      // Wait a short time for more activity
+	      curl_multi_select($mh);
+	  }
+	} while ($running && $status == CURLM_OK);
+
+	if ($status != CURLM_OK) {
+	    // Display error message
+	    echo "ERROR!\n " . curl_multi_strerror($status);
+	    die();
+	}
+
+	foreach ($links as $key => &$value) {		
+		$header = curl_getinfo($chs[$key], CURLINFO_HTTP_CODE);
+    $time = curl_getinfo($chs[$key], CURLINFO_TOTAL_TIME);
+    if($time_total < $time) {
+    	$time_total = $time;
+    }
+    $response = curl_multi_getcontent($chs[$key]);  // get results   
+
+    if ($header != 200) {
+    	array_push($links_invalid, $value);
+			unset($links[$key]);  
+		}   			
+		else {
+			$wikilink = preg_replace("(^https?://)", "", $value);
 			$link_str = $value;
+			$tmp = new DOMDocument();
+			$tmp->loadHTML($response);
+			
 			$value = $tmp;	
 			$title = $value->getElementById("firstHeading")->nodeValue;	
 			$xpath = new DomXPath($value);
@@ -127,7 +178,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 			
 			$pic_object = $xpath->query("//td[@class='infobox-image']//img/@src");
 			if($pic_object->length == 0) {				
-				$pic_src = "Uploads/default.png";
+				$pic_src = "default.png";
 			}
 			else {
 				$infobox_image = $xpath->query("//table/tbody/tr[ td[@class[contains(.,'infobox-image')]] ]");	
@@ -218,12 +269,14 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 										          {$content}
 										         
 			EOF;
-			
+			echo $time;
 			echo strlen($content_mysql), mb_detect_encoding($content_mysql), " Success <br><br>";
+			
 			//$title -- string, $intro[] -- html tags string, $pic_src -- string, $details[0], $content_mysql --> string xml
 
 				$creator = "Anupam K";
 				$category = $_POST["category_select"];
+				$upload_time = $date_time + $key;
 				/*
 				-- Add wikilink, repitition cols !!
 				-- make async loadhtml 
@@ -240,21 +293,17 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 				if($result && $rows != 0) {
 					$title_repeat = $rows;			
 				}
+							
 				$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, wikilink, titlerepeat, creatorname, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");	
-    		$stmt->bind_param("ssssssss", $date_time, $title, $wikilink, $title_repeat, $creator, $category, $pic_src, $content_mysql);
+    		$stmt->bind_param("ssssssss", $upload_time, $title, $wikilink, $title_repeat, $creator, $category, $pic_src, $content_mysql);
 				$stmt->execute();
-		}
-		else {		
-			if($wikilink == false) {
-				array_push($links_repeat, $value);
-			}	
-			else {
-				array_push($links_invalid, $value);
-			}			
-			unset($links[$key]);
 		}		
+		curl_multi_remove_handle($mh, $chs[$key]);		
 	}
-	
+	// close current handler
+	var_dump($time_total);
+	curl_multi_close($mh);
+	$_SESSION["Response"]["time"] = $time_total;
 	$_SESSION["Response"]["display"] = "block";
 	$_SESSION["Response"]["repeat_links"] = $links_repeat;
 	$_SESSION["Response"]["invalid_links"] = $links_invalid;
