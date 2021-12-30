@@ -1,9 +1,9 @@
 <?php 
 if(!isset($_SESSION["Response"])) {
-	$_SESSION["Response"] = array("repeat_links" => [], "invalid_links" => [], "time" => "", "display" => "d-none");
+	$_SESSION["Response"] = array("total_links" => [], "repeat_links" => [], "invalid_links" => [], "time" => "", "display" => "d-none");
 }
 function reset_response() {	
-	$_SESSION["Response"] = array("repeat_links" => [], "invalid_links" => [], "time" => "", "display" => "d-none");	
+	$_SESSION["Response"] = array("total_links" => [], "repeat_links" => [], "invalid_links" => [], "time" => "", "display" => "d-none");	
 }
 
 $conn = make_db_connection();
@@ -18,7 +18,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 	$links_invalid = [];
 	$links_repeat = [];
 	$links =  explode( "\n", trim($_POST["wiki_links"]) );
-
+	$links_total = count($links);
 	function xpath_query($obj) {
 		if($obj->length == 0) {
 			return NULL;
@@ -176,7 +176,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 				}
 			} //fixed all links
 			
-			$pic_object = $xpath->query("//td[@class='infobox-image']//img/@src");
+			$pic_object = $xpath->query("//td[@class[contains(.,'infobox-image')]]//img/@src");
 			if($pic_object->length == 0) {				
 				$pic_src = "default.png";
 			}
@@ -305,6 +305,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 	curl_multi_close($mh);
 	$_SESSION["Response"]["time"] = $time_total;
 	$_SESSION["Response"]["display"] = "block";
+	$_SESSION["Response"]["total_links"] = $links_total;
 	$_SESSION["Response"]["repeat_links"] = $links_repeat;
 	$_SESSION["Response"]["invalid_links"] = $links_invalid;
 	//303 will allow bookmark and reload without resending post data

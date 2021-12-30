@@ -14,7 +14,7 @@ require_once("include/wikipedea_code.php");
 
   <head>
     <meta charset="utf-8">
-    <title>Add Post</title>
+    <title>Wikipedea Scraper</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -97,14 +97,20 @@ require_once("include/wikipedea_code.php");
             <h2 class="text-pm h5 text-center my-4">Copy Wikipedea page(s)</h2>
 
             <section class="response <?php echo $_SESSION["Response"]["display"]; ?> ">
-              <h2 class="text-pm h5 text-center my-4"> Database response </h2>
-              <h6>Repeated links</h6>
-              <p>Time taken: <?php echo $_SESSION["Response"]["time"]; ?> </p>
-              <br>
-              <p class="repeat-links"> <?php print_r($_SESSION["Response"]["repeat_links"]); ?>  </p>
-              <br>
-              <h6>Invalid links</h6>
-              <p class="invalid-links"> <?php print_r($_SESSION["Response"]["invalid_links"]); ?> </p>
+              <div class="card text-white bg-success">
+                <div class="card-header"> Database response </div>    
+                <div class="card-body">
+                  <h5 class="card-title">Time taken: <?php echo $_SESSION["Response"]["time"]; ?> Seconds</p>
+                  <h6 class="card-title">Total Links Requested: <?php echo $_SESSION["Response"]["total_links"]; ?> </h6>
+
+                  <h6 class="card-title">Repeated links: <?php echo count($_SESSION["Response"]["repeat_links"]); ?> </h6>
+                  <p class="repeat-links"> <?php print_r(implode("<br>", $_SESSION["Response"]["repeat_links"])); ?>  </p>
+                  
+                  <h6 class="card-title">Invalid links: <?php echo count($_SESSION["Response"]["invalid_links"]); ?> </h6>
+                  <p class="invalid-links"> <?php print_r(implode("<br>", $_SESSION["Response"]["invalid_links"])); ?> </p>
+                </div>
+                </div>
+                <hr>              
             </section>
 
             <form method="post" action=<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?> enctype="multipart/form-data">
@@ -118,14 +124,14 @@ require_once("include/wikipedea_code.php");
                         <label class="input-group-text" for="category_select">Category</label>
                       </div>
                       <select required name="category_select" class="custom-select" id="category_select">
-                        <option selected disabled>Choose...</option>
+                        <option selected disabled value="">Choose...</option>
                         <?php echo category_select(); ?>                        
                       </select>  
                     </div> 
                   </div>
                 </div>  
                 <div class="col-12 mt-3">
-                  <label for="wiki_links">Enter all wikipedea links seperated by newlines</label>
+                  <label for="wiki_links">Enter all wikipedea links seperated by newlines (Do not use Mobile pages like en.m.wikipedia.org/wiki/Main_Page)</label>
                   <textarea name="wiki_links" id="wiki_links" class="form-control"  rows="10">
                     https://en.wikipedia.org/wiki/Ajmal_Kasab
                     https://en.wikipedia.org/wiki/David_Headley
@@ -134,12 +140,32 @@ require_once("include/wikipedea_code.php");
                 </div>
                 
                  <div class="col-12 mt-3">
-                  <button class="submit btn btn-login text-white px-5" type="submit" name="identifier" value="wikipedea_form">
+                  <button disabled class="submit btn btn-login text-white px-5" type="submit" name="identifier" value="wikipedea_form" data-toggle="modal">
                     Add Post
                   </button>
                 </div>
               </div>
-            </form>            
+            </form>  
+            <div class="modal fade" id="modal_sure" tabindex="-1" aria-labelledby="sure_heading" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="sure_heading">Are You Sure?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body input-group">                    
+                    <label class="d-flex align-items-center m-0 mr-3" for="captcha_sure" id="captcha_sure_label"><strong>2 + 3 = </strong></label>
+                    <input type="text" class="form-control" id="captcha_sure_input" aria-describedby="basic-addon3">
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button disabled id="sure_submit" class=" btn btn-pm" type="button" >Submit</button>
+                  </div>
+                </div>
+              </div>
+            </div>      
 
           </main>
           <?php require_once("include/footer.php") ?>

@@ -100,7 +100,7 @@ require_once("include/addpost_code.php");
               <div class="form-row">
                 <div class="col-12">
                   <label for="post_title">Post title</label>
-                  <input name="post_title" type="text" id="post_title" class="form-control <?php echo validation_status(); ?> " placeholder="Post Title" >
+                  <input required name="post_title" type="text" id="post_title" class="form-control <?php echo validation_status(); ?> " placeholder="Post Title" >
                   <div  class=" <?php echo validation_class(); ?> ">
                     <?php echo validation_txt(); ?>
                   </div>
@@ -108,14 +108,14 @@ require_once("include/addpost_code.php");
                 <div class="col-12 mt-3">  
                   <div class="row">
                     <div class="col-12 col-sm-5 d-flex align-items-center">
-                      <input name="choose_image" type="file" accept="image/*" id="choose_image" class="form-control-file choose-image" >  
+                      <input required name="choose_image" type="file" accept="image/*" id="choose_image" class="form-control-file choose-image" >  
                     </div>
                     <div class="col-12 col-sm-7 input-group mt-3 mt-sm-0">
                       <div class="input-group-prepend">
                         <label class="input-group-text" for="category_select">Category</label>
                       </div>
-                      <select name="category_select" class="custom-select" id="category_select">
-                        <option selected disabled>Choose...</option>
+                      <select required name="category_select" class="custom-select" id="category_select">
+                        <option selected disabled value="" >Choose...</option>
                         <?php echo category_select(); ?>                        
                       </select>  
                     </div> 
@@ -217,6 +217,27 @@ require_once("include/addpost_code.php");
                 </div>
               </div>
             </form>
+            <div class="modal fade" id="modal_sure" tabindex="-1" aria-labelledby="sure_heading" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="sure_heading">Are You Sure?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body input-group">                    
+                    <label class="d-flex align-items-center m-0 mr-3" for="captcha_sure" id="captcha_sure_label"><strong>2 + 3 = </strong></label>
+                    <input type="text" class="form-control" id="captcha_sure_input" aria-describedby="basic-addon3">
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button disabled id="sure_submit" class=" btn btn-pm" type="button" >Submit</button>
+                  </div>
+                </div>
+              </div>
+            </div>    
+
 
             <table class="table table-responsive-sm table-bordered bg-white table-hover my-3">
               <thead>

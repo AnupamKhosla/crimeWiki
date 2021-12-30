@@ -84,7 +84,7 @@ ul ul {
 	background-color: var(--theme-pm-dark);
 }
 
-.btn-pm {
+.btn-pm { 
 	background-color: var(--theme-pm);
 	display: block;
 	transition: background-color .3s ease;
@@ -136,42 +136,7 @@ ul ul {
 
 
 /*theme ui elements starts*/
-.card {
-	border: 5px solid var(--theme-pm-dark2);
-	background-color: var(--theme-pm-dark2);
-	border-radius: 5px;
-	transition: border-color .3s ease, background-color .3s ease;
-}
-.card:hover {
-	background-color: var(--white-bg);
-	border-color: var(--white-bg);
-}
-.post-pic {
-			
-	object-fit: cover;
-	object-position: center top;
-	border-radius: 5px;
-}
-.card-body {
-	& {
-		position: absolute;
-		bottom: 0;
-		width: 100%;
-		background-color: rgba(0,0,0,0.85);
-		height: 45px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 0 15px;
-	}
 
-	a {
-		color: white;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		overflow: hidden;				
-	}
-}
 
 .panel { 
 	& {

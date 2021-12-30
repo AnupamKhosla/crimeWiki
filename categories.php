@@ -99,7 +99,7 @@ require_once("include/category_code.php");
             <form method="post" action=<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?> >
               <div class="form-row">
                 <div class="col-md-8 col-xl-10">
-                  <input name="category_input" type="text" class="form-control <?php echo validation_status(); ?> " placeholder="Category Name" >
+                  <input required name="category_input" type="text" class="form-control <?php echo validation_status(); ?> " placeholder="Category Name" >
                   <div  class=" <?php echo validation_class(); ?> ">
                     <?php echo validation_txt(); ?>
                   </div>
@@ -112,6 +112,26 @@ require_once("include/category_code.php");
                 </div>
               </div>
             </form>
+            <div class="modal fade" id="modal_sure" tabindex="-1" aria-labelledby="sure_heading" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="sure_heading">Are You Sure?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body input-group">                    
+                    <label class="d-flex align-items-center m-0 mr-3" for="captcha_sure" id="captcha_sure_label"><strong>2 + 3 = </strong></label>
+                    <input type="text" class="form-control" id="captcha_sure_input" aria-describedby="basic-addon3">
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button disabled id="sure_submit" class=" btn btn-pm" type="button" >Submit</button>
+                  </div>
+                </div>
+              </div>
+            </div>      
 
             <table class="table table-responsive-sm table-bordered bg-white table-hover my-3">
               <thead>
