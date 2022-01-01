@@ -132,7 +132,7 @@ require_once("include/wikipedea_code.php");
                 </div>  
                 <div class="col-12 mt-3">
                   <label for="wiki_links">Enter all wikipedea links seperated by newlines (Do not use Mobile pages like en.m.wikipedia.org/wiki/Main_Page)</label>
-                  <textarea name="wiki_links" id="wiki_links" class="form-control"  rows="10">
+                  <textarea required name="wiki_links" id="wiki_links" class="form-control"  rows="10">
                     https://en.wikipedia.org/wiki/Ajmal_Kasab
                     https://en.wikipedia.org/wiki/David_Headley
                     https://en.wikipedia.org/wiki/The_Weeknd
@@ -140,7 +140,7 @@ require_once("include/wikipedea_code.php");
                 </div>
                 
                  <div class="col-12 mt-3">
-                  <button disabled class="submit btn btn-login text-white px-5" type="submit" name="identifier" value="wikipedea_form" data-toggle="modal">
+                  <button disabled class="submit sure btn btn-login text-white px-5" type="submit" name="identifier" value="wikipedea_form" data-toggle="modal">
                     Add Post
                   </button>
                 </div>
@@ -160,8 +160,8 @@ require_once("include/wikipedea_code.php");
                     <input type="text" class="form-control" id="captcha_sure_input" aria-describedby="basic-addon3">
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button disabled id="sure_submit" class=" btn btn-pm" type="button" >Submit</button>
+                    <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">Close</button>
+                    <button disabled id="sure_submit" class=" btn btn-pm px-4" type="button" >Submit</button>
                   </div>
                 </div>
               </div>

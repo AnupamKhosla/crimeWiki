@@ -7,12 +7,12 @@ require_once("include/post_code.php");
 
 <!doctype html>
   <html class="no-js" lang="">
-
   <head>
     <meta charset="utf-8">
     <title>
       <?php echo ($title); ?>
     </title>
+    
     <meta name="description" content=" <?php echo $title; ?> ">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -22,13 +22,14 @@ require_once("include/post_code.php");
     <meta property="og:image" content="">
 
     <link rel="manifest" href="site.webmanifest">
-    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="apple-touch-icon" href="/logo_single.svg">
+    <link rel="icon" type="image/png" href="/assets/img/logo_single.svg">
     <!-- Place favicon.ico in the root directory -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.css" >
-    <link rel="stylesheet" href="../assets/css/selectric.css">
+    <link rel="stylesheet" href="/assets/css/selectric.css">
     <!-- Add the slick-theme.css if you want default styling -->    
 
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
     <meta name="theme-color" content="#E92222">
   </head>
 
@@ -38,7 +39,7 @@ require_once("include/post_code.php");
       <div class="container">
         <nav class="navbar navbar-expand-lg navbar-dark align-items-start">
           <a class="navbar-brand" href="#">
-            <img src="../assets/img/logo_single.svg" class="logo img-fluid" alt="Company Logo">
+            <img src="/assets/img/logo_single.svg" class="logo img-fluid" alt="Company Logo">
           </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><path stroke="rgba(255, 255, 255, 1)" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"/></svg>
@@ -86,7 +87,7 @@ require_once("include/post_code.php");
             <form class="search-form form-inline">
               <input class="form-control" type="search" placeholder="Search everything" aria-label="Search">
               <button class="btn search-icon" type="submit">
-                <img class="d-block" src="../assets/icons/Search_alt.svg" alt="search icon">
+                <img class="d-block" src="/assets/icons/Search_alt.svg" alt="search icon">
               </button>
             </form>
           </div>
@@ -182,7 +183,7 @@ require_once("include/post_code.php");
           <div class="row row-offset">
             <div class="col-lg-3 order-1 order-lg-0 custom-offset">
               <a class="d-block logo-link" href="#">
-                <img src="../assets/img/logo_single.svg" class="logo img-fluid" alt="Company Logo">
+                <img src="/assets/img/logo_single.svg" class="logo img-fluid" alt="Company Logo">
               </a>
               <h1 class="font-weight-normal logo-text text-center">The CrimeWiki</h1>
             </div>
@@ -223,22 +224,22 @@ require_once("include/post_code.php");
                 <li><a href="#">Contact Page</a></li>
                 <li><a href="#">Privacy policy</a></li>
                 <li><a href="#">Sitemap</a></li>
-                <li><a class="text-nowrap mail-link" href="mailto: info@crimewiki.com"> <img class="mail-icon" src="../assets/icons/mail.svg" alt="mail icon"> info@crimewiki.com</a></li>
+                <li><a class="text-nowrap mail-link" href="mailto: info@crimewiki.com"> <img class="mail-icon" src="/assets/icons/mail.svg" alt="mail icon"> info@crimewiki.com</a></li>
               </ul>
             </div>
           </div>
           <div class="social-icons d-flex justify-content-center">
             <a href="#" class="social-link">
-              <img src="../assets/icons/facebook.svg" alt="Facebook icon">
+              <img src="/assets/icons/facebook.svg" alt="Facebook icon">
             </a>
             <a href="#" class="social-link">
-              <img src="../assets/icons/google.svg" alt="Google icon">
+              <img src="/assets/icons/google.svg" alt="Google icon">
             </a>
             <a href="#" class="social-link">
-              <img src="../assets/icons/linkdin.svg" alt="Facebook icon">
+              <img src="/assets/icons/linkdin.svg" alt="Facebook icon">
             </a>
             <a href="#" class="social-link">
-              <img src="../assets/icons/github.svg" alt="Facebook icon">
+              <img src="/assets/icons/github.svg" alt="Facebook icon">
             </a>
           </div>
         </div>
@@ -249,9 +250,9 @@ require_once("include/post_code.php");
 
       <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.js"></script>
-      <script src="../assets/js/jquery.selectric.js"></script>
+      <script src="/assets/js/jquery.selectric.js"></script>
       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-      <script src="../assets/js/main.js"></script>
+      <script src="/assets/js/main.js"></script>
 
       <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
       <script>

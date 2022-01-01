@@ -106,7 +106,7 @@ require_once("include/category_code.php");
                 </div>
                 
                 <div class="col-md-4 col-xl-2">
-                  <button class="submit btn btn-login text-white w-100 mt-3 mt-md-0 " type="submit" name="identifier" value="category_form">
+                  <button class="sure submit btn btn-login text-white w-100 mt-3 mt-md-0 " type="submit" name="identifier" value="category_form">
                     Add Category
                   </button>
                 </div>
@@ -126,8 +126,8 @@ require_once("include/category_code.php");
                     <input type="text" class="form-control" id="captcha_sure_input" aria-describedby="basic-addon3">
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button disabled id="sure_submit" class=" btn btn-pm" type="button" >Submit</button>
+                    <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">Close</button>
+                    <button disabled id="sure_submit" class=" btn btn-pm px-4" type="button" >Submit</button>
                   </div>
                 </div>
               </div>

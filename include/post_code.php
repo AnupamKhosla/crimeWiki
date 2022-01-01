@@ -7,14 +7,23 @@ if(!isset($_SESSION["Validation"])) {
 	$_SESSION["Validation"] = array( "txt" => "", "class" => "d-none", "status" => "" );
 }
 
-if( isset($_GET["id"]) ) {
-	$post_id = $_GET["id"];		
-	$stmt = $conn->prepare("SELECT datetime, title, creatorname, categoryname, image, content FROM `posts` WHERE id=?");
-	$creator = "Anupam";
-	$stmt->bind_param("i", $post_id);
+if( !empty($_GET["id"]) || !empty($_GET["title"]) ) {
+	if( !empty($_GET["id"]) ) {
+		$post_id = $_GET["id"];	
+		$stmt = $conn->prepare("SELECT datetime, title, creatorname, categoryname, image, content FROM `posts` WHERE id=?");
+		$stmt->bind_param("i", $post_id);
+	}
+	else {
+		$post_title = $_GET["title"];
+		$title_repeat = !empty($_GET["repeat"]) ? $_GET["repeat"] : NULL;		
+		$stmt = $conn->prepare("SELECT datetime, title, creatorname, categoryname, image, content FROM `posts` WHERE title=? AND titlerepeat<=>?");
+		$stmt->bind_param("si", $post_title, $title_repeat);
+	}
+	$creator = "Anupam";	
 	$result = $stmt->execute();	
-	if($result != false) { //query was successful
-		if( $row = $stmt->get_result()->fetch_assoc() ) { 
+	$get_result = $stmt->get_result();	
+	if($result && $get_result->num_rows) { //query was successful
+		if( $row = $get_result->fetch_assoc() ) { 
 			$title = htmlspecialchars($row['title']);
 			$creator = htmlspecialchars($row['creatorname']);
 			$datetime = htmlspecialchars($row['datetime']);
@@ -53,8 +62,7 @@ if( isset($_GET["id"]) ) {
 		}
 	}
 	else {
-
-		die("Could not fetch results from the database" . $conn->error);
+		die("Could not fetch results from the database. Probably wrong post-id or title" . $conn->error);
 	}
 }
 else {

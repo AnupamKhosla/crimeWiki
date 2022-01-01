@@ -52,7 +52,7 @@ function image_path($str) {
 		return $str;
 	}
 	else {
-		return "Uploads/" . $str;
+		return "/Uploads/" . $str;
 	}
 }
 

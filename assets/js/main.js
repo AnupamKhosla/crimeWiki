@@ -66,13 +66,13 @@ $(document).ready(function(){
   //submit button pop up functionality for wikipedea - addCategory - addPost pages 
   !function(){
     var rand1, rand2;
-    $("button[name='identifier']").prop("disabled", false);
-    $("button[name='identifier']").click(function(e){ 
+    $("button[name='identifier'].sure").prop("disabled", false);
+    $("button[name='identifier'].sure").click(function(e){ 
       if(!!$(this).closest("form")[0].reportValidity()) {  
         //show modal
         rand1 = Math.ceil(Math.random() * 5);
         rand2 = Math.ceil(Math.random() * 5);
-        $("#captcha_sure_label > strong").html(rand1 + "+" + rand2 + "=");        
+        $("#captcha_sure_label > strong").html(rand1 + "+" + rand2 + " =");        
         $("#modal_sure").modal("show");        
         $("#modal_sure #sure_submit").prop("disabled", true);
       }        

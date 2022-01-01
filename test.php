@@ -83,8 +83,7 @@ $urls = [
 "https://en.wikipedia.org/wiki/Will_Reynolds",
 "https://en.wikipedia.org/wiki/William_Ray_Bonner",
 "https://en.wikipedia.org/wiki/Winfield_Kansas#Historical_event",
-"https://en.wikipedia.org/wiki/Young_Brothers_massacre
-",
+"https://en.wikipedia.org/wiki/Young_Brothers_massacre",
 "https://en.wikipedia.org/wiki/English_Wikipedia",
 "https://en.wikipedia.org/wiki/French_Wikipedia",
 "https://en.wikipedia.org/wiki/German_Wikipedia",

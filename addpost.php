@@ -123,7 +123,7 @@ require_once("include/addpost_code.php");
                 </div>  
                 <div class="col-12 mt-3">
                   <label for="intro_meta">Intro Meta</label>
-                  <textarea name="intro_meta" id="intro_meta" class="form-control"  rows="10">
+                  <textarea required name="intro_meta" id="intro_meta" class="form-control"  rows="10">
                     <intro-data>
                       <tr>
                         <th>Crimes</th>
@@ -150,7 +150,7 @@ require_once("include/addpost_code.php");
                 </div>
                 <div class="col-12 mt-3">
                   <label for="details_meta">Details Meta</label>
-                  <textarea name="details_meta" id="details_meta" class="form-control"  rows="10">                    
+                  <textarea required name="details_meta" id="details_meta" class="form-control"  rows="10">                    
                     <details>
                       <tr>
                         <th>Criminal Status</th>
@@ -165,7 +165,7 @@ require_once("include/addpost_code.php");
                 </div>
                 <div class="col-12 mt-3">
                   <label for="sources_meta">Sources Meta</label>
-                  <textarea name="sources_meta" id="sources_meta" class="form-control"  rows="10">                   
+                  <textarea required name="sources_meta" id="sources_meta" class="form-control"  rows="10">                   
                     <sources>
                       <ul class="list">
                         <li><a href="#">News Article</a> on <a href="chanel7.com">chanel7.com</a></li>
@@ -177,7 +177,7 @@ require_once("include/addpost_code.php");
                 </div>  
                 <div class="col-12 mt-3">
                   <label for="sources_meta">Related Meta</label>
-                  <textarea name="related_meta" id="related_meta" class="form-control"  rows="10">                   
+                  <textarea required name="related_meta" id="related_meta" class="form-control"  rows="10">                   
                     <related>
                       <ol class="list list-unstyled">
                         <li><a href="/posts?id=23">Robel Puch</a></li>
@@ -191,7 +191,7 @@ require_once("include/addpost_code.php");
 
                 <div class="col-12 mt-3">
                   <label for="post_content">Post Content</label>
-                  <textarea name="post_content" id="post_content" class="form-control"  rows="10">
+                  <textarea required name="post_content" id="post_content" class="form-control"  rows="10">
                     <content>
                       <section>
                         <h2>Dummy heading</h2>
@@ -211,7 +211,7 @@ require_once("include/addpost_code.php");
                   </textarea>
                 </div>
                  <div class="col-12 mt-3">
-                  <button class="submit btn btn-login text-white px-5" type="submit" name="identifier" value="add_post_form">
+                  <button class="sure submit btn btn-login text-white px-5" type="submit" name="identifier" value="add_post_form">
                     Add Post
                   </button>
                 </div>
@@ -231,8 +231,8 @@ require_once("include/addpost_code.php");
                     <input type="text" class="form-control" id="captcha_sure_input" aria-describedby="basic-addon3">
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button disabled id="sure_submit" class=" btn btn-pm" type="button" >Submit</button>
+                    <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">Close</button>
+                    <button disabled id="sure_submit" class=" btn btn-pm px-4" type="button" >Submit</button>
                   </div>
                 </div>
               </div>
