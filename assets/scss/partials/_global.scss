@@ -136,7 +136,8 @@ ul ul {
 
 
 /*theme ui elements starts*/
-.card-body {
+.slider, .post {
+	.card-body {
 	& {
 		position: absolute;
 		bottom: 0;
@@ -171,6 +172,7 @@ ul ul {
 	border-radius: 5px; 
 	background: #fff url('https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/ajax-loader.gif') center center no-repeat;
 }	
+}
 
 .panel { 
 	& {
