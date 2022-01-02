@@ -1,0 +1,305 @@
+<?php 
+require_once('include/config.php');
+require_once('include/functions.php');
+require_once('include/index_code.php');
+?>
+<!doctype html>
+  <html class="no-js homepage" lang="">
+
+  <head>
+    <meta charset="utf-8">
+    <title>crimeWiki | Wikipedea of crime</title>
+    <meta name="description" content="A Wikipedea of world-wide crime">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" href="icon.png">
+    <!-- Place favicon.ico in the root directory -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.css" >
+    <link rel="stylesheet" href="../assets/css/selectric.css">
+    <!-- Add the slick-theme.css if you want default styling -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <!-- Add the slick-theme.css if you want default styling -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <meta name="theme-color" content="#E92222">
+  </head>
+
+  <body>
+
+    <section class="hero text-white">
+      <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-dark align-items-start">
+          <a class="navbar-brand" href="#">
+            <img src="../assets/img/logo_single.svg" class="logo img-fluid" alt="Company Logo">
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><path stroke="rgba(255, 255, 255, 1)" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"/></svg>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+                  Criminals
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+                  Groups
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+                  Crimes
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+              </li>         
+            </ul>
+            <form class="search-form form-inline">
+              <input class="form-control" type="search" placeholder="Search everything" aria-label="Search">
+              <button class="btn search-icon" type="submit">
+                <img class="d-block" src="../assets/icons/Search_alt.svg" alt="search icon">
+              </button>
+            </form>
+          </div>
+        </nav>
+        <form action="" class="filters">  
+          <div class="row custom-container m-auto">
+            <div class="col-lg-5 col-md-12 d-flex">
+              <h1 class="main-title h3 font-weight-light w-100 text-center text-lg-left">A Wikipedea of world-wide crime</h1>
+            </div>
+            <div class="col-sm-6 col-xs-12 offset-sm-3 d-md-none">
+              <button type="button" class="go sort btn text-white d-flex align-items-center justify-content-center w-100">
+                Sort By 
+                <img class="ml-2 " src="../assets/icons/Sort_down.svg" alt="sort down icon">
+              </button>
+            </div>
+            <div class="w-100 d-md-none"></div>
+            <div class="col pl-lg-0">
+              <div class="row sort-dropdown d-none d-md-flex">
+                <div class="col-sm-6 offset-sm-3 col-md-3 offset-md-2 col-lg-5 offset-lg-0 pl-lg-0 mt-3 mt-md-0">
+                  <select class="w-100" name="Choose_Catgory">
+                    <option value="">Category</option>
+                    <option value="saab">Criminal</option>
+                    <option value="opel">Gang</option>
+                    <option value="audi">Crime</option>
+                  </select>
+                </div>    
+                <div class="col-sm-6 offset-sm-3 col-md-3 offset-md-0 col-lg-5 pl-lg-0 mt-3 mt-md-0">
+                  <select class="w-100" name="filter_by">
+                    <option value="">Sort By</option>
+                    <option value="saab">Latest</option>
+                    <option value="opel">Popular</option>
+                    <option value="audi">Country</option>
+                  </select>
+                </div>
+                <div class="col-sm-6 offset-sm-3 offset-md-0 col-lg-2 col-md-2 pl-lg-0 mt-3 mt-md-0">
+                  <button class="go btn text-white d-flex align-items-center justify-content-center w-100">
+                    Go 
+                    <img class="ml-2 arrow-right" src="../assets/icons/arrow_right.svg" alt="arrow right icon">
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="slider row ">
+          <div class="col-md-10 offset-md-1">
+            <div class="slick">
+              <div class="slide">
+                <div class="card">
+                  <img data-lazy="../Uploads/tony_montana.jpg" class="card-img-top post-pic" alt="profile pic">
+                  <div class="card-body">                
+                    <a href="#" class="">Tony Montana</a>
+                  </div>
+                </div>
+              </div>            
+              <?php echo $slides; ?>
+              
+              <div class="slide">
+                <div class="card">
+                  <img data-lazy="../Uploads/tony_montana.jpg" class="card-img-top post-pic" alt="profile pic">
+                  <div class="card-body">                
+                    <a href="#" class="">Go somewhere</a>
+                  </div>
+                </div>
+              </div>    
+            </div>        
+          </div>
+        </div>
+        
+      </div>
+    </section>
+
+    <section class="about">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-3 offset-lg-1">
+            <img class="logo-double img-fluid d-none d-lg-block m-auto" src="../assets/img/logo_gun.png" alt="Logo double gun">
+          </div>
+          <div class="col-lg-7 about-text pl-lg-5">
+            <h1 class="logo-text text-center font-weight-normal">The CrimeWiki</h1>
+            <img class="logo-double img-fluid d-block d-lg-none m-auto" src="../assets/img/logo_gun.png" alt="Logo double gun">
+            <p>
+              The CrimeWiki is an open source php based web project to put together all the information about the major criminals, crime events and criminal organisations from across the lobe. The code to create the wiki is also made open source on github at <a href="www.github.com">www.github.com</a>. Here you can find dedicated pages on a particuar criminal as a post under the category of criminals. Similarily, every major gang and crime event has it’s own dedicated page.
+            </p>
+            <p>
+              Also, you can arrange the crime events in their cronological order, or you can filter them according to the conuntry in which they occured. Click below to see the open source github repository of the code. Feel free to reuse the code for your own project.
+            </p>
+            <button type="button" class="btn btn-pm d-block cta">Github Repo</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="month">
+      <div class="container">
+        <h2 class="month-heading text-center text-pm h3 font-weight-normal">Crime of the Month</h2>
+        <h3 class="post-title text-center h5">COVID-19 protests explode across Europe; Australia's new crime force | 9 News Australia</h3>
+        <div class="embed-responsive embed-responsive-16by9 youtube">
+          <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/CjhfMby9MRE" allowfullscreen></iframe>
+        </div>
+
+        <div class="row post-content">
+          <div class="col-xl-8 col-lg-7 post-intro">
+            <div class="wrapper2">
+              <p>
+                On May 25, 2020, George Floyd, a 46 year old black man, was murdered near the intersection of East 38th Street and Chicago Avenue in the Powderhorn Park neighborhood of Minneapolis, Minnesota, by then 44-year-old Derek Chauvin, a . Two other police officers, J. Alexander Kueng and Thomas Lane, assisted Chauvin in restraining Floyd. Lane had also pointed a gun at Floyd's head prior to Floyd being put in handcuffs. A fourth police officer, Tou Thao, prevented bystanders from intervening.
+              </p>
+              <p>
+                Floyd's murder led to worldwide protests against police brutality, police racism, and lack of police accountability. In early June 2020, the Minneapolis City Council voted an intent to restructure the police department as a "new community-based system of public safety". However, the city council's proposal, which became subject to an indefinite review by the Minneapolis City Charter Commission, failed to make the 2020 general ballot. The Minneapolis Police Chief cancelled contract negotiations with the police union and announced plans to bring in outside experts to examine how the union contract can be restructured to provide transparency and "flexibility for true reform".
+              </p>
+            </div>
+            <button class="btn btn-pm m-auto2 details">See Details</button>
+          </div>
+          <div class="col-xl-4 col-lg-5 wrapper">
+            <div class="post-sources d-flex flex-column">
+              <h4 class="text-center text-pm sources">Sources</h4>
+              <ul>
+                <li><a href="#">News Article</a> on www.channel7.com</li>
+                <li>Video on youtube.com</li>
+                <li>News Article on www.channel7.com</li>
+                <li>Inormation <a href="#">Video</a> on youtube.com</li>
+                <li>News Article on www.channel7.com</li>
+                <li>Video on youtube.com</li>
+                <li>News Article on www.channel7.com</li>                
+              </ul>
+              <span class="publish-date">Published on 29 Nov 2021</span>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </section>
+
+    <footer class="bg-pm text-white">
+      <div class="container">
+        <div class="row row-offset">
+          <div class="col-lg-3 order-1 order-lg-0 custom-offset">
+            <a class="d-block logo-link" href="#">
+              <img src="../assets/img/logo_single.svg" class="logo img-fluid" alt="Company Logo">
+            </a>
+            <h1 class="font-weight-normal logo-text text-center">The CrimeWiki</h1>
+          </div>
+          <div class="col-lg-2 col-sm-6">
+            <h4 class="font-weight-normal h5 list-heading">Criminals</h4>
+            <ul class="list-unstyled category-links">
+              <li><a href="#">Country Wise</a></li>
+              <li><a href="#">Alphabetically</a></li>
+              <li><a href="#">Most Popular</a></li>
+              <li><a href="#">Recent Criminals</a></li>
+              <li><a href="#">Never Caught</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-2 col-sm-6">
+            <h4 class="font-weight-normal h5 list-heading">Groups</h4>
+            <ul class="list-unstyled category-links">
+              <li><a href="#">Country Wise</a></li>
+              <li><a href="#">Alphabetically</a></li>
+              <li><a href="#">Most Popular</a></li>
+              <li><a href="#">Recent Criminals</a></li>
+              <li><a href="#">Never Caught</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-2 col-sm-6">
+            <h4 class="font-weight-normal h5 list-heading">Crimes</h4>
+            <ul class="list-unstyled category-links">
+              <li><a href="#">Country Wise</a></li>
+              <li><a href="#">Alphabetically</a></li>
+              <li><a href="#">Most Popular</a></li>
+              <li><a href="#">Recent Criminals</a></li>
+              <li><a href="#">Never Caught</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-2 col-sm-6">
+            <h4 class="font-weight-normal h5 list-heading">Others</h4>
+            <ul class="list-unstyled category-links">
+              <li><a href="#">About The crimWiki</a></li>
+              <li><a href="#">Contact Page</a></li>
+              <li><a href="#">Privacy policy</a></li>
+              <li><a href="#">Sitemap</a></li>
+              <li><a class="text-nowrap mail-link" href="mailto: info@crimewiki.com"> <img class="mail-icon" src="../assets/icons/mail.svg" alt="mail icon"> info@crimewiki.com</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="social-icons d-flex justify-content-center">
+          <a href="#" class="social-link">
+            <img src="../assets/icons/facebook.svg" alt="Facebook icon">
+          </a>
+          <a href="#" class="social-link">
+            <img src="../assets/icons/google.svg" alt="Google icon">
+          </a>
+          <a href="#" class="social-link">
+            <img src="../assets/icons/linkdin.svg" alt="Facebook icon">
+          </a>
+          <a href="#" class="social-link">
+            <img src="../assets/icons/github.svg" alt="Facebook icon">
+          </a>
+        </div>
+      </div>
+      <div class="copyright bg-pm-dark text-center">
+        Designed and developed solely by <a class="owner" href="https://www.linkedin.com/in/anupamkhosla">Anupam Khosla</a> | All rights reserved
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.js"></script>
+    <script src="../assets/js/jquery.selectric.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <script src="../assets/js/main.js"></script>
+
+    <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+    <script>
+      window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+      ga('create', 'UA-XXXXX-Y', 'auto'); ga('set', 'anonymizeIp', true); ga('set', 'transport', 'beacon'); ga('send', 'pageview')
+    </script>
+    <script src="https://www.google-analytics.com/analytics.js" async></script>
+  </body>
+  </html>

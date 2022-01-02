@@ -1,5 +1,4 @@
 <?php
-
 require_once("include/sessions.php");
 require_once('include/config.php');
 require_once('include/functions.php');
@@ -236,21 +235,7 @@ require_once("include/addpost_code.php");
                   </div>
                 </div>
               </div>
-            </div>    
-
-
-            <table class="table table-responsive-sm table-bordered bg-white table-hover my-3">
-              <thead>
-                <tr>
-                  <th scope="col">Sr no.</th>
-                  <th scope="col">Post Title</th>
-                  <th scope="col">Category</th>                               
-                  <th scope="col">Date & Time</th>
-                  <th scope="col">Creator Name</th>     
-                </tr>
-              </thead>
-              <tbody> <?php echo $posts_table_content ?> </tbody>
-            </table>
+            </div>            
 
           </main>
           <?php require_once("include/footer.php") ?>

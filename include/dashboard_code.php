@@ -5,28 +5,10 @@ if(!isset($_SESSION["Validation"])) {
 	$_SESSION["Validation"] = array( "txt" => "", "class" => "d-none", "status" => "" );
 }
 
-if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //add post form has been submitted		
+if(isset($_POST["identifier"]) && $_POST["identifier"] == "dashboard_form") { //add post form has been submitted		
 	$post_title = mysqli_real_escape_string($conn, trim($_POST["post_title"]));	
-	if(empty($_POST["post_content"]) || empty($_POST["intro_meta"]) || empty($_POST["details_meta"]) || empty($_POST["related_meta"]) || empty($_POST["sources_meta"])) {
-		$content = NULL;
-	}
-	else {
-		$str = trim($_POST["intro_meta"]) . trim($_POST["details_meta"]) . trim($_POST["related_meta"]) . trim($_POST["sources_meta"]) . trim($_POST["post_content"]);
-		$content = $str; 
-		//$content cannot be escaped mysqli_escape because of xml structure
-		function check_xml($content) {				
-			libxml_use_internal_errors(true); // important
-			$x = new DOMDocument();
-			$x->loadHTML($content);			
-			if(!empty($x->getElementsByTagName('intro-data')) && !empty($x->getElementsByTagName('details')) && !empty($x->getElementsByTagName('sources')) && !empty($x->getElementsByTagName('content')) && !empty($x->getElementsByTagName('related'))) {
-				return true;
-			}
-			else {			
-				return false;
-			}
-		}
-	}		
 	
+	$content =  trim($_POST["post_content"]);	
 	$post_category = mysqli_real_escape_string($conn, trim($_POST["category_select"]));	
 	$choose_image = basename($_FILES["choose_image"]["name"]);
 	$name = pathinfo($choose_image)["filename"];
@@ -52,32 +34,19 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
 		$_SESSION["Validation"]["class"]  = "invalid-feedback d-block"; //make eror message visible
 		$_SESSION["Validation"]["status"] = "is-invalid";
 	}
-	else if(!check_xml($content)) {
-		$_SESSION["Validation"]["txt"] = "All fields must have appropriate xml tags";	
-		$_SESSION["Validation"]["class"]  = "invalid-feedback d-block"; //make eror message visible
-		$_SESSION["Validation"]["status"] = "is-invalid";	
-	}
 	else {// everything is fine; update categories now	
 		$creator = "Anupam";
 		$title_repeat = NULL;
-		//check if title aready exists
-		$stmt = $conn->prepare("SELECT * FROM `posts` WHERE title=? ");
-		$stmt->bind_param("s", $post_title);
-		$result = $stmt->execute();
-		$get_result =  $stmt->get_result();
-		$rows = $get_result->num_rows;		
-		if($result && $rows != 0) {
-			$title_repeat = $rows;			
-		}
+		
 		//$get_result->free_result();
 		$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title,  titlerepeat, creatorname, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?, ?)");	
     $stmt->bind_param("sssssss", $date_time, $post_title, $title_repeat, $creator, $post_category, $choose_image, $content);
     $result = $stmt->execute();
     if($result) {       
     	$image_result = move_uploaded_file($_FILES["choose_image"]["tmp_name"], $target);  
-    	$_SESSION["Validation"]["txt"] = "New Post added successfully";
+    	$_SESSION["Validation"]["txt"] = "Homepage Content updated successfully";
     	if($image_result == false) {
-    		$_SESSION["Validation"]["txt"] = "Image Upload Error!!!, but New Post added successfully";
+    		$_SESSION["Validation"]["txt"] = "Image Upload Error!!!, but Homepage Content updated successfully";
     	}    	
 			$_SESSION["Validation"]["class"]  = "valid-feedback d-block"; //make eror message visible
 			$_SESSION["Validation"]["status"] = "is-valid";									
@@ -91,6 +60,55 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
   exit();
 }
 
+$posts_table_content = "			  			
+              <tr>
+                <th scope='row'>NULL</th>
+                <td>NULL</td>
+                <td>NULL</td>
+                <td>NULL</td>
+                <td>NULL</td>
+              </tr>
+            	";
+
+$sql = "SELECT datetime, title, creatorname, categoryname FROM `posts` ORDER BY datetime DESC LIMIT 15";
+$result = $conn->query($sql);
+
+if($result != false) { //query was successful
+	if($row = $result->fetch_assoc()) { //first iteration only to nemove NULL table valuesand set $count
+		$row_name = htmlspecialchars($row['title']);
+		$row_creator = htmlspecialchars($row['creatorname']);
+		$row_datetime = htmlspecialchars($row['datetime']);
+		$row_category = htmlspecialchars($row['categoryname']);
+
+		$posts_table_content = "<tr>
+                <th scope='row'>1</th>
+                <td>$row_name</td>
+                <td>$row_category</td>                
+                <td>$row_datetime</td>
+                <td>$row_creator</td>
+              </tr>                
+           		";
+	}
+	$count = 2;
+	while($row = $result->fetch_assoc()) {
+		$row_name = htmlspecialchars($row['title']);
+		$row_creator = htmlspecialchars($row['creatorname']);
+		$row_datetime = htmlspecialchars($row['datetime']);
+		$row_category = htmlspecialchars($row['categoryname']);
+		$posts_table_content .= "<tr>
+                <th scope='row'>$count</th>
+                <td>$row_name</td>
+                <td>$row_category</td>                
+                <td>$row_datetime</td>
+                <td>$row_creator</td>
+              </tr>                
+           		";
+           		$count++;           		
+	}	
+}
+else {
+	die("Could not fetch results from cateory table" . $conn->error);
+}
 
 
 
