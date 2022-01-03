@@ -135,7 +135,7 @@ else {
     
     
       
-      $conn = new mysqli($_SERVER['SERVER_NAME'], $username, $password1);
+      $conn = new mysqli("localhost", $username, $password1);
       $db_name = mysqli_real_escape_string($conn, $_POST["db_name"]);
       if ($conn->connect_error) {
         echo "Wrong database name or/and password";              
@@ -152,7 +152,7 @@ else {
         EOB;
         fwrite($config_file, $db_credentials);
         fclose($config_file);        
-        $conn->query("CREATE DATABASE $db_name");        
+        $conn->query("CREATE DATABASE IF NOT EXISTS $db_name");        
         header("Location: {$_SERVER['REQUEST_URI']}", true, 303); 
         exit();
       }

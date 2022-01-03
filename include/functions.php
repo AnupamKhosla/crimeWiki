@@ -1,7 +1,7 @@
 <?php 
 
 function make_db_connection(){
-	$conn = new mysqli($_SERVER['HTTP_HOST'], DB_USER_NAME, DB_PASSWORD, DB_NAME);
+	$conn = new mysqli("localhost", DB_USER_NAME, DB_PASSWORD, DB_NAME);
 	$conn->set_charset('utf8mb4'); // very important
 	return $conn;
 }
