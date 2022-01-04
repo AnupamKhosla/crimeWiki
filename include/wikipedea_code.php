@@ -7,7 +7,7 @@ function reset_response() {
 }
 
 $conn = make_db_connection();
-$conn->query("SET GLOBAL max_allowed_packet=8000000;");	
+//$conn->query("SET GLOBAL max_allowed_packet=8000000;");	
 
 if(!isset($_SESSION["Validation"])) {
 	$_SESSION["Validation"] = array( "txt" => "", "class" => "d-none", "status" => "" );

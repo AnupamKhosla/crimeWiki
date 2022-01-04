@@ -71,8 +71,12 @@ body {
 
 main {
 
+	form label {
+		font-weight: 600;
+	}
+
 	.choose-image {
-		cursor: pointer;
+		cursor: pointer; 
 	}
 
 	.form-control:focus, .custom-select:focus {
@@ -89,6 +93,21 @@ main {
 	.submit:focus {
 		box-shadow: 0 0 0 0.2rem var(--theme-pm-x-light);
 	}
+
+	.dashboard-form {
+		h3 {
+			padding-top: 3px;
+		}
+		.title-repeat-container {
+			width: 70px;
+		}
+	}
+
+	.month-post label {
+		margin-bottom: 4px;
+	}
+
+
 
 }
 

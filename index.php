@@ -132,25 +132,8 @@ require_once('include/index_code.php');
         </form>
         <div class="slider row ">
           <div class="col-md-10 offset-md-1">
-            <div class="slick">
-              <div class="slide">
-                <div class="card">
-                  <img data-lazy="../Uploads/tony_montana.jpg" class="card-img-top post-pic" alt="profile pic">
-                  <div class="card-body">                
-                    <a href="#" class="">Tony Montana</a>
-                  </div>
-                </div>
-              </div>            
+            <div class="slick">                       
               <?php echo $slides; ?>
-              
-              <div class="slide">
-                <div class="card">
-                  <img data-lazy="../Uploads/tony_montana.jpg" class="card-img-top post-pic" alt="profile pic">
-                  <div class="card-body">                
-                    <a href="#" class="">Go somewhere</a>
-                  </div>
-                </div>
-              </div>    
             </div>        
           </div>
         </div>
@@ -168,10 +151,7 @@ require_once('include/index_code.php');
             <h1 class="logo-text text-center font-weight-normal">The CrimeWiki</h1>
             <img class="logo-double img-fluid d-block d-lg-none m-auto" src="../assets/img/logo_gun.png" alt="Logo double gun">
             <p>
-              The CrimeWiki is an open source php based web project to put together all the information about the major criminals, crime events and criminal organisations from across the lobe. The code to create the wiki is also made open source on github at <a href="www.github.com">www.github.com</a>. Here you can find dedicated pages on a particuar criminal as a post under the category of criminals. Similarily, every major gang and crime event has it’s own dedicated page.
-            </p>
-            <p>
-              Also, you can arrange the crime events in their cronological order, or you can filter them according to the conuntry in which they occured. Click below to see the open source github repository of the code. Feel free to reuse the code for your own project.
+              <?php echo $blog_about_text; ?>              
             </p>
             <button type="button" class="btn btn-pm d-block cta">Github Repo</button>
           </div>
@@ -182,36 +162,23 @@ require_once('include/index_code.php');
     <section class="month">
       <div class="container">
         <h2 class="month-heading text-center text-pm h3 font-weight-normal">Crime of the Month</h2>
-        <h3 class="post-title text-center h5">COVID-19 protests explode across Europe; Australia's new crime force | 9 News Australia</h3>
+        <h3 class="post-title text-center h5"> <?php echo $title; ?> </h3>
         <div class="embed-responsive embed-responsive-16by9 youtube">
-          <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/CjhfMby9MRE" allowfullscreen></iframe>
+          <iframe loading="lazy" class="embed-responsive-item" src=" <?php echo $video_link; ?> " allowfullscreen></iframe>
         </div>
 
         <div class="row post-content">
           <div class="col-xl-8 col-lg-7 post-intro">
             <div class="wrapper2">
-              <p>
-                On May 25, 2020, George Floyd, a 46 year old black man, was murdered near the intersection of East 38th Street and Chicago Avenue in the Powderhorn Park neighborhood of Minneapolis, Minnesota, by then 44-year-old Derek Chauvin, a . Two other police officers, J. Alexander Kueng and Thomas Lane, assisted Chauvin in restraining Floyd. Lane had also pointed a gun at Floyd's head prior to Floyd being put in handcuffs. A fourth police officer, Tou Thao, prevented bystanders from intervening.
-              </p>
-              <p>
-                Floyd's murder led to worldwide protests against police brutality, police racism, and lack of police accountability. In early June 2020, the Minneapolis City Council voted an intent to restructure the police department as a "new community-based system of public safety". However, the city council's proposal, which became subject to an indefinite review by the Minneapolis City Charter Commission, failed to make the 2020 general ballot. The Minneapolis Police Chief cancelled contract negotiations with the police union and announced plans to bring in outside experts to examine how the union contract can be restructured to provide transparency and "flexibility for true reform".
-              </p>
+              <?php echo $introduction; ?>
             </div>
             <button class="btn btn-pm m-auto2 details">See Details</button>
           </div>
           <div class="col-xl-4 col-lg-5 wrapper">
             <div class="post-sources d-flex flex-column">
               <h4 class="text-center text-pm sources">Sources</h4>
-              <ul>
-                <li><a href="#">News Article</a> on www.channel7.com</li>
-                <li>Video on youtube.com</li>
-                <li>News Article on www.channel7.com</li>
-                <li>Inormation <a href="#">Video</a> on youtube.com</li>
-                <li>News Article on www.channel7.com</li>
-                <li>Video on youtube.com</li>
-                <li>News Article on www.channel7.com</li>                
-              </ul>
-              <span class="publish-date">Published on 29 Nov 2021</span>
+              <?php echo $sources; ?>
+              <span class="publish-date"> <?php echo $publish_date ?> Published on 29 Nov 2021</span>
             </div>
           </div>
         </div>

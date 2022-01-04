@@ -94,11 +94,19 @@ if(SETUP) { //if db already setup
           content VARCHAR(10000000),
           categoryname VARCHAR(100) NOT NULL,          
           FOREIGN KEY (categoryname) REFERENCES categories(name)
-        );';  
+        );
+        INSERT INTO posts(id, datetime, title, wikilink, titlerepeat, creatorname, image, content, categoryname) VALUES (
+          1, $date_time, "blog_month_post", NULL, NULL, "Anupam K", "default.png", NULL, "blog"
+        ),
+        (
+          2, $date_time+1, "blog_about_text", NULL, NULL, "Anupam K", "default.png", NULL, "blog"
+        );
+        ';  
         $result = $conn->multi_query($sql);
         if($result) {
           $conn->next_result(); //flush second $sql result
-          $conn->next_result(); //flush third $sql result          
+          $conn->next_result(); //flush third $sql result 
+          $conn->next_result(); //flush fourth $sql result         
           $stmt = $conn->prepare("INSERT INTO `admins` (username, password) VALUES (?, ?)");
           var_dump($conn->error);
           $stmt->bind_param("ss", $admin_name, $admin_pass1);

@@ -92,8 +92,50 @@ require_once("include/dashboard_code.php");
         <div class="col-md-9 col-lg-10 content d-flex justify-content-between flex-column">
           <main class="pb-5">
             <h1 class="text-center text-pm font-weight-lighter h4">CrimeWiki Admin Panel</h1>
-            <h2 class="h5 text-left">Homepage content</h2>
-            <form action="">Froms</form>
+            <hr>
+            <h2 class="text-pm h5 text-center my-4">Homepage content</h2>
+            <form class="dashboard-form" action=" <?php htmlspecialchars($_SERVER['REQUEST_URI']); ?> ">
+              <div class="form-row">  
+                <div class="col-12 about-text">
+                  <div class="input-group-prepend float-left mr-3">
+                    <div class="input-group-text">
+                      <input type="checkbox" aria-label="Checkbox for following textarea">
+                    </div>
+                  </div>
+                  <h3 class="h6">
+                    <label class="d-block mb-3" for="about" >Set About The CrimeWiki text</label>
+                  </h3>
+                  <textarea readonly required name="about" id="about" class="form-control mb-2"  rows="4">
+                    <?php echo $blog_about_text; ?>
+                  </textarea>
+                </div>
+                <div class="col-12 mt-3 month-post">
+                  <div class="input-group-prepend float-left mr-3">
+                    <div class="input-group-text">
+                      <input type="checkbox" aria-label="Checkbox for following textarea">
+                    </div>
+                  </div>
+                  <h3 class="h6 mb-2">Set Crime of the month post</h3>
+                  <div class="row align-items-end pt-1">
+                    <div class="col-12 mb-2">
+                      <label for="post_title" class="d-block font-weight-normal">Post title</label>
+                      <input required name="post_title" type="text" id="post_title" class="form-control"  value="$post_title">
+                    </div>
+                    <div class="col-md-12 col-lg-auto mb-2 mb-lg-0 flex-grow-1">
+                      <label for="video_link" class="d-block font-weight-normal">Video link</label>
+                      <input required name="video_link" type="url" id="video_link" class="form-control"  value="$video_link">
+                    </div>
+                    <div class="col-lg-2 col-auto flex-grow-1 title-repeat-container">
+                      <label for="title_repeat" class="d-block font-weight-normal">Title Repeat</label>
+                      <input type="number" class="form-control" id="title_repeat" value="$title_repeat">
+                    </div>
+                    <div class="col-auto">                      
+                      <button type="submit" class="submit btn btn-login text-white px-5 m-0 ml-lg-0 ml-n3">Submit</button> 
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
             
             <hr class="my-4">
             <h2 class="h5 text-pm text-center" >Latest Posts</h2>
