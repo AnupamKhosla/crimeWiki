@@ -3,5 +3,6 @@
 
 logs/*
 node_modules/*
-include/config.php
+include/config.php 
+
 
