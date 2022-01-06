@@ -4,9 +4,15 @@
 logs/*
 node_modules/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 include/config2.php
 =======
 include/config2.php  
+=======
+include/config2.php  
+
+
+>>>>>>> parent of ab6b9d4 (Revert "New config.php after git-filter-repo.py")
 
 
 
