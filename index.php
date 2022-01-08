@@ -35,61 +35,9 @@ require_once('include/index_code.php');
 
     <section class="hero text-white">
       <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-dark align-items-start">
-          <a class="navbar-brand" href="#">
-            <img src="../assets/img/logo_single.svg" class="logo img-fluid" alt="Company Logo">
-          </a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><path stroke="rgba(255, 255, 255, 1)" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"/></svg>
-          </button>
+        
+        <?php require_once("include/nav.php") ?>
 
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ml-auto">
-              <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-                  Criminals
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="#">Action</a>
-                  <a class="dropdown-item" href="#">Another action</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Something else here</a>
-                </div>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-                  Groups
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="#">Action</a>
-                  <a class="dropdown-item" href="#">Another action</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Something else here</a>
-                </div>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-                  Crimes
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="#">Action</a>
-                  <a class="dropdown-item" href="#">Another action</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Something else here</a>
-                </div>
-              </li>         
-            </ul>
-            <form class="search-form form-inline">
-              <input class="form-control" type="search" placeholder="Search everything" aria-label="Search">
-              <button class="btn search-icon" type="submit">
-                <img class="d-block" src="../assets/icons/Search_alt.svg" alt="search icon">
-              </button>
-            </form>
-          </div>
-        </nav>
         <form action="" class="filters">  
           <div class="row custom-container m-auto">
             <div class="col-lg-5 col-md-12 d-flex">
@@ -175,86 +123,23 @@ require_once('include/index_code.php');
             <button class="btn btn-pm m-auto2 details">See Details</button>
           </div>
           <div class="col-xl-4 col-lg-5 wrapper">
-            <div class="post-sources d-flex flex-column">
-              <h4 class="text-center text-pm sources">Sources</h4>
-              <?php echo $sources; ?>
+            <div class="post-sources panel d-flex flex-column">
+              <div class="panel-title text-center">
+                <h4 class="m-0">Sources</h4>
+              </div>
+              <div class="panel-content flex-grow-1">
+                <?php echo $sources; ?>
+              </div>
               <span class="publish-date"> <?php echo $publish_date ?> Published on 29 Nov 2021</span>
             </div>
+           
           </div>
         </div>
         
       </div>
     </section>
 
-    <footer class="bg-pm text-white">
-      <div class="container">
-        <div class="row row-offset">
-          <div class="col-lg-3 order-1 order-lg-0 custom-offset">
-            <a class="d-block logo-link" href="#">
-              <img src="../assets/img/logo_single.svg" class="logo img-fluid" alt="Company Logo">
-            </a>
-            <h1 class="font-weight-normal logo-text text-center">The CrimeWiki</h1>
-          </div>
-          <div class="col-lg-2 col-sm-6">
-            <h4 class="font-weight-normal h5 list-heading">Criminals</h4>
-            <ul class="list-unstyled category-links">
-              <li><a href="#">Country Wise</a></li>
-              <li><a href="#">Alphabetically</a></li>
-              <li><a href="#">Most Popular</a></li>
-              <li><a href="#">Recent Criminals</a></li>
-              <li><a href="#">Never Caught</a></li>
-            </ul>
-          </div>
-          <div class="col-lg-2 col-sm-6">
-            <h4 class="font-weight-normal h5 list-heading">Groups</h4>
-            <ul class="list-unstyled category-links">
-              <li><a href="#">Country Wise</a></li>
-              <li><a href="#">Alphabetically</a></li>
-              <li><a href="#">Most Popular</a></li>
-              <li><a href="#">Recent Criminals</a></li>
-              <li><a href="#">Never Caught</a></li>
-            </ul>
-          </div>
-          <div class="col-lg-2 col-sm-6">
-            <h4 class="font-weight-normal h5 list-heading">Crimes</h4>
-            <ul class="list-unstyled category-links">
-              <li><a href="#">Country Wise</a></li>
-              <li><a href="#">Alphabetically</a></li>
-              <li><a href="#">Most Popular</a></li>
-              <li><a href="#">Recent Criminals</a></li>
-              <li><a href="#">Never Caught</a></li>
-            </ul>
-          </div>
-          <div class="col-lg-2 col-sm-6">
-            <h4 class="font-weight-normal h5 list-heading">Others</h4>
-            <ul class="list-unstyled category-links">
-              <li><a href="#">About The crimWiki</a></li>
-              <li><a href="#">Contact Page</a></li>
-              <li><a href="#">Privacy policy</a></li>
-              <li><a href="#">Sitemap</a></li>
-              <li><a class="text-nowrap mail-link" href="mailto: info@crimewiki.com"> <img class="mail-icon" src="../assets/icons/mail.svg" alt="mail icon"> info@crimewiki.com</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="social-icons d-flex justify-content-center">
-          <a href="#" class="social-link">
-            <img src="../assets/icons/facebook.svg" alt="Facebook icon">
-          </a>
-          <a href="#" class="social-link">
-            <img src="../assets/icons/google.svg" alt="Google icon">
-          </a>
-          <a href="#" class="social-link">
-            <img src="../assets/icons/linkdin.svg" alt="Facebook icon">
-          </a>
-          <a href="#" class="social-link">
-            <img src="../assets/icons/github.svg" alt="Facebook icon">
-          </a>
-        </div>
-      </div>
-      <div class="copyright bg-pm-dark text-center">
-        Designed and developed solely by <a class="owner" href="https://www.linkedin.com/in/anupamkhosla">Anupam Khosla</a> | All rights reserved
-      </div>
-    </footer>
+   <?php require_once("include/footer.php"); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.js"></script>

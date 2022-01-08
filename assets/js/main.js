@@ -91,11 +91,40 @@ $(document).ready(function(){
     $("#sure_submit").click(function(){
       $(this).closest(".modal").prev("form")[0].requestSubmit($("button[name='identifier']")[0]);
     });
-
-
-
   }();
+  //submit button functionality finished
 
+
+
+  //dashboard page homepage content $blog_about_text $blog_month_post
+  !function(){
+    $(".dashboard button[name='identifier'].sure").prop("disabled", true);
+    $(".dashboard-form input[type='checkbox']").change(function(){      
+      if(!$(".dashboard-form input[name='check_post']").is(":checked") && !$(".dashboard-form input[name='check_about_text']").is(":checked") ) {        
+        $("button[name='identifier'].sure").prop("disabled", true);
+      }
+      else {
+        $("button[name='identifier'].sure").prop("disabled", false);
+      }
+
+      if($(".dashboard-form input[name='check_post']").is(":checked")) {
+        $(".fields input").prop("disabled", false);
+      }
+      else {
+        $(".fields input").prop("disabled", true);
+      }
+
+      if($(".dashboard-form input[name='check_about_text']").is(":checked")) {
+        $(".about-text textarea").prop("disabled", false);
+      }
+      else {
+        $(".about-text textarea").prop("disabled", true);
+      }
+
+
+    });
+  }();
+  //END: dashboard page homepage content $blog_about_text $blog_month_post 
 
 
 

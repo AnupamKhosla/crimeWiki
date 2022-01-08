@@ -1,9 +1,10 @@
 <?php 
+
 if(!isset($_SESSION["Response"])) {
 	$_SESSION["Response"] = array("total_links" => [], "repeat_links" => [], "invalid_links" => [], "time" => "", "display" => "d-none");
 }
 function reset_response() {	
-	$_SESSION["Response"] = array("total_links" => [], "repeat_links" => [], "invalid_links" => [], "time" => "", "display" => "d-none");	
+	$_SESSION["Response"] = NULL;	
 }
 
 $conn = make_db_connection();

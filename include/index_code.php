@@ -30,7 +30,6 @@ else {
 
 //about us section
 $result = $conn->query( "SELECT content FROM `posts` WHERE title='\$blog_about_text';" );
-
 if(!!$result && $result->num_rows) {
 	$blog_about_text = $result->fetch_row()[0];
 }

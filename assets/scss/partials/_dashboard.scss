@@ -69,6 +69,10 @@ body {
 	padding-top: 1.5rem;
 }
 
+.dashboard .response p:last-of-type {
+	margin: 0;
+}
+
 main {
 
 	form label {
@@ -111,6 +115,9 @@ main {
 
 }
 
+.login main label {
+	font-weight: normal;
+}
 
 footer {	
 	

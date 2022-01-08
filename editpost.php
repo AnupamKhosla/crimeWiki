@@ -3,7 +3,7 @@ require_once("include/sessions.php");
 require_once('include/config.php');
 require_once('include/functions.php');
 require_once("include/check_login.php");
-require_once("include/dashboard_code.php");
+require_once("include/editpost_code.php");
 ?>
 
 <!doctype html>
@@ -11,7 +11,7 @@ require_once("include/dashboard_code.php");
 
   <head>
     <meta charset="utf-8">
-    <title>Dashboard</title>
+    <title>Posts</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -37,56 +37,39 @@ require_once("include/dashboard_code.php");
           <main class="pb-5">
             <h1 class="text-center text-pm font-weight-lighter h4">CrimeWiki Admin Panel</h1>
             <hr>
-            <h2 class="text-pm h5 text-center my-4">Homepage content</h2>
-            <section class="response <?php echo $_SESSION["Response"]["display"]; ?> ">
-              <div class="card text-white bg-success">
-                <div class="card-header"> Database response </div>    
-                  <div class="card-body">   
-                    <?php echo $_SESSION["Response"]["about_text"] . "&#10;" . $_SESSION["Response"]["month_post"]; ?>
-                  </div>
-                </div>
-                <hr>              
-            </section>
-            <form method="post" class="dashboard-form" action=" <?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?> ">
-              <div class="form-row">  
-                <div class="col-12 about-text">
-                  <div class="input-group-prepend float-left mr-3">
-                    <div class="input-group-text">
-                      <input type="checkbox" name="check_about_text" aria-label="Checkbox for following textarea">
-                    </div>
-                  </div>
-                  <h3 class="h6">
-                    <label class="d-block mb-3" for="about" >Set About The CrimeWiki text</label>
-                  </h3>
-                  <textarea disabled required name="about" id="about" class="form-control mb-2"  rows="4"><?php echo $blog_about_text; ?></textarea>
-                </div>
+            <h2 class="text-pm h5 text-center my-4">Show All Posts</h2>
+            
+            <form method="get" class="editpost-form" action=" <?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?> ">
+              <div class="form-row"> 
+                
                 <div class="col-12 mt-3 month-post">
                   <div class="input-group-prepend float-left mr-3">
                     <div class="input-group-text">
                       <input type="checkbox" name="check_post" aria-label="Checkbox for following textarea">
                     </div>
                   </div>
-                  <h3 class="h6 mb-2">Set Crime of the month post</h3>
+                  <h3 class="h6 mb-2">Filter Posts</h3>
                   <div class="row fields align-items-end pt-1">
                     <div class="col-12 mb-2">
                       <label for="post_title" class="d-block font-weight-normal">Post title</label>
                       <input disabled required name="post_title" type="text" id="post_title" class="form-control"  value="<?php echo $post_title; ?>">
                     </div>
                     <div class="col-md-12 col-lg-auto mb-2 mb-lg-0 flex-grow-1">
-                      <label for="video_link" class="d-block font-weight-normal">Video link</label>
-                      <input disabled required name="video_link" type="url" id="video_link" class="form-control"  value="<?php echo $video_link; ?>">
+                      <label for="category" class="d-block font-weight-normal">Category</label>
+                      <input disabled required name="category" type="text" class="form-control"  value="<?php echo $category; ?>">
                     </div>
                     <div class="pl-0 col-lg-2 col-auto flex-grow-1 title-repeat-container">
                       <label for="title_repeat" class="d-block font-weight-normal">Title Repeat</label>
                       <input disabled type="text" name="title_repeat" class="form-control" id="title_repeat" value="<?php echo $title_repeat; ?>">
                     </div>
                     <div class="col-auto pl-0">                      
-                      <button disabled type="submit" name="identifier" value="dashboard_form" class="sure submit btn btn-login text-white px-5 m-0">Submit</button> 
+                      <button disabled type="submit" name="identifier" value="dashboard_form" class="sure submit btn btn-login text-white px-5 m-0">Filter</button> 
                     </div>
                   </div>
                 </div>
               </div>
             </form> 
+
             <div class="modal fade" id="modal_sure" tabindex="-1" aria-labelledby="sure_heading" aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
@@ -115,6 +98,7 @@ require_once("include/dashboard_code.php");
               <thead>
                 <tr>
                   <th scope="col">Sr no.</th>
+                  <th scope="col">Id</th>
                   <th scope="col">Post Title</th>
                   <th scope="col">Category</th>                               
                   <th scope="col">Date & Time</th>

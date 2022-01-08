@@ -13,7 +13,7 @@
 		background-color: var(--white-bg-less-dark);
 	}	
 	.offset-y {		
-		margin-top: -230px; 
+		margin-top: -230px;    
 	}
 	.sources {
 		margin-bottom: 15px;
@@ -107,10 +107,7 @@
 			line-height: normal;     	
 		}				
 	}
-	.reference-text {
-		overflow-wrap: anywhere;
-	}
-
+	
 	a[href$=".pdf"].external, a[href*=".pdf?"].external, a[href*=".pdf#"].external, a[href$=".PDF"].external, a[href*=".PDF?"].external, a[href*=".PDF#"].external  {
 	  background: url("//upload.wikimedia.org/wikipedia/commons/2/23/Icons-mini-file_acrobat.gif") no-repeat right;
 	  padding-right: 18px;

@@ -1,0 +1,6 @@
+ The CrimeWiki is an open source php based web project to put together all the information about the major criminals, crime events and criminal organisations from across the lobe. The code to create the wiki is also made open source on github at www.github.com by the Author Anupam Khosla. It is developed as a CMS(content management system). Here you can find dedicated pages on a particuar criminal as a post under the category of criminals. 
+
+</br></br>
+
+Also, you can arrange the crime events in their cronological order, or you can filter them according to the conuntry in which they occured. Click below to see the open source github repository of the code. Feel free to reuse the code for your own project.
+ 

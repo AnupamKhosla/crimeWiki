@@ -69,8 +69,8 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
 		if($result && $rows != 0) {
 			$title_repeat = $rows;			
 		}
-		//$get_result->free_result();
-		$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title,  titlerepeat, creatorname, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?, ?)");	
+	//$get_result->free_result();
+	$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title,  titlerepeat, creatorname, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?, ?)");	
     $stmt->bind_param("sssssss", $date_time, $post_title, $title_repeat, $creator, $post_category, $choose_image, $content);
     $result = $stmt->execute();
     if($result) {       

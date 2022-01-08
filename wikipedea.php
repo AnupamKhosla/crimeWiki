@@ -36,59 +36,7 @@ require_once("include/wikipedea_code.php");
     <div class="container-fluid">
       <div class="row">
 
-        <div class="col-md-3 col-lg-2 sidebar p-0">
-          <div class="logo-grand-parent d-flex justify-content-center w-auto">
-            <a class="logo-container" href="#!">
-              <img class="img-fluid logo" src="assets/img/logo_single.svg" alt="logo">
-            </a>
-          </div>
-          <hr class="cut-top cut my-0">
-          <hr class="cut-bottom cut my-0">
-          <ul class="nav flex-column nav-pills">
-            <li class="nav-item">
-              <a class="nav-link" href="dashboard.php">
-                <img class="icon mb-n1px" src="assets/icons/dashboard_alt.svg" alt="dashboard icon">
-                Dashboard
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="addpost.php">
-                <img class="icon " src="assets/icons/add_post.svg" alt="add post icon">               
-                Add Post
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="categories.php">
-                <img class="icon mb-n1px" src="assets/icons/category.svg" alt="category icon"> 
-                Categories
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">
-                <img class="icon mb-n1px" src="assets/icons/admin.svg" alt="category icon"> 
-                Manage Admins
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">
-                <img class="icon mb-n1px" src="assets/icons/comment.svg" alt="category icon"> 
-                Comments
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">
-                <img class="icon mb-n1px" src="assets/icons/eye.svg" alt="category icon"> 
-                Live Blog
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">
-                <img class="icon mb-n1px" src="assets/icons/sign_out.svg" alt="category icon"> 
-                Log Out
-              </a>
-            </li>
-          </ul>
-        </div>
+        <?php require_once("include/sidebar_dashboard.php"); ?>
 
         <div class="col-md-9 col-lg-10  content d-flex justify-content-between flex-column">
           <main class="pb-5">
@@ -114,11 +62,9 @@ require_once("include/wikipedea_code.php");
             </section>
 
             <form method="post" action=<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?> enctype="multipart/form-data">
-              <div class="form-row">
-                
+              <div class="form-row">                
                 <div class="col-12 mt-3">  
-                  <div class="row">
-                    
+                  <div class="row">                    
                     <div class="col-12 col-sm-7 input-group mt-3 mt-sm-0">
                       <div class="input-group-prepend">
                         <label class="input-group-text" for="category_select">Category</label>
@@ -168,7 +114,7 @@ require_once("include/wikipedea_code.php");
             </div>      
 
           </main>
-          <?php require_once("include/footer.php") ?>
+          <?php require_once("include/footer_dashboard.php"); ?>
         </div>
       </div>
     </div>

@@ -96,10 +96,10 @@ if(SETUP) { //if db already setup
           FOREIGN KEY (categoryname) REFERENCES categories(name)
         );
         INSERT INTO posts(id, datetime, title, wikilink, titlerepeat, creatorname, image, content, categoryname) VALUES (
-          1, $date_time, "blog_month_post", NULL, NULL, "Anupam K", "default.png", NULL, "blog"
+          1, $date_time, "blog_month_post", NULL, NULL, "SuperUser", "default.png", NULL, "blog"
         ),
         (
-          2, $date_time+1, "blog_about_text", NULL, NULL, "Anupam K", "default.png", NULL, "blog"
+          2, $date_time+1, "blog_about_text", NULL, NULL, "SuperUser", "default.png", NULL, "blog"
         );
         ';  
         $result = $conn->multi_query($sql);
