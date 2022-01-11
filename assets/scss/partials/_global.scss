@@ -46,6 +46,23 @@ input[type="search"]::-webkit-search-results-decoration {
 	border-color: var(--theme-pm-dark);
 }
 
+.page-link, .page-link:hover { /*nav pagination*/
+	color: var(--theme-pm);
+}
+
+.page-link:focus {
+	box-shadow: 0 0 0 0.2rem var(--theme-pm-x-light);
+}
+
+.page-item.active .page-link {
+	background-color: var(--theme-pm); 
+	color: #fff; 
+	border-color: var(--theme-pm);
+	z-index: auto;
+}
+
+
+
 .navbar-dark .navbar-toggler {
 	border: 0;
 }

@@ -7,7 +7,7 @@ require_once("include/editpost_code.php");
 ?>
 
 <!doctype html>
-  <html class="no-js dashboard" lang="">
+  <html class="no-js editpost" lang="">
 
   <head>
     <meta charset="utf-8">
@@ -40,30 +40,23 @@ require_once("include/editpost_code.php");
             <h2 class="text-pm h5 text-center my-4">Show All Posts</h2>
             
             <form method="get" class="editpost-form" action=" <?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?> ">
-              <div class="form-row"> 
-                
-                <div class="col-12 mt-3 month-post">
-                  <div class="input-group-prepend float-left mr-3">
-                    <div class="input-group-text">
-                      <input type="checkbox" name="check_post" aria-label="Checkbox for following textarea">
-                    </div>
-                  </div>
-                  <h3 class="h6 mb-2">Filter Posts</h3>
+              <div class="form-row">                 
+                <div class="col-12 month-post">                  
                   <div class="row fields align-items-end pt-1">
                     <div class="col-12 mb-2">
                       <label for="post_title" class="d-block font-weight-normal">Post title</label>
-                      <input disabled required name="post_title" type="text" id="post_title" class="form-control"  value="<?php echo $post_title; ?>">
+                      <input name="title" type="text" id="post_title" class="form-control"  value="<?php echo $_GET["title"] ?? ''; ?>">
                     </div>
                     <div class="col-md-12 col-lg-auto mb-2 mb-lg-0 flex-grow-1">
                       <label for="category" class="d-block font-weight-normal">Category</label>
-                      <input disabled required name="category" type="text" class="form-control"  value="<?php echo $category; ?>">
+                      <input name="category" type="text" class="form-control" value="<?php echo $_GET["category"] ?? ''; ?>" >
                     </div>
                     <div class="pl-0 col-lg-2 col-auto flex-grow-1 title-repeat-container">
                       <label for="title_repeat" class="d-block font-weight-normal">Title Repeat</label>
-                      <input disabled type="text" name="title_repeat" class="form-control" id="title_repeat" value="<?php echo $title_repeat; ?>">
+                      <input type="text" name="rep" class="form-control" id="title_rep" value="<?php echo $_GET["rep"] ?? ''; ?>">
                     </div>
                     <div class="col-auto pl-0">                      
-                      <button disabled type="submit" name="identifier" value="dashboard_form" class="sure submit btn btn-login text-white px-5 m-0">Filter</button> 
+                      <button type="submit" name="identifier" value="dashboard_form" class="sure submit btn btn-login text-white px-5 m-0">Filter</button> 
                     </div>
                   </div>
                 </div>
@@ -92,8 +85,9 @@ require_once("include/editpost_code.php");
             </div>   
 
             
-            <hr class="my-4">
-            <h2 class="h5 text-pm text-center" >Latest Posts</h2>
+            
+            <h2 class="h5 text-pm text-center my-4" >Result</h2>
+            <?php echo $pagination; ?>
             <table class="table table-responsive-sm table-bordered bg-white table-hover my-3">
               <thead>
                 <tr>

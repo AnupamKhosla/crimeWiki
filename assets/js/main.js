@@ -120,8 +120,6 @@ $(document).ready(function(){
       else {
         $(".about-text textarea").prop("disabled", true);
       }
-
-
     });
   }();
   //END: dashboard page homepage content $blog_about_text $blog_month_post 

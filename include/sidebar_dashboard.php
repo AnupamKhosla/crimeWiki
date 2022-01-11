@@ -20,8 +20,8 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="editpost.php">
-        <img class="icon " src="assets/icons/edit_post.svg" alt="add post icon">               
+      <a class="nav-link" href="allposts.php">
+        <img class="icon " src="assets/icons/edit.svg" alt="add post icon">               
         Posts
       </a>
     </li>
