@@ -25,17 +25,20 @@ function validation_status() {
 		return $output;	
 }
 
-function category_select() {
+function category_select($category = NULL) {
 	global $conn;
-
 	$list = "";
 	$result = $conn->query("SELECT name FROM `categories`");
-	if($result != false) {
-		while($row = $result->fetch_assoc()) {
-			
+	if($result != false) {		
+		while($row = $result->fetch_assoc()) {			
 			$row_name = htmlspecialchars($row['name']);
-			$list .= "<option>$row_name</option>";
-		}
+			if($row_name == $category) {
+				$list .= "<option selected >$row_name</option>";
+			}
+			else {
+				$list .= "<option>$row_name</option>";
+			}				
+		}				
 	}
 	else {
 		die("Can't fetch names from categories tabele" . $conn->error);

@@ -63,7 +63,7 @@ require_once("include/wikipedea_code.php");
 
             <form method="post" action=<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?> enctype="multipart/form-data">
               <div class="form-row">                
-                <div class="col-12 mt-3">  
+                <div class="col-12">  
                   <div class="row">                    
                     <div class="col-12 col-sm-7 input-group mt-3 mt-sm-0">
                       <div class="input-group-prepend">

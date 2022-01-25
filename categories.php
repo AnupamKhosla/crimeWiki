@@ -36,7 +36,7 @@ require_once("include/category_code.php");
     <div class="container-fluid">
       <div class="row">
 
-        <?php require_once("sidebar_dashboard"); ?>
+        <?php require_once("include/sidebar_dashboard.php"); ?>
 
         <div class="col-md-9 col-lg-10  content d-flex justify-content-between flex-column">
           <main class="pb-5">

@@ -125,6 +125,14 @@ $(document).ready(function(){
   //END: dashboard page homepage content $blog_about_text $blog_month_post 
 
 
+  //edit post page  
+  !function(){
+    $(".choose-image").change(function(){
+      $(".org-category").html(" ");
+    });
+  }();
+
+
 
   /*end*/
 });

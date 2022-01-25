@@ -32,9 +32,9 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">
-        <img class="icon mb-n1px" src="assets/icons/admin.svg" alt="category icon"> 
-        Manage Admins
+      <a class="nav-link" href="wikipedea.php">
+        <img class="icon mb-n3px" src="assets/icons/wikipedea.svg" alt="category icon"> 
+        Wikipedea
       </a>
     </li>
     <li class="nav-item">

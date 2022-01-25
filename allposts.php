@@ -3,7 +3,7 @@ require_once("include/sessions.php");
 require_once('include/config.php');
 require_once('include/functions.php');
 require_once("include/check_login.php");
-require_once("include/editpost_code.php");
+require_once("include/allposts_code.php");
 ?>
 
 <!doctype html>
@@ -47,16 +47,23 @@ require_once("include/editpost_code.php");
                       <label for="post_title" class="d-block font-weight-normal">Post title</label>
                       <input name="title" type="text" id="post_title" class="form-control"  value="<?php echo $_GET["title"] ?? ''; ?>">
                     </div>
-                    <div class="col-md-12 col-lg-auto mb-2 mb-lg-0 flex-grow-1">
-                      <label for="category" class="d-block font-weight-normal">Category</label>
-                      <input name="category" type="text" class="form-control" value="<?php echo $_GET["category"] ?? ''; ?>" >
+                    <div class="col-12 col-lg-7 col-sm-5 input-group mt-sm-3 mb-2 mb-sm-0">
+                      <div class="input-group-prepend">
+                        <label class="input-group-text mb-0" for="category_select">Category</label>
+                      </div>
+                      <select name="category" class="custom-select" id="category">
+                        <option selected disabled value="" >Choose...</option>
+                        <?php echo category_select(); ?>                        
+                      </select>  
                     </div>
-                    <div class="pl-0 col-lg-2 col-auto flex-grow-1 title-repeat-container">
-                      <label for="title_repeat" class="d-block font-weight-normal">Title Repeat</label>
+                    <div class="pl-sm-0 col-sm-4 col-lg-3 title-repeat-container input-group mb-2 mb-sm-0">
+                      <div class="input-group-prepend">
+                        <label for="title_repeat" class="input-group-text mb-0">Title Repeat</label> 
+                      </div>                                           
                       <input type="text" name="rep" class="form-control" id="title_rep" value="<?php echo $_GET["rep"] ?? ''; ?>">
                     </div>
-                    <div class="col-auto pl-0">                      
-                      <button type="submit" name="identifier" value="dashboard_form" class="sure submit btn btn-login text-white px-5 m-0">Filter</button> 
+                    <div class="col-sm-3 col-lg-2 pl-sm-0">                      
+                      <button type="submit" name="identifier" value="dashboard_form" class="sure submit btn btn-login text-white px-0 m-0 w-100">Filter</button> 
                     </div>
                   </div>
                 </div>
@@ -72,7 +79,7 @@ require_once("include/editpost_code.php");
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div>
-                  <div class="modal-body input-group">                    
+                  <div class="modal-body input-group">                     
                     <label class="d-flex align-items-center m-0 mr-3" for="captcha_sure" id="captcha_sure_label"><strong>2 + 3 = </strong></label>
                     <input type="text" class="form-control" id="captcha_sure_input" aria-describedby="basic-addon3">
                   </div>
@@ -96,7 +103,8 @@ require_once("include/editpost_code.php");
                   <th scope="col">Post Title</th>
                   <th scope="col">Category</th>                               
                   <th scope="col">Date & Time</th>
-                  <th scope="col">Title Repeat</th>     
+                  <th scope="col">Title Repeat</th>
+                  <th scope="col">Action</th>          
                 </tr>
               </thead>
               <tbody> <?php echo $posts_table_content ?> </tbody>

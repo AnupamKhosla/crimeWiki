@@ -42,16 +42,24 @@ if($result != false && $res = $stmt->get_result()) { //query was successful
 		$row_category = htmlspecialchars($row['categoryname']);
 
 		$posts_table_content = "<tr>
-                <th scope='row'>1</th>
+                <th scope='row'>" . $page_30 + 1 . "</th>
                 <th scope='row'>$row_id</th>
                 <td> <a href='/post/$row_id'>$row_name</a> </td>
                 <td>$row_category</td>                
                 <td>$row_datetime</td>
                 <td>$row_repeat</td>
+                <td class='text-center'>
+                	<a class='btn btn-pm btn-action d-inline-flex align-items-center mr-1' href='addpost.php?id=$row_id' title='Edit' target='_blank'>
+						        <img class='icon' src='assets/icons/edit.svg' alt='category icon'> 						        
+						      </a>
+						      <a class='btn btn-pm btn-action d-inline-flex align-items-center' href='include/delete.php?id=$row_id' title='Delete' target='_blank'>
+						        <img class='icon' src='assets/icons/delete.svg' alt='category icon'> 						        
+						      </a>
+                </td>
               </tr>                
            		";
 	}
-	$count = 2;
+	$count = $page_30 + 2;
 	while($row = $res->fetch_assoc()) {
 		$row_id = htmlspecialchars($row['id']);
 		$row_name = htmlspecialchars($row['title']);
@@ -68,6 +76,14 @@ if($result != false && $res = $stmt->get_result()) { //query was successful
                 <td>$row_category</td>                
                 <td>$row_datetime</td>
                 <td>$row_repeat</td>
+                <td class='text-center'>
+                	<a class='btn btn-pm btn-action d-inline-flex align-items-center mr-1' href='addpost.php?id=$row_id' title='Edit' target='_blank'>
+						        <img class='icon' src='assets/icons/edit.svg' alt='category icon'> 						        
+						      </a>
+						      <a class='btn btn-pm btn-action d-inline-flex align-items-center' href='include/delete.php?id=$row_id' title='Delete' target='_blank'>
+						        <img class='icon' src='assets/icons/delete.svg' alt='category icon'> 						        
+						      </a>
+                </td>
               </tr>                
            		";
            		$count++;           		
@@ -142,7 +158,22 @@ if($page+1 >= $page_count) {
 
 $pagination = <<<EOD
 <nav aria-label="Search results pages">
-  <ul class="pagination justify-content-center">
+  <ul class="pagination pagination-sm d-sm-none justify-content-center">
+    $pagination_li_prev
+    $pagination_li1
+    $pagination_li2
+    $pagination_li3
+    $pagination_li4    
+    <li class="page-item active" aria-current="page">
+      <span class="page-link">{$eval2($page+1)}</span>
+    </li>
+    $pagination_li_last2
+    $pagination_li_last1
+    $pagination_dots_last
+    $pagination_li_last
+    $pagination_li_next
+  </ul>
+  <ul class="pagination d-none d-sm-flex justify-content-center">
     $pagination_li_prev
     $pagination_li1
     $pagination_li2
