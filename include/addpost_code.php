@@ -17,7 +17,8 @@ function check_xml($content) {
 }
 
 
-$post_title = "";
+$post_title_old = "";
+$title_repeat = NULL;
 $category = "";
 $image = "";
 $intro_meta = '<tr>
@@ -79,14 +80,15 @@ $update = false;
 if(isset($_GET["id"])) {
 	$post_id = mysqli_real_escape_string($conn, trim($_GET["id"]));
 	$action_text = "Edit";
-	$stmt = $conn->prepare("SELECT title, categoryname, image, content FROM `posts` WHERE id=?");
+	$stmt = $conn->prepare("SELECT title, titlerepeat, categoryname, image, content FROM `posts` WHERE id=?");
 	$stmt->bind_param("i", $post_id);
 	$result = $stmt->execute();
 	$get_result =  $stmt->get_result();
 		$rows = $get_result->num_rows;		
 		if($result && $rows != 0) {
 			$row = $get_result->fetch_assoc();
-			$post_title = $row["title"];
+			$post_title_old = $row["title"];
+			$title_repeat = $row["titlerepeat"];
 			$category = $row["categoryname"];
 			$image = $row["image"];
 			$content = $row["content"];
@@ -125,7 +127,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
 	}		
 	
 	$post_category = mysqli_real_escape_string($conn, trim($_POST["category_select"]));	
-	if(isset($_FILES["choose_image"])) {		
+	if(!empty($_FILES["choose_image"]['name'])) {				
 		$choose_image = basename($_FILES["choose_image"]["name"]);
 		$name = pathinfo($choose_image)["filename"];
 		$extension = pathinfo($choose_image)["extension"];
@@ -161,15 +163,14 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
 		$_SESSION["Validation"]["status"] = "is-invalid";	
 	}
 	else {// everything is fine; update categories now	
-		$creator = "Anupam";
-		$title_repeat = NULL;
+		$creator = "Anupam";		
 		//check if title aready exists
 		$stmt = $conn->prepare("SELECT * FROM `posts` WHERE title=? ");
 		$stmt->bind_param("s", $post_title);
 		$result = $stmt->execute();
 		$get_result =  $stmt->get_result();
 		$rows = $get_result->num_rows;		
-		if($result && $rows != 0) {
+		if($post_title != $post_title_old && $result && $rows != 0) {
 			$title_repeat = $rows;			
 		}
 		//$get_result->free_result();
@@ -184,7 +185,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
 		
     $result = $stmt->execute();
     if($result) {      
-    	if( isset($_FILES["choose_image"]) ) {
+    	if( !empty($_FILES["choose_image"]['name']) ) {
     		$image_result = move_uploaded_file($_FILES["choose_image"]["tmp_name"], $target);
 	    		if($image_result == false) {
 	    		$_SESSION["Validation"]["txt"] = "Image Upload Error!!! -- ";

@@ -52,9 +52,12 @@ if($result != false && $res = $stmt->get_result()) { //query was successful
                 	<a class='btn btn-pm btn-action d-inline-flex align-items-center mr-1' href='addpost.php?id=$row_id' title='Edit' target='_blank'>
 						        <img class='icon' src='assets/icons/edit.svg' alt='category icon'> 						        
 						      </a>
-						      <a class='btn btn-pm btn-action d-inline-flex align-items-center' href='include/delete.php?id=$row_id' title='Delete' target='_blank'>
-						        <img class='icon' src='assets/icons/delete.svg' alt='category icon'> 						        
-						      </a>
+						      <form method='POST' class='d-inline-block' action='deletepost.php' target='_blank'>
+						      	<input type='hidden' name='delete_id' value='$row_id'>
+						      	<button disabled type='submit' name='delete' class='make-sure btn btn-pm btn-action d-inline-flex align-items-center' title='Delete' target='_blank'>
+							        <img class='icon' src='assets/icons/delete.svg' alt='category icon'> 						        
+							      </button>
+						      </form>
                 </td>
               </tr>                
            		";
@@ -80,9 +83,12 @@ if($result != false && $res = $stmt->get_result()) { //query was successful
                 	<a class='btn btn-pm btn-action d-inline-flex align-items-center mr-1' href='addpost.php?id=$row_id' title='Edit' target='_blank'>
 						        <img class='icon' src='assets/icons/edit.svg' alt='category icon'> 						        
 						      </a>
-						      <a class='btn btn-pm btn-action d-inline-flex align-items-center' href='include/delete.php?id=$row_id' title='Delete' target='_blank'>
-						        <img class='icon' src='assets/icons/delete.svg' alt='category icon'> 						        
-						      </a>
+						      <form method='POST' class='d-inline-block' action='deletepost.php' target='_blank'>
+						      	<input type='hidden' name='delete_id' value='$row_id'>
+						      	<button disabled type='submit' name='delete' class='make-sure btn btn-pm btn-action d-inline-flex align-items-center' title='Delete' target='_blank'>
+							        <img class='icon' src='assets/icons/delete.svg' alt='category icon'> 						        
+							      </button>
+						      </form>
                 </td>
               </tr>                
            		";

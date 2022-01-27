@@ -36,7 +36,7 @@ require_once("include/addpost_code.php");
               <div class="form-row">
                 <div class="col-12">
                   <label for="post_title">Post title</label>
-                  <input required name="post_title" type="text" id="post_title" class="form-control <?php echo validation_status(); ?> " placeholder="Post Title" value="<?php echo $post_title; ?>">
+                  <input required name="post_title" type="text" id="post_title" class="form-control <?php echo validation_status(); ?> " placeholder="Post Title" value="<?php echo $post_title_old; ?>">
                   <div  class=" <?php echo validation_class(); ?> ">
                     <?php echo validation_txt(); ?>
                   </div>

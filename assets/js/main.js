@@ -67,7 +67,7 @@ $(document).ready(function(){
   !function(){
     var rand1, rand2;
     $("button[name='identifier'].sure").prop("disabled", false);
-    $("button[name='identifier'].sure").click(function(e){ 
+    $("button[name='identifier'].sure").click(function(e) { 
       if(!!$(this).closest("form")[0].reportValidity()) {  
         //show modal
         rand1 = Math.ceil(Math.random() * 5);
@@ -91,6 +91,47 @@ $(document).ready(function(){
     $("#sure_submit").click(function(){
       $(this).closest(".modal").prev("form")[0].requestSubmit($("button[name='identifier']")[0]);
     });
+  }();
+  //submit button functionality finished
+
+  //class based general button pop up functionality for make-sure-captcha
+  !function(){
+    var rand1, rand2;
+    $("button.make-sure").prop("disabled", false);
+    $("button.make-sure").click(function(e) {       
+      if(!!$(this).closest("form")[0].reportValidity()) {         
+        //show modal
+        rand1 = Math.ceil(Math.random() * 5);
+        rand2 = Math.ceil(Math.random() * 5); 
+        var $form = $(this).closest("form");    
+        $(".modal_sure").find(".captcha_sure_label > strong").html(rand1 + "+" + rand2 + " =");        
+        $(".modal_sure").modal("show");        
+        $(".modal_sure").children(".sure_submit").prop("disabled", true);
+
+        $(".modal_sure").find(".sure_submit").click(function(){          
+          $form.submit();
+          $form.closest("tr").fadeTo("slow", 0.33).css("pointer-events", "none");
+          $(".modal_sure").find(".sure_submit").off("click");
+        });       
+      }      
+      e.preventDefault();              
+    });
+
+    $(".captcha_sure_input").on("input", function(){
+      if ( $(this).val() == (rand1 + rand2) ) {
+        $(this).closest(".modal").find(".sure_submit").prop("disabled", false);
+      }
+      else {
+        $(this).closest(".modal").find(".sure_submit").prop("disabled", true);
+      }
+    });
+
+    $(".modal_sure").on("hide.bs.modal", function(){
+      $(this).find(".sure_submit").prop("disabled", true);
+      $(".modal_sure").find(".sure_submit").off("click");
+    });
+
+    
   }();
   //submit button functionality finished
 

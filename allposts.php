@@ -85,7 +85,7 @@ require_once("include/allposts_code.php");
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">Close</button>
-                    <button disabled id="sure_submit" class=" btn btn-pm px-4" type="button" >Submit</button>
+                    <button disabled class="sure_submit" class=" btn btn-pm px-4" type="button" >Submit</button>
                   </div>
                 </div>
               </div>
@@ -109,7 +109,26 @@ require_once("include/allposts_code.php");
               </thead>
               <tbody> <?php echo $posts_table_content ?> </tbody>
             </table>
-
+            <div class="modal fade modal_sure" tabindex="-1" aria-labelledby="sure_heading" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title sure_heading" id="">Are You Sure?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body input-group">                    
+                    <label class="d-flex align-items-center m-0 mr-3 captcha_sure_label"  ><strong>2 + 3 = </strong></label>
+                    <input class="captcha_sure_input form-control" type="text" class="form-control">
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">Close</button>
+                    <button disabled  class="sure_submit btn btn-pm px-4" type="button" >Submit</button>
+                  </div>
+                </div>
+              </div>
+            </div>     
           </main>
           <?php require_once("include/footer_dashboard.php") ?>
         </div>
