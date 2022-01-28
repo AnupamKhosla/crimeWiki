@@ -81,11 +81,11 @@ require_once("include/allposts_code.php");
                   </div>
                   <div class="modal-body input-group">                     
                     <label class="d-flex align-items-center m-0 mr-3" for="captcha_sure" id="captcha_sure_label"><strong>2 + 3 = </strong></label>
-                    <input type="text" class="form-control" id="captcha_sure_input" aria-describedby="basic-addon3">
+                    <input type="number" class="form-control" id="captcha_sure_input" aria-describedby="basic-addon3">
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">Close</button>
-                    <button disabled class="sure_submit" class=" btn btn-pm px-4" type="button" >Submit</button>
+                    <button disabled id="sure_submit" class="btn btn-pm px-4" type="button" >Submit</button>
                   </div>
                 </div>
               </div>
@@ -120,7 +120,7 @@ require_once("include/allposts_code.php");
                   </div>
                   <div class="modal-body input-group">                    
                     <label class="d-flex align-items-center m-0 mr-3 captcha_sure_label"  ><strong>2 + 3 = </strong></label>
-                    <input class="captcha_sure_input form-control" type="text" class="form-control">
+                    <input class="captcha_sure_input form-control" type="number" class="form-control">
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">Close</button>

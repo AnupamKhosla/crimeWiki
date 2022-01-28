@@ -91,6 +91,13 @@ $(document).ready(function(){
     $("#sure_submit").click(function(){
       $(this).closest(".modal").prev("form")[0].requestSubmit($("button[name='identifier']")[0]);
     });
+    
+    $("#captcha_sure_input").keypress(function(event){         
+      if(event.which == 13) {          
+        $(this).closest(".modal-content").find("#sure_submit:not(:disabled)").click();  
+      } 
+    });
+
   }();
   //submit button functionality finished
 
@@ -124,6 +131,12 @@ $(document).ready(function(){
       else {
         $(this).closest(".modal").find(".sure_submit").prop("disabled", true);
       }
+    });
+
+    $(".captcha_sure_input").keypress(function(event){         
+      if(event.which == 13) {          
+        $(this).closest(".modal-content").find(".sure_submit:not(:disabled)").click();  
+      } 
     });
 
     $(".modal_sure").on("hide.bs.modal", function(){
