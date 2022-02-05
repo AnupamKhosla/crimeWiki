@@ -1,10 +1,10 @@
 <?php 
 require_once('include/config.php');
 require_once('include/functions.php');
-require_once('include/index_code.php');
+require_once('include/search_code.php')
 ?>
 <!doctype html>
-  <html class="no-js homepage" lang="">
+  <html class="no-js searchpage" lang="">
 
   <head>
     <meta charset="utf-8">
@@ -38,10 +38,19 @@ require_once('include/index_code.php');
         
         <?php require_once("include/nav.php") ?>
 
-        <form action="" class="filters">  
+        <form action="" class="filters mb-3">  
           <div class="row custom-container m-auto">
             <div class="col-lg-5 col-md-12 d-flex">
-              <h1 class="main-title h3 font-weight-light w-100 text-center text-lg-left">A Wikipedea of world-wide crime</h1>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend advance-prepend">
+                  <div class="input-group-text advance">
+                    <input type="checkbox" aria-label="Checkbox for following text input">
+                    <span class="ml-2">Advance Search</span>
+                  </div>
+                </div>
+                <input name="title" type="text" class="form-control title" placeholder="Type here" aria-label="Text input with checkbox">
+              </div>
+              
             </div>
             <div class="col-sm-6 col-xs-12 offset-sm-3 d-md-none">
               <button type="button" class="go sort btn text-white d-flex align-items-center justify-content-center w-100">
@@ -50,18 +59,18 @@ require_once('include/index_code.php');
               </button>
             </div>
             <div class="w-100 d-md-none"></div>
-            <div class="col pl-lg-0">
+            <div class="col ">
               <div class="row sort-dropdown d-none d-md-flex">
                 <div class="col-sm-6 offset-sm-3 col-md-3 offset-md-2 col-lg-5 offset-lg-0 pl-lg-0 mt-3 mt-md-0">
-                  <select class="w-100" name="Choose_Catgory">
+                  <select  class="w-100" name="category">
                     <option value="">Category</option>
-                    <option value="saab">Criminal</option>
-                    <option value="opel">Gang</option>
-                    <option value="audi">Crime</option>
+                    <option value="criminals">Criminal</option>
+                    <option value="crime_organization">Gang</option>
+                    <option value="blog">Crime</option>
                   </select>
                 </div>    
                 <div class="col-sm-6 offset-sm-3 col-md-3 offset-md-0 col-lg-5 pl-lg-0 mt-3 mt-md-0">
-                  <select class="w-100" name="filter_by">
+                  <select class="w-100" name="filter">
                     <option value="">Sort By</option>
                     <option value="saab">Latest</option>
                     <option value="opel">Popular</option>
@@ -77,67 +86,18 @@ require_once('include/index_code.php');
               </div>
             </div>
           </div>
-        </form>
-        <div class="slider row ">
-          <div class="col-md-10 offset-md-1">
-            <div class="slick">                       
-              <?php echo $slides; ?>
-            </div>        
-          </div>
-        </div>
-        
+        </form>        
       </div>
     </section>
 
-    <section class="about">
+    <section class="about results"> 
       <div class="container">
-        <div class="row align-items-center">
-          <div class="col-lg-3 offset-lg-1">
-            <img class="logo-double img-fluid d-none d-lg-block m-auto" src="../assets/img/logo_gun.png" alt="Logo double gun">
-          </div>
-          <div class="col-lg-7 about-text pl-lg-5">
-            <h1 class="logo-text text-center font-weight-normal">The CrimeWiki</h1>
-            <img class="logo-double img-fluid d-block d-lg-none m-auto" src="../assets/img/logo_gun.png" alt="Logo double gun">
-            <p>
-              <?php echo $blog_about_text; ?>              
-            </p>
-            <button type="button" class="btn btn-pm d-block cta">Github Repo</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="month">
-      <div class="container">
-        <h2 class="month-heading text-center text-pm h3 font-weight-normal">Crime of the Month</h2>
-        <h3 class="post-title text-center h5"> <?php echo $title; ?> </h3>
-        <div class="embed-responsive embed-responsive-16by9 youtube">
-          <iframe loading="lazy" class="embed-responsive-item" src=" <?php echo $video_link; ?> " allowfullscreen></iframe>
-        </div>
-
-        <div class="row post-content">
-          <div class="col-xl-8 col-lg-7 post-intro">
-            <div class="wrapper2">
-              <?php echo $introduction; ?>
-            </div>
-            <button class="btn btn-pm m-auto2 details">See Details</button>
-          </div>
-          <div class="col-xl-4 col-lg-5 wrapper">
-            <div class="post-sources panel d-flex flex-column">
-              <div class="panel-title text-center">
-                <h4 class="m-0">Sources</h4>
-              </div>
-              <div class="panel-content flex-grow-1">
-                <?php echo $sources; ?>
-              </div>
-              <span class="publish-date"> Published on <?php echo date( 'd/m/Y H:i:s', htmlspecialchars($publish_date) )?></span>
-            </div>
-           
-          </div>
-        </div>
+        <h2 class="h5 text-pm text-center mb-5">Result</h2>
         
+        <?php echo $posts; ?>
+                
       </div>
-    </section>
+    </section>    
 
    <?php require_once("include/footer.php"); ?>
 

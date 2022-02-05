@@ -62,6 +62,19 @@
 		margin-top: 20px;
 	}
 }
+.results {
+	.post {
+		padding: 30px;
+		padding-left: 15px;
+		background-color: var(--white-bg);
+		border-radius: 4px;
+		border-left: 4px solid var(--theme-pm); 
+	}
+	.post .card {
+		border: 5px solid var(--white-bg-dark);
+    background-color: var(--white-bg-dark);
+	}
+}
 
 @media (max-width: 991.8px) {
 	.about {

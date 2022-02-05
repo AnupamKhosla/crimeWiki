@@ -147,6 +147,47 @@
 		.slick-arrow:not(.slick-disabled):focus {
 			background-color: white; 
 		}
+	}	
+}
+
+.searchpage {		
+	input.title {
+		background-color: rgba(44,44,44,0.3);
+		border: none;
+		color: #fff;	
+		transition: background-color .3s ease;
+	}
+	input.title:focus {
+		box-shadow: none;
+		background-color: var(--theme-pm-x-dark);
+	} 
+	input.title::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+	  color: #ff8888;
+	  opacity: 1; /* Firefox */
+	}
+
+	input.title:-ms-input-placeholder { /* Internet Explorer 10-11 */
+	  color: #ff8888;
+	}
+
+	input.title::-ms-input-placeholder { /* Microsoft Edge */
+	  color: #ff8888;
+	}
+	.selectric {
+		border-radius: 6px;
+	}	
+	.filters {
+		.go {
+			border-radius: 6px; 
+		}
+		.advance {
+			background-color: rgba(44,44,44,0.4);
+			border: none;
+			color: #fff;
+		}
+		.advance-prepend {
+			margin-right: 0;
+		}
 	}
 }
 

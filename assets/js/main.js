@@ -1,8 +1,8 @@
 "use strict";
 $(document).ready(function(){
 
-  if($("html").hasClass("homepage")) {
-    $("select").selectric();
+  $("select").selectric();
+  if($("html").hasClass("homepage")) {    
     $(".slick").slick({
       // normal options...      
       infinite: false,
