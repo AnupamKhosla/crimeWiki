@@ -1,7 +1,10 @@
 "use strict";
 $(document).ready(function(){
 
-  $("select").selectric();
+  if($("html").hasClass("homepage") || $("html").hasClass("searchpage")) {
+    $("select").selectric();
+  }
+
   if($("html").hasClass("homepage")) {    
     $(".slick").slick({
       // normal options...      

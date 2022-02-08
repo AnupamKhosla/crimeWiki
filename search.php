@@ -31,14 +31,14 @@ require_once('include/search_code.php')
     <meta name="theme-color" content="#E92222">
   </head>
 
-  <body>
+  <body class="d-flex flex-column">
 
     <section class="hero text-white">
       <div class="container">
         
         <?php require_once("include/nav.php") ?>
 
-        <form action="" class="filters mb-3">  
+        <form action="" class="filters mb-3" method="GET">  
           <div class="row custom-container m-auto">
             <div class="col-lg-5 col-md-12 d-flex">
               <div class="input-group mb-3">
@@ -48,7 +48,7 @@ require_once('include/search_code.php')
                     <span class="ml-2">Advance Search</span>
                   </div>
                 </div>
-                <input name="title" type="text" class="form-control title" placeholder="Type here" aria-label="Text input with checkbox">
+                <input value="<?php echo $_GET["title"] ?? ''; ?>" name="title" type="text" class="form-control title" placeholder="Type here" aria-label="Text input with checkbox">
               </div>
               
             </div>
@@ -62,19 +62,17 @@ require_once('include/search_code.php')
             <div class="col ">
               <div class="row sort-dropdown d-none d-md-flex">
                 <div class="col-sm-6 offset-sm-3 col-md-3 offset-md-2 col-lg-5 offset-lg-0 pl-lg-0 mt-3 mt-md-0">
-                  <select  class="w-100" name="category">
-                    <option value="">Category</option>
-                    <option value="criminals">Criminal</option>
-                    <option value="crime_organization">Gang</option>
-                    <option value="blog">Crime</option>
+                  <select  class="w-100" name="category">                    
+                    <option selected disabled value="" >Category</option>
+                        <?php echo category_select(); ?>
                   </select>
                 </div>    
                 <div class="col-sm-6 offset-sm-3 col-md-3 offset-md-0 col-lg-5 pl-lg-0 mt-3 mt-md-0">
                   <select class="w-100" name="filter">
                     <option value="">Sort By</option>
-                    <option value="saab">Latest</option>
-                    <option value="opel">Popular</option>
-                    <option value="audi">Country</option>
+                    <option value="datetime">Latest</option>
+                    <option value="popular">Popular</option>
+                    <option value="country">Country</option>
                   </select>
                 </div>
                 <div class="col-sm-6 offset-sm-3 offset-md-0 col-lg-2 col-md-2 pl-lg-0 mt-3 mt-md-0">
@@ -90,9 +88,9 @@ require_once('include/search_code.php')
       </div>
     </section>
 
-    <section class="about results"> 
+    <section class="about results flex-grow-1"> 
       <div class="container">
-        <h2 class="h5 text-pm text-center mb-5">Result</h2>
+        <h2 class="h5 text-pm text-center mb-4">Result</h2>
         
         <?php echo $posts; ?>
                 

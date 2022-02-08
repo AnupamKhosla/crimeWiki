@@ -128,14 +128,19 @@ if(!!$result && $result->num_rows) {
 	$post_id = mysqli_real_escape_string($conn, $row["content"]);
 	$video_link = htmlspecialchars($row["wikilink"]);
 	$title_repeat = htmlspecialchars($row["titlerepeat"]);
-
-	$result = $conn->query("SELECT title FROM posts WHERE id=$post_id;");
-	if(!!$result && $result->num_rows) {
-		$post_title = htmlspecialchars($result->fetch_row()[0]);
+	
+	if(empty($post_id)) {
+		$post_title = "";
 	}
 	else {
-		die("Could not fetch results from post with id=$post_id" . $conn->error);
-	}
+		$result = $conn->query("SELECT title FROM posts WHERE id = '$post_id';");
+		if(!!$result && $result->num_rows) {
+			$post_title = htmlspecialchars($result->fetch_row()[0]);
+		}
+		else {
+			die("Could not fetch results from post with id=$post_id" . $conn->error);
+		}
+	}	
 }
 else {
 	die("Could not fetch results from $blog_month_post" . $conn->error);

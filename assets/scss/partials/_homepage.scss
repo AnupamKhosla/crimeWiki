@@ -2,8 +2,10 @@
 .about {
 	& {
 		background-color: var(--white-bg-dark);
-		padding: 50px 0 60px 0;
-		font-weight: 500;
+		padding: 50px 0 60px 0;		
+	}
+	.about-text {
+		font-weight: 500; 
 	}
 	.logo-double {
 		mix-blend-mode: multiply;
@@ -63,16 +65,18 @@
 	}
 }
 .results {
+	& {
+		padding: 30px 0;
+	}
 	.post {
-		padding: 30px;
-		padding-left: 15px;
+		padding: 30px 15px;		
 		background-color: var(--white-bg);
 		border-radius: 4px;
 		border-left: 4px solid var(--theme-pm); 
 	}
 	.post .card {
-		border: 5px solid var(--white-bg-dark);
-    background-color: var(--white-bg-dark);
+		border: 5px solid transparent;
+    background-color: rgba(0,0,0,0.15);
 	}
 }
 

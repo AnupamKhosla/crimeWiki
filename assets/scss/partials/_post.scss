@@ -270,6 +270,11 @@
 			margin-bottom: 15px;
 		}
 	}
+	.results {
+		.post-profile {
+			max-width: none;
+		}
+	}
 }
 
 @media (max-width: 767.8px) {
