@@ -13,8 +13,6 @@ body {
 	background-color: var(--theme-pm);
 }
 
-
-
 .sidebar .cut-top {
 	border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
@@ -111,7 +109,9 @@ main {
 		margin-bottom: 4px;
 	}
 
-
+	td.btns { /*editpost page table dlt edt btns*/
+		min-width: 102px; 
+	}
 
 }
 

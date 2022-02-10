@@ -48,7 +48,7 @@ if($result != false && $res = $stmt->get_result()) { //query was successful
                 <td>$row_category</td>                
                 <td>$row_datetime</td>
                 <td>$row_repeat</td>
-                <td class='text-center'>
+                <td class='text-center btns'>
                 	<a class='btn btn-pm btn-action d-inline-flex align-items-center mr-1' href='addpost.php?id=$row_id' title='Edit' target='_blank'>
 						        <img class='icon' src='assets/icons/edit.svg' alt='category icon'> 						        
 						      </a>
@@ -113,6 +113,7 @@ if($result != false && $res = $stmt->get_result()) { //query was successful
 else {
 	die("Could not fetch results from cateory table" . $conn->error);
 }
+
 $url = $_SERVER["REQUEST_URI"];
 $query_str = parse_url($url, PHP_URL_QUERY);
 parse_str($query_str, $query_params);

@@ -52,8 +52,8 @@ require_once("include/allposts_code.php");
                         <label class="input-group-text mb-0" for="category_select">Category</label>
                       </div>
                       <select name="category" class="custom-select" id="category">
-                        <option selected disabled value="" >Choose...</option>
-                        <?php echo category_select(); ?>                        
+                        <option selected value="" >Choose...</option>
+                        <?php echo category_select($_GET["category"]); ?>                        
                       </select>  
                     </div>
                     <div class="pl-sm-0 col-sm-4 col-lg-3 title-repeat-container input-group mb-2 mb-sm-0">
@@ -95,7 +95,7 @@ require_once("include/allposts_code.php");
             
             <h2 class="h5 text-pm text-center my-4" >Result</h2>
             <?php echo $pagination; ?>
-            <table class="table table-responsive-sm table-bordered bg-white table-hover my-3">
+            <table class="table table-responsive-lg table-bordered bg-white table-hover my-3">
               <thead>
                 <tr>
                   <th scope="col">Sr no.</th>

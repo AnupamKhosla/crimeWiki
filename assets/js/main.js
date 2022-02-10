@@ -1,10 +1,12 @@
 "use strict";
 $(document).ready(function(){
 
+  //select form plugin
   if($("html").hasClass("homepage") || $("html").hasClass("searchpage")) {
     $("select").selectric();
   }
 
+  //slick slider
   if($("html").hasClass("homepage")) {    
     $(".slick").slick({
       // normal options...      
@@ -46,6 +48,14 @@ $(document).ready(function(){
     });
   }
 
+  //image loading gif to be removed on load  
+  !function(){
+    $(".slider .post-pic, .post .post-pic").on("load", function(){      
+      $(this).css("background", "transparent");
+    }).each(function(){
+      if (this.complete || this.complete === undefined){ this.src = this.src; } //needed for potential cached images
+    });
+  }();
 
   /*toggle filters functionality on phone*/
   !function(){

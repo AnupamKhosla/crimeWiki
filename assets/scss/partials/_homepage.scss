@@ -110,6 +110,17 @@
 	}
 } 
 
+@media (max-width: 767.8px) {
+	.results {
+		& {
+			padding: 30px 7.5px;
+		}
+		.post {
+			padding: 22.5px 0px;
+		}
+	}
+}
+
 @media (max-width: 575.8px) {
 	.about {
 		& {
@@ -135,6 +146,14 @@
 		}
 		.publish-date {
 			padding-left: 30px;
+		}
+	}
+	.results {
+		& {
+			padding: 22.5px 7.5px;
+		}
+		.post {
+			padding: 22.5px 0px;
 		}
 	}
 }
