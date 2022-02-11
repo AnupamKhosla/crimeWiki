@@ -4,71 +4,174 @@ $posts = "";
 
 if($_SERVER['REQUEST_METHOD'] === 'GET') {
 
-	$page = !empty($_GET["page"]) ? $_GET["page"]-1 : 0;
+	$page = !empty($_GET["page"]) ? $_GET["page"]-1 : 0;	
 	$page_30 = 30*$page;
 	$title = empty($_GET["title"]) ? "%" : "%".$_GET["title"]."%";
 	$category = empty($_GET["category"]) ? "%" : $_GET["category"];
 	$filter = empty($_GET["filter"]) ? "datetime" : $_GET["filter"];
 	$conn = make_db_connection();
 
+	if(isset($_GET["advance"]) && $_GET["advance"]=="on" ) {
+		$advance_checked = true;
+		$pagination = "<div class='text-center font-weight-500'>Nothing Found!</div>";
+		$sql_string = "OR content LIKE ?";		
+	}
+	else {
+		$advance_checked = false;
+		$pagination = "<div class='text-center font-weight-500'>Nothing Found!  did you try Advance Search?</div>";
+		$sql_string = "OR ?=title"; 
+		//this condition is never true
+	}
+
 	if($filter == "datetime") {
-		$stmt = $conn->prepare("SELECT datetime, title, image, titlerepeat, content FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND title LIKE ? AND categoryname LIKE ? ORDER BY datetime DESC LIMIT ?, 30");
-		$stmt->bind_param("ssi", $title, $category, $page_30);
+		$stmt = $conn->prepare("SELECT datetime, title, image, titlerepeat, content FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND (title LIKE ? $sql_string) AND categoryname LIKE ? ORDER BY datetime DESC LIMIT ?, 30");		
 	}
-	else if ($filter == "popular") {
-		$stmt = $conn->prepare("SELECT datetime, title, image, titlerepeat, content FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND title LIKE ? AND categoryname LIKE ? ORDER BY CHAR_LENGTH(content) DESC LIMIT ?, 30");
-		$stmt->bind_param("ssi", $title, $category, $page_30);
+	else if($filter == "popular") {
+		$stmt = $conn->prepare("SELECT datetime, title, image, titlerepeat, content FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND (title LIKE ? $sql_string) AND categoryname LIKE ? ORDER BY CHAR_LENGTH(content) DESC LIMIT ?, 30");		
 	}
-	
+	else if($filter == "country") {
+		$stmt = $conn->prepare("SELECT datetime, title, image, titlerepeat, content FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND (title LIKE ? $sql_string) AND categoryname LIKE ? OR ?=2");	
+		//if $page_30 is same as 2/30 mysqli will show all results, but its not a security issue.	
+	}
+	$stmt->bind_param("sssi", $title, $title, $category, $page_30);
 	$result = $stmt->execute();		
-	if($result != false && $result = $stmt->get_result()) { //query was successful
+	if( $result != false && ($result = $stmt->get_result()) && ($result->num_rows > 0) ) { //query was successful
 		libxml_use_internal_errors(true); //important
 		$tmp = new DOMDocument();
+		$post_array = []; //for filter==country case
 		
 		while($row = $result->fetch_assoc()) { //first iteration only to nemove NULL table valuesand set $count				
 			$row_name = htmlspecialchars($row['title']);
 			if(strlen($row_name) > 200) {
 				$row_name = substr($row_name, 0, 200) . "...";
-			} 
-			
+			} 			
 			$tmp->loadHTML('<!DOCTYPE html><meta charset="UTF-8">' . $row['content']);
 			$content = $tmp->getElementsByTagName("content")[0];
-			
-			$introduction = "";			
-			$p = $content->getElementsByTagName('p')[0];
-			$introduction .= $tmp->saveHTML($p);
-			while(isset($p->nextSibling) && $p->nextSibling->nodeName != "hr") {						
-				$p = $p->nextSibling;
-				if(strlen($introduction) > 1700) {
-					$introduction = $introduction . "...";
-					break;
+
+			if($filter == "country") {
+				$post_array[] = $row;				
+			}
+			else {
+				$introduction = "";			
+				$p = $content->getElementsByTagName('p')[0];
+				$introduction .= $tmp->saveHTML($p);
+				while(isset($p->nextSibling) && $p->nextSibling->nodeName != "hr") {						
+					$p = $p->nextSibling;
+					if(strlen($introduction) > 1700) {
+						$introduction = $introduction . "...";
+						break;
+					}
+					else {
+						$introduction .= $tmp->saveHTML($p);
+					}									
+				}					
+				$datetime = date( 'd/m/Y H:i:s', htmlspecialchars($row["datetime"]) );
+				$row_image = image_path(htmlspecialchars($row["image"]));
+				$row_repeat = htmlspecialchars($row['titlerepeat']);
+				$posts .= "<div class='row post mb-4 mb-sm-5'>
+										<div class='col-xl-3 col-md-4'>									
+											<h3 class='text-pm d-md-none text-center pt-0 mb-3'>$row_name</h3>			
+											<div class='card post-profile '>
+												<img src='$row_image' class='card-img-top post-pic' alt='profile pic'>              
+											</div>
+										</div>
+										<div class='col-xl-9 col-md-8 d-flex flex-column'>		
+											<div class='d-flex flex-lg-row flex-column'>
+												<h3 class='text-pm d-none d-md-block mb-sm-1 mb-lg-2'>$row_name</h3>
+												<span class='publish-date text-black-50 small  ml-lg-auto  font-weight-500 mt-2 mt-md-0 mt-lg-2 mb-sm-2 mb-lg-0'>$datetime</span> 		
+											</div>																		          
+											$introduction            
+											<div class='d-flex justify-content-center mt-auto pt-3'>
+												<a href='post/$row_name/$row_repeat' class='btn btn-pm d-inline-flex align-items-center'>See Details</a>
+											</div>	
+										</div> 
+									</div>";
+			}			
+		}
+		if($filter == "country" && !empty($post_array)) { 
+			function xpath_query($obj) {
+				if($obj->length == 0) {
+					return NULL;
 				}
 				else {
-					$introduction .= $tmp->saveHTML($p);
-				}									
-			}					
-			$datetime = date( 'd/m/Y H:i:s', htmlspecialchars($row["datetime"]) );
-			$row_image = image_path(htmlspecialchars($row["image"]));
-			$row_repeat = htmlspecialchars($row['titlerepeat']);
-			$posts .= "<div class='row post mb-4 mb-sm-5'>
-									<div class='col-xl-3 col-md-4'>									
-										<h3 class='text-pm d-md-none text-center pt-0 mb-3'>$row_name</h3>			
-										<div class='card post-profile '>
-											<img src='$row_image' class='card-img-top post-pic' alt='profile pic'>              
+					return $obj;
+				}
+			}							
+			function cmp($tmp) {
+				return function ($a, $b) use ($tmp) {				
+					
+					$tmp->loadHTML('<!DOCTYPE html><meta charset="UTF-8">' . $a['content']);
+					$xpath = new DomXPath($tmp);						
+
+					$a_country = xpath_query($xpath->query("//details//tr[th='Nationality']/td")) ?? xpath_query($xpath->query("//details//tr[th='Citizenship']/td")) ?? xpath_query($xpath->query("//details//tr[th='Country']/td")) ?? 0;
+					if(gettype($a_country) == "object"){ 
+						
+						$a_country = $tmp->saveHTML($a_country[0]);
+					} else {
+					  $a_country = 0;
+					}
+					
+					$tmp->loadHTML('<!DOCTYPE html><meta charset="UTF-8">' . $b['content']);
+					$xpath = new DomXPath($tmp);	 
+
+					$b_country = xpath_query($xpath->query("//details//tr[th='Nationality']/td")) ?? xpath_query($xpath->query("//details//tr[th='Citizenship']/td")) ?? xpath_query($xpath->query("//details//tr[th='Country']/td")) ?? 0;
+					if(gettype($b_country) == "object"){ 						
+						$b_country = $tmp->saveHTML($b_country[0]);
+					} else {
+					  $b_country = 0;
+					}
+					
+					return strcmp($a_country, $b_country);
+				};
+			}
+
+			usort($post_array, cmp($tmp));
+			
+			foreach($post_array as $key=>$value) {
+				$tmp->loadHTML('<!DOCTYPE html><meta charset="UTF-8">' . $value['content']);
+				$content = $tmp->getElementsByTagName("content")[0];
+				$introduction = "";			
+				$p = $content->getElementsByTagName('p')[0];
+				$introduction .= $tmp->saveHTML($p);
+				while(isset($p->nextSibling) && $p->nextSibling->nodeName != "hr") {						
+					$p = $p->nextSibling;
+					if(strlen($introduction) > 1700) {
+						$introduction = $introduction . "...";
+						break;
+					}
+					else {
+						$introduction .= $tmp->saveHTML($p);
+					}									
+				}					
+				$row_name = htmlspecialchars($value['title']);
+				if(strlen($row_name) > 200) {
+					$row_name = substr($row_name, 0, 200) . "...";
+				} 
+				$datetime = date( 'd/m/Y H:i:s', htmlspecialchars($value["datetime"]) );
+				$row_image = image_path(htmlspecialchars($value["image"]));
+				$row_repeat = htmlspecialchars($value['titlerepeat']);
+				$posts .= "<div class='row post mb-4 mb-sm-5'>
+										<div class='col-xl-3 col-md-4'>									
+											<h3 class='text-pm d-md-none text-center pt-0 mb-3'>$row_name</h3>			
+											<div class='card post-profile '>
+												<img src='$row_image' class='card-img-top post-pic' alt='profile pic'>              
+											</div>
 										</div>
-									</div>
-									<div class='col-xl-9 col-md-8 d-flex flex-column'>		
-										<div class='d-flex flex-lg-row flex-column'>
-											<h3 class='text-pm d-none d-md-block mb-sm-1 mb-lg-2'>$row_name</h3>
-											<span class='publish-date text-black-50 small  ml-lg-auto  font-weight-500 mt-2 mt-md-0 mt-lg-2 mb-sm-2 mb-lg-0'>$datetime</span> 		
-										</div>																		          
-										$introduction            
-										<div class='d-flex justify-content-center mt-auto pt-3'>
-											<a href='post/$row_name/$row_repeat' class='btn btn-pm d-inline-flex align-items-center'>See Details</a>
-										</div>	
-									</div> 
-								</div>";
+										<div class='col-xl-9 col-md-8 d-flex flex-column'>		
+											<div class='d-flex flex-lg-row flex-column'>
+												<h3 class='text-pm d-none d-md-block mb-sm-1 mb-lg-2'>$row_name</h3>
+												<span class='publish-date text-black-50 small  ml-lg-auto  font-weight-500 mt-2 mt-md-0 mt-lg-2 mb-sm-2 mb-lg-0'>$datetime</span> 		
+											</div>																		          
+											$introduction            
+											<div class='d-flex justify-content-center mt-auto pt-3'>
+												<a href='post/$row_name/$row_repeat' class='btn btn-pm d-inline-flex align-items-center'>See Details</a>
+											</div>	
+										</div> 
+									</div>";
+			}
+			
 		}
+
 
 
 

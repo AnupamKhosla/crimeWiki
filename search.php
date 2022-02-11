@@ -44,7 +44,7 @@ require_once('include/search_code.php')
               <div class="input-group mb-3">
                 <div class="input-group-prepend advance-prepend">
                   <div class="input-group-text advance w-100">
-                    <input type="checkbox" aria-label="Checkbox for following text input">
+                    <input name="advance" <?php if(!!$advance_checked) {echo "checked";} ?> type="checkbox" aria-label="Checkbox for following text input">
                     <span class="ml-2 advance-copy">Advance Search</span>
                   </div>
                 </div>
