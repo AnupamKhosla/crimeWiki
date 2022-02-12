@@ -90,17 +90,18 @@ if(SETUP) { //if db already setup
           wikilink VARCHAR(500) NULL UNIQUE,
           titlerepeat INT(5),
           creatorname VARCHAR(50) NOT NULL,  
+          country VARCHAR(50), 
           image VARCHAR(500) NOT NULL,  
           content VARCHAR(10000000),
           categoryname VARCHAR(100) NOT NULL,          
           FOREIGN KEY (categoryname) REFERENCES categories(name)
         );
         INSERT INTO categories (id, datetime, name, creatorname) VALUES (1, ' . $date_time . ', "blog", "Anupam");
-        INSERT INTO posts(id, datetime, title, wikilink, titlerepeat, creatorname, image, content, categoryname) VALUES (
-          1, ' . $date_time . ', "$blog_month_post", NULL, NULL, "SuperUser", "default.png", NULL, "blog"
+        INSERT INTO posts(id, datetime, title, wikilink, titlerepeat, creatorname, country, image, content, categoryname) VALUES (
+          1, ' . $date_time . ', "$blog_month_post", NULL, NULL, "SuperUser", NULL, "default.png", NULL, "blog"
         ),
         (
-          2, ' . $date_time+1 . ', "$blog_about_text", NULL, NULL, "SuperUser", "default.png", NULL, "blog"
+          2, ' . $date_time+1 . ', "$blog_about_text", NULL, NULL, "SuperUser", NULL, "default.png", NULL, "blog"
         );
         ';  
         $result = $conn->multi_query($sql);

@@ -15,12 +15,20 @@ function check_xml($content) {
 		return false;
 	}
 }
-
+function xpath_query($obj) {
+	if($obj->length == 0) {
+		return NULL;
+	}
+	else {
+		return $obj;
+	}
+}
 
 $post_title_old = "";
 $title_repeat = NULL;
 $category = "";
 $image = "";
+$country = "0";
 $intro_meta = '<tr>
                         <th>Crimes</th>
                         <td>34</td>  
@@ -121,9 +129,16 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
 		$content = NULL;
 	}
 	else {
-		$str = trim($_POST["intro_meta"]) . trim($_POST["details_meta"]) . trim($_POST["related_meta"]) . trim($_POST["sources_meta"]) . trim($_POST["post_content"]);
-		$content = $str; 
+		$content = trim($_POST["intro_meta"]) . trim($_POST["details_meta"]) . trim($_POST["related_meta"]) . trim($_POST["sources_meta"]) . trim($_POST["post_content"]);
 		//$content cannot be escaped mysqli_escape because of xml structure		
+		$country = $_POST["details_meta"]; 
+		$tmp = new DOMDocument();
+		$tmp->loadHTML('<!DOCTYPE html><meta charset="UTF-8">' . $_POST["details_meta"]);		
+		$xpath = new DomXPath($tmp);
+		$country = xpath_query($xpath->query("//tr[th='Nationality']/td")) ?? xpath_query($xpath->query("//tr[th='Citizenship']/td")) ?? xpath_query($xpath->query("//tr[th='Country']/td")) ?? NULL;
+		if(!is_null($country)) {			
+			$country = $country[0]->textContent;
+		}
 	}		
 	
 	$post_category = mysqli_real_escape_string($conn, trim($_POST["category_select"]));	
@@ -175,12 +190,12 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
 		}
 		//$get_result->free_result();
 		if($update) {
-			$stmt = $conn->prepare("UPDATE `posts` SET datetime=?, title=?,  titlerepeat=?, creatorname=?, categoryname=?, image=?, content=? WHERE id=?");	
-    	$stmt->bind_param("sssssssi", $date_time, $post_title, $title_repeat, $creator, $post_category, $choose_image, $content, $post_id);
+			$stmt = $conn->prepare("UPDATE `posts` SET datetime=?, title=?,  titlerepeat=?, creatorname=?, country=?, categoryname=?, image=?, content=? WHERE id=?");	
+    	$stmt->bind_param("ssssssssi", $date_time, $post_title, $title_repeat, $creator, $country, $post_category, $choose_image, $content, $post_id);
 		}
 		else {
-			$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title,  titlerepeat, creatorname, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?, ?)");	
-    	$stmt->bind_param("sssssss", $date_time, $post_title, $title_repeat, $creator, $post_category, $choose_image, $content);
+			$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title,  titlerepeat, creatorname, country, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");	
+    	$stmt->bind_param("sssssss", $date_time, $post_title, $title_repeat, $creator, $country, $post_category, $choose_image, $content);
 		}
 		
     $result = $stmt->execute();

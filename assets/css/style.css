@@ -747,6 +747,7 @@ ul ul {
 
 .month .post-sources ul {
   max-height: 500px;
+  height: 100%;
 }
 
 .month .sources {

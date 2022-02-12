@@ -163,6 +163,12 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 			$details = $xpath->query("//table[@class[contains(.,'infobox')]]/tbody");
 			//reinitialise $details with fixed links and removed tags
 
+			
+			$country = xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]/tbody/tr[th='Nationality']/td")) ?? xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]/tbody/tr[th='Citizenship']/td")) ?? xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]/tbody/tr[th='Country']/td")) ?? NULL;
+			if(!is_null($country)) {			
+				$country = $country[0]->textContent;
+			}
+
 			$a = $xpath->query("//*[@href]"); //grab all elements like a link			
 			foreach ($a as $tag) {
 				$href = $tag->getAttribute("href");
@@ -295,8 +301,8 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 					$title_repeat = $rows;			
 				}
 							
-				$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, wikilink, titlerepeat, creatorname, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");	
-    		$stmt->bind_param("ssssssss", $upload_time, $title, $wikilink, $title_repeat, $creator, $category, $pic_src, $content_mysql);
+				$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, wikilink, titlerepeat, creatorname, country, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");	
+    		$stmt->bind_param("sssssssss", $upload_time, $title, $wikilink, $title_repeat, $creator, $country, $category, $pic_src, $content_mysql);
 				$stmt->execute();
 		}		
 		curl_multi_remove_handle($mh, $chs[$key]);		
