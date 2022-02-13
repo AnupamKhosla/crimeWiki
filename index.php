@@ -37,7 +37,8 @@ require_once('include/index_code.php');
       <div class="container">
         
         <?php require_once("include/nav.php") ?>
-
+        <h1 class="main-title h3 font-weight-light w-100 text-center mt-2">A Wikipedea of world-wide crime</h1>
+        <!--
         <form action="" class="filters">  
           <div class="row custom-container m-auto">
             <div class="col-lg-5 col-md-12 d-flex">
@@ -78,6 +79,7 @@ require_once('include/index_code.php');
             </div>
           </div>
         </form>
+      -->
         <div class="slider row ">
           <div class="col-md-10 offset-md-1">
             <div class="slick">                       

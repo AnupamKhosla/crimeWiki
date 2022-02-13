@@ -38,7 +38,7 @@ require_once("include/wikipedea_code.php");
 
         <?php require_once("include/sidebar_dashboard.php"); ?>
 
-        <div class="col-md-9 col-lg-10  content d-flex justify-content-between flex-column">
+        <div class="col-lg-10  content d-flex justify-content-between flex-column">
           <main class="pb-5">
             <h1 class="text-center title text-pm font-weight-lighter h4">CrimeWiki Admin Panel</h1>
             <hr>

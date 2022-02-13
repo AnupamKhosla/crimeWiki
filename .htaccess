@@ -433,7 +433,7 @@ AddDefaultCharset utf-8
 <IfModule mod_rewrite.c>
     Options -MultiViews
     RewriteEngine On
-    RewriteRule ^post/(\d+) post.php?id=$1 
+    RewriteRule ^post/(\d+$) post.php?id=$1 
     RewriteRule ^post/([^/]+)/(\d+) post.php?title=$1&repeat=$2 
     RewriteRule ^post/([^/]*) post.php?title=$1 
  </IfModule>

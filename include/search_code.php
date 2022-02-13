@@ -26,11 +26,14 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 	if($filter == "datetime") {
 		$stmt = $conn->prepare("SELECT datetime, title, image, titlerepeat, content FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND (title LIKE ? $sql_string) AND categoryname LIKE ? ORDER BY datetime DESC LIMIT ?, 30");		
 	}
+	else if($filter == "alphabetically") {
+		$stmt = $conn->prepare("SELECT datetime, title, image, titlerepeat, content FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND (title LIKE ? $sql_string) AND categoryname LIKE ? ORDER BY title LIMIT ?, 30");		
+	}
 	else if($filter == "popular") {
 		$stmt = $conn->prepare("SELECT datetime, title, image, titlerepeat, content FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND (title LIKE ? $sql_string) AND categoryname LIKE ? ORDER BY CHAR_LENGTH(content) DESC LIMIT ?, 30");		
 	}
 	else if($filter == "country") {
-		$stmt = $conn->prepare("SELECT datetime, title, image, titlerepeat, content FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND (title LIKE ? $sql_string) AND categoryname LIKE ? ORDER BY ISNULL(country), country LIMIT ?, 30");
+		$stmt = $conn->prepare("SELECT datetime, title, image, titlerepeat, content FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND (title LIKE ? $sql_string) AND categoryname LIKE ? ORDER BY ISNULL(country), country, title LIMIT ?, 30");
 		//if $page	
 	}
 	$stmt->bind_param("sssi", $title, $title, $category, $page_30);
@@ -64,6 +67,9 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 			$datetime = date( 'd/m/Y H:i:s', htmlspecialchars($row["datetime"]) );
 			$row_image = image_path(htmlspecialchars($row["image"]));
 			$row_repeat = htmlspecialchars($row['titlerepeat']);
+			if(!empty($row_repeat)) {
+				$row_repeat = "/" . $row_repeat;
+			}
 			$posts .= "<div class='row post mb-4 mb-sm-5'>
 									<div class='col-xl-3 col-md-4'>									
 										<h3 class='text-pm d-md-none text-center pt-0 mb-3'>$row_name</h3>			
@@ -78,7 +84,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 										</div>																		          
 										$introduction            
 										<div class='d-flex justify-content-center mt-auto pt-3'>
-											<a href='post/$row_name/$row_repeat' class='btn btn-pm d-inline-flex align-items-center'>See Details</a>
+											<a href='post/$row_name$row_repeat' class='btn btn-pm d-inline-flex align-items-center'>See Details</a>
 										</div>	
 									</div> 
 								</div>";

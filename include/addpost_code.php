@@ -137,7 +137,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
 		$xpath = new DomXPath($tmp);
 		$country = xpath_query($xpath->query("//tr[th='Nationality']/td")) ?? xpath_query($xpath->query("//tr[th='Citizenship']/td")) ?? xpath_query($xpath->query("//tr[th='Country']/td")) ?? NULL;
 		if(!is_null($country)) {			
-			$country = $country[0]->textContent;
+			$country = trim($country[0]->textContent);
 		}
 	}		
 	
@@ -195,7 +195,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
 		}
 		else {
 			$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title,  titlerepeat, creatorname, country, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");	
-    	$stmt->bind_param("sssssss", $date_time, $post_title, $title_repeat, $creator, $country, $post_category, $choose_image, $content);
+    	$stmt->bind_param("ssssssss", $date_time, $post_title, $title_repeat, $creator, $country, $post_category, $choose_image, $content);
 		}
 		
     $result = $stmt->execute();

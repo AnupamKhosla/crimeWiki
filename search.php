@@ -77,6 +77,7 @@ require_once('include/search_code.php')
                   <select class="w-100" name="filter">
                     <option <?php if(($_GET["filter"] ?? "") == "") echo "selected" ?> value="">Sort By</option>
                     <option <?php if(($_GET["filter"] ?? "") == "datetime") echo "selected" ?> value="datetime">Latest</option>
+                    <option <?php if(($_GET["filter"] ?? "") == "alphabetically") echo "selected" ?> value="alphabetically">Alphabetically</option>
                     <option <?php if(($_GET["filter"] ?? "") == "popular") echo "selected" ?> value="popular">Popular</option>
                     <option <?php if(($_GET["filter"] ?? "") == "country") echo "selected" ?> value="country">Country</option>
                   </select>

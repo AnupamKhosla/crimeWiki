@@ -141,8 +141,17 @@ footer {
 
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
 	.sidebar {
 		min-height: 100vh;
 	}
+}
+
+@media (max-width: 991.8px) {	
+		.logo-grand-parent {  
+			padding: 0 .25rem 0 1rem;
+		}
+		.content {
+			min-height: calc(100vh - 120px); 
+		}	
 }

@@ -96,12 +96,12 @@ if(SETUP) { //if db already setup
           categoryname VARCHAR(100) NOT NULL,          
           FOREIGN KEY (categoryname) REFERENCES categories(name)
         );
-        INSERT INTO categories (id, datetime, name, creatorname) VALUES (1, ' . $date_time . ', "blog", "Anupam");
+        INSERT INTO categories (id, datetime, name, creatorname) VALUES (1, ' . $date_time . ', "Blog", "Anupam");
         INSERT INTO posts(id, datetime, title, wikilink, titlerepeat, creatorname, country, image, content, categoryname) VALUES (
-          1, ' . $date_time . ', "$blog_month_post", NULL, NULL, "SuperUser", NULL, "default.png", NULL, "blog"
+          1, ' . $date_time . ', "$blog_month_post", NULL, NULL, "SuperUser", NULL, "default.png", NULL, "Blog"
         ),
         (
-          2, ' . $date_time+1 . ', "$blog_about_text", NULL, NULL, "SuperUser", NULL, "default.png", NULL, "blog"
+          2, ' . $date_time+1 . ', "$blog_about_text", NULL, NULL, "SuperUser", NULL, "default.png", NULL, "Blog"
         );
         ';  
         $result = $conn->multi_query($sql);

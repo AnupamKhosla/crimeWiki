@@ -166,7 +166,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 			
 			$country = xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]/tbody/tr[th='Nationality']/td")) ?? xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]/tbody/tr[th='Citizenship']/td")) ?? xpath_query($xpath->query("//table[@class[contains(.,'infobox')]]/tbody/tr[th='Country']/td")) ?? NULL;
 			if(!is_null($country)) {			
-				$country = $country[0]->textContent;
+				$country = trim($country[0]->textContent);
 			}
 
 			$a = $xpath->query("//*[@href]"); //grab all elements like a link			

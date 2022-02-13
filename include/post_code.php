@@ -1,8 +1,16 @@
 <?php 
 
+
+//Impotant bug in apache rewrite rules -- https://stackoverflow.com/a/60109807/3429430  
+// http://localhost2/post/abc.. is treated as http://localhost2/post/abc -- without any trailing dots
+if(preg_match('#^/post/([^/]*\.+$)#',$_SERVER['REQUEST_URI'],$matches)){
+    $_GET["title"] = urldecode($matches[1]);
+}
+
+
 $conn = make_db_connection();
 mysqli_query($conn, "SET NAMES utf8");
-mysqli_set_charset($conn, "utf8");
+mysqli_set_charset($conn, "utf8"); //may be not needed
 if(!isset($_SESSION["Validation"])) {
 	$_SESSION["Validation"] = array( "txt" => "", "class" => "d-none", "status" => "" );
 }
@@ -14,7 +22,7 @@ if( !empty($_GET["id"]) || !empty($_GET["title"]) ) {
 		$stmt->bind_param("i", $post_id);
 	}
 	else {
-		$post_title = $_GET["title"];
+		$post_title = $_GET["title"];		
 		$title_repeat = !empty($_GET["repeat"]) ? $_GET["repeat"] : NULL;		
 		$stmt = $conn->prepare("SELECT datetime, title, creatorname, categoryname, image, content FROM `posts` WHERE title=? AND titlerepeat<=>?");
 		$stmt->bind_param("si", $post_title, $title_repeat);
@@ -66,7 +74,7 @@ if( !empty($_GET["id"]) || !empty($_GET["title"]) ) {
 	}
 }
 else {
-	echo "Post id must be filled";
+	echo "Post id or title must be non empty";
 	die();
 }
 

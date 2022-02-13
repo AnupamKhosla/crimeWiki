@@ -20,7 +20,7 @@
 			margin-right: 29px;
 		}		
 		.nav-link {			
-			color: rgba(255, 255, 255, 0.85);
+			color: rgba(255, 255, 255, 0.80); 
 			padding: 4px 8px;
 		}
 		.nav-link:hover, .nav-link:focus {
@@ -28,7 +28,7 @@
 		}
 		@media not all and (hover: none) {
 			.dropdown-toggle::after {
-				display: none;
+				display: none; 
 			}
 		}		
 	}
@@ -40,7 +40,7 @@
 		.form-control {
 			padding: 6px 40px 6px 12px;
 			min-width: 280px;
-			border-radius: 5px;
+			border-radius: 4px;
 			font-size: 0.875rem;
 		}
 		.form-control::placeholder {
@@ -240,11 +240,12 @@
 		.navbar-collapse {
 			margin-top: 15px;
 		}
+		.navbar-brand {
+			width: 100px;
+		}
 		.search-form {
-			margin-left: 0;
-			margin-top: 7.5px;
-			position: relative;
-			display: inline-flex;  		
+			width: 100%;
+			margin: 0;		
 		}
 		.slider {
 			& {
