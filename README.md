@@ -46,3 +46,15 @@ htaccess rewrites being used:
 
 ```
 
+-------------------
+
+**Bugs**  
+
+- Page: http://crimewiki.in/search?title=rangh&category=&filter=  See details link problem. quotes not converted into html entity.  
+
+- Advance seach not working properly with single letters or only-numbers e.g.:  `o` and `17`
+
+http://crimewiki.in/search?advance=on&title=17&category=&filter=  
+http://crimewiki.in/search?advance=on&title=o&category=&filter=
+
+17 and 43 come in some pages content which are not shown in results.
