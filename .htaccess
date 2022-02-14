@@ -433,6 +433,8 @@ AddDefaultCharset utf-8
 <IfModule mod_rewrite.c>
     Options -MultiViews
     RewriteEngine On
+    RewriteRule ^sitemap/sitemap-index.xml sitemap/sitemap-index.php
+    RewriteRule ^sitemap/sitemap(\d+).txt sitemap/sitemap.php?page=$1
     RewriteRule ^post/(\d+$) post.php?id=$1 
     RewriteRule ^post/([^/]+)/(\d+) post.php?title=$1&repeat=$2 
     RewriteRule ^post/([^/]*) post.php?title=$1 

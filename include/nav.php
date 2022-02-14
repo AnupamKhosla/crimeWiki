@@ -37,7 +37,7 @@
               $nav_active = "active";
             }
             $nav_items .= "<li class='nav-item'>
-                            <a class='nav-link " . $nav_active ."' href='search?category=$row_name'>
+                            <a class='nav-link " . $nav_active ."' href='/search?category=$row_name'>
                               $row_name
                             </a>                
                           </li>";                           

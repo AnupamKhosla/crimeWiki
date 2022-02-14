@@ -28,7 +28,7 @@ $post_title_old = "";
 $title_repeat = NULL;
 $category = "";
 $image = "";
-$country = "0";
+$country = NULL;
 $intro_meta = '<tr>
                         <th>Crimes</th>
                         <td>34</td>  
@@ -180,17 +180,27 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
 	else {// everything is fine; update categories now	
 		$creator = "Anupam";		
 		//check if title aready exists
-		$stmt = $conn->prepare("SELECT * FROM `posts` WHERE title=? ");
+		$stmt = $conn->prepare("SELECT titlerepeat FROM `posts` WHERE title=? ");
 		$stmt->bind_param("s", $post_title);
 		$result = $stmt->execute();
 		$get_result =  $stmt->get_result();
 		$rows = $get_result->num_rows;		
+		$max_repeat = 0;
 		if($post_title != $post_title_old && $result && $rows != 0) {
-			$title_repeat = $rows;			
+			while($row = $get_result->fetch_assoc()) {
+				if($max_repeat < $row["titlerepeat"]) {
+					$max_repeat = $row["titlerepeat"];
+				}
+			}			
+			$title_repeat = $max_repeat + 1;					
+		}
+		else if($rows == 0){  
+			//completely new title  
+			$title_repeat = NULL;
 		}
 		//$get_result->free_result();
 		if($update) {
-			$stmt = $conn->prepare("UPDATE `posts` SET datetime=?, title=?,  titlerepeat=?, creatorname=?, country=?, categoryname=?, image=?, content=? WHERE id=?");	
+			$stmt = $conn->prepare("UPDATE `posts` SET datetime=?, title=?,  titlerepeat=?, creatorname=?, country=?, categoryname=?, image=?, content=? WHERE id=? AND NOT id=1 AND NOT id=2");	
     	$stmt->bind_param("ssssssssi", $date_time, $post_title, $title_repeat, $creator, $country, $post_category, $choose_image, $content, $post_id);
 		}
 		else {
@@ -221,7 +231,7 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
     }
 	}
 	//303 will allow bookmark and reload without resending post data
-	header("Location: {$_SERVER['REQUEST_URI']}", true, 303); 
+	header("Location: /addpost.php", true, 303); 
   exit();
 }
 
