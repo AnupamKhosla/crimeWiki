@@ -1,5 +1,5 @@
 <?php 
-header('Content-Type: text/xml; charset=utf-8');
+header('Content-Type: text/xml');
 require_once('../include/config.php');
 require_once('../include/functions.php');
 
