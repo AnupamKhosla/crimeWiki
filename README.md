@@ -11,9 +11,9 @@ Admin Panel looks like :
 - Login page: https://anupamkhosla.github.io/crimeWiki/assets/img/login.png  
 - Dashboard page: https://anupamkhosla.github.io/crimeWiki/assets/img/dashboard.png  
 - Posts search: https://anupamkhosla.github.io/crimeWiki/assets/img/posts.png  
-- Addpost page: https://anupamkhosla.github.io/crimeWiki/assets/img/adpost.png  
-- Categories page: https://anupamkhosla.github.io/crimeWiki/assets/img/catgories.png  
-- Wikipedea page: https://anupamkhosla.github.io/crimeWiki/assets/img/wikipedia.png
+- Addpost page: https://anupamkhosla.github.io/crimeWiki/assets/img/addpost.png  
+- Categories page: https://anupamkhosla.github.io/crimeWiki/assets/img/categories.png 
+- Wikipedea page: https://anupamkhosla.github.io/crimeWiki/assets/img/wikipedea.png
 
 
 ------------------
