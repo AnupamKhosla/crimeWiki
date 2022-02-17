@@ -8,7 +8,7 @@ require_once('include/search_code.php')
 
   <head>
     <meta charset="utf-8">
-    <title>crimeWiki | Wikipedea of crime</title>
+    <title>Search Page | crimeWiki</title>
     <meta name="description" content="A Wikipedea of world-wide crime">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -37,7 +37,7 @@ require_once('include/search_code.php')
       <div class="container">
         
         <?php require_once("include/nav.php") ?>
-
+        <h1 class="main-title h3 font-weight-light w-100 text-center mt-2">A Wikipedea of world-wide crime</h1>
         <form action="" class="filters mb-md-3" method="GET">  
           <div class="row custom-container m-auto">
             <div class="col-lg-5 col-md-12 d-flex">

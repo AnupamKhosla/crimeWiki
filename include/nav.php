@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark align-items-start">
-  <a class="navbar-brand" href="#">
+  <a class="navbar-brand" href="//<?php echo $_SERVER["SERVER_NAME"]; ?> ">
     <img src="/assets/img/logo_single.svg" class="logo img-fluid" alt="Company Logo">
   </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -15,13 +15,16 @@
         if($path == "/") {
           $home_active = "active";                  
         }
-        else if(isset($category)) {
+        else if(isset($category) && ($category != "%")) {          
           $category_page = $category;  
           //for post.php page
         }
-        else {
-          $category_page = $_GET["category"] ?? "criminals";
+        else if(empty($_GET["category"])){
+          $category_page = "Criminals";          
         } 
+        else {
+          $category_page = $_GET["category"];
+        }
         
         $nav_items = "<li class='nav-item " . $home_active . "'>
                         <a class='nav-link' href=//" .  $_SERVER['SERVER_NAME'] . ">Home <span class='sr-only'>(current)</span></a>
@@ -42,7 +45,7 @@
                             </a>                
                           </li>";                           
           }       
-        }
+        }              
         echo $nav_items;
       ?>                    
     </ul>    

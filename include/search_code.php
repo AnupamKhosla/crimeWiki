@@ -18,7 +18,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 	}
 	else {
 		$advance_checked = false;
-		$pagination = "<div class='text-center font-weight-500'>Nothing Found!  did you try Advance Search?</div>";
+		$pagination = "<div class='text-center font-weight-500'>Nothing Found!, did you try Advance Search?</div>";
 		$sql_string = "OR ?=title"; 
 		//this condition is never true
 	}
@@ -44,8 +44,11 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 		
 		while($row = $result->fetch_assoc()) { //first iteration only to nemove NULL table valuesand set $count				
 			$row_name = htmlspecialchars($row['title']);
+			$row_name = urlencode($row_name);
 			if(strlen($row_name) > 200) {
 				$row_name = substr($row_name, 0, 200) . "...";
+				
+				//important to allow links like {Alphonse%20D'Arco} that contains single quote
 			} 
 			
 			$tmp->loadHTML('<!DOCTYPE html><meta charset="UTF-8">' . $row['content']);
@@ -80,7 +83,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 									<div class='col-xl-9 col-md-8 d-flex flex-column'>		
 										<div class='d-flex flex-lg-row flex-column'>
 											<h3 class='text-pm d-none d-md-block mb-sm-1 mb-lg-2'>$row_name</h3>
-											<span class='publish-date text-black-50 small  ml-lg-auto  font-weight-500 mt-2 mt-md-0 mt-lg-2 mb-sm-2 mb-lg-0'>$datetime</span> 		
+											<span class='publish-date text-black-50 small  ml-lg-auto  font-weight-500 mt-2 mt-md-0 mt-lg-2 mb-2 mb-lg-0'>$datetime</span> 		
 										</div>																		          
 										$introduction            
 										<div class='d-flex justify-content-center mt-auto pt-3'>
@@ -94,8 +97,8 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 
 		//get total rows without LIMIT for pagination  
-		$stmt = $conn->prepare("SELECT COUNT(*) FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND title LIKE ? AND categoryname LIKE ? ");
-		$stmt->bind_param("ss", $title, $category);
+		$stmt = $conn->prepare("SELECT COUNT(*) FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND (title LIKE ? $sql_string) AND categoryname LIKE ? ");
+		$stmt->bind_param("sss", $title, $title, $category);
 		$result = $stmt->execute();
 		if($result != false && $res = $stmt->get_result()) { //query was successful		
 			$page_count = ceil($res->fetch_row()[0] / 30);

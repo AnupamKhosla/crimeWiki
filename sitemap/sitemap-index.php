@@ -4,7 +4,7 @@ require_once('../include/config.php');
 require_once('../include/functions.php');
 
 $sitemap = "<sitemap>
-            <loc>http://{$_SERVER['SERVER_NAME']}/sitemap/sitemap1.xml</loc>
+            <loc>http://{$_SERVER['SERVER_NAME']}/sitemap/sitemap1.txt</loc>
           </sitemap>";
 
 $conn = make_db_connection();
@@ -15,7 +15,7 @@ if($result) {
   if($count > 5000) {    
     for($pages = ceil($count/5000); $pages > 1; $pages--) {      
       $sitemap .= "\n          <sitemap>
-            <loc>http://{$_SERVER['SERVER_NAME']}/sitemap/sitemap" . $pages . ".xml</loc>
+            <loc>http://{$_SERVER['SERVER_NAME']}/sitemap/sitemap" . $pages . ".txt</loc>
           </sitemap>";
     }
   }  

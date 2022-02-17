@@ -9,8 +9,7 @@ require_once("include/post_code.php");
   <html class="no-js" lang="">
   <head>
     <meta charset="utf-8">
-    <title>
-      <?php echo ($title); ?>
+    <title> <?php echo ($title); ?> | crimeWiki
     </title>
     
     <meta name="description" content=" <?php echo $title; ?> ">
