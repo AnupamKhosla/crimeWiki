@@ -131,29 +131,22 @@ if($page > 0) {
 	$pagination_li_prev = "<li class='page-item'><a class='page-link' href='" . $url . $page . "'>Prev</a></li>";
 }
 $pagination_li2 = '';
-if($page > 3) {
+if($page > 2) {
 			$pagination_li2 = "<li class='page-item disabled two'><span class='page-link' href='#'>...</span></li>";
 		}
 $pagination_li3 = '';
-if($page-2 > 0) {
-		$pagination_li3 = "<li class='page-item three'><a href='" . $url . $page-1 . "' class='page-link'>" . $page-1 . "</a></li>";
-	}
-$pagination_li4 = '';
 if($page-1 > 0) {
-	$pagination_li4 = "<li class='page-item four'><a href='" . $url . $page . "' class='page-link'>" . $page . "</a></li>";
-}
+		$pagination_li3 = "<li class='page-item three'><a href='" . $url . $page . "' class='page-link'>" . $page . "</a></li>";
+	}
+
 
 $pagination_dots_last = "<li class='page-item disabled'><span class='page-link' href='#'>...</span></li>"; 
-if($page+4 >= $page_count) {
+if($page+3 >= $page_count) {
 	$pagination_dots_last = '';
 }
-$pagination_li_last1 = "<li class='page-item'><a class='page-link' href='" . $url . $page+3 . "'>{$eval2($page+3)}</a></li>";
-if($page+3 >= $page_count) {
-	$pagination_li_last1 = '';
-}
-$pagination_li_last2 = "<li class='page-item'><a class='page-link' href='" . $url . $page+2 . "'>{$eval2($page+2)}</a></li>";
+$pagination_li_last1 = "<li class='page-item'><a class='page-link' href='" . $url . $page+2 . "'>{$eval2($page+2)}</a></li>";
 if($page+2 >= $page_count) {
-	$pagination_li_last2 = '';
+	$pagination_li_last1 = '';
 }
 $pagination_li_last = "<li class='page-item'><a class='page-link' href='" . $url . $page_count . "'>$page_count</a></li>";
 $pagination_li_next = "<li class='page-item'><a class='page-link' href='" . $url . $page+2 . "'>Next</a></li>";
@@ -170,11 +163,11 @@ $pagination = <<<EOD
     $pagination_li1
     $pagination_li2
     $pagination_li3
-    $pagination_li4    
+      
     <li class="page-item active" aria-current="page">
       <span class="page-link">{$eval2($page+1)}</span>
     </li>
-    $pagination_li_last2
+    
     $pagination_li_last1
     $pagination_dots_last
     $pagination_li_last
@@ -185,11 +178,11 @@ $pagination = <<<EOD
     $pagination_li1
     $pagination_li2
     $pagination_li3
-    $pagination_li4    
+    
     <li class="page-item active" aria-current="page">
       <span class="page-link">{$eval2($page+1)}</span>
     </li>
-    $pagination_li_last2
+    
     $pagination_li_last1
     $pagination_dots_last
     $pagination_li_last

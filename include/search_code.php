@@ -43,8 +43,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 		$tmp = new DOMDocument();
 		
 		while($row = $result->fetch_assoc()) { //first iteration only to nemove NULL table valuesand set $count				
-			$row_name = htmlspecialchars($row['title']);
-			$row_name = urlencode($row_name);
+			$row_name = htmlspecialchars($row['title']);			
 			if(strlen($row_name) > 200) {
 				$row_name = substr($row_name, 0, 200) . "...";
 				
@@ -73,7 +72,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 			if(!empty($row_repeat)) {
 				$row_repeat = "/" . $row_repeat;
 			}
-			$posts .= "<div class='row post mb-4 mb-sm-5'>
+			$posts .= "<div class='row post mb-4 mb-sm-5 text-break'>
 									<div class='col-xl-3 col-md-4'>									
 										<h3 class='text-pm d-md-none text-center pt-0 mb-3'>$row_name</h3>			
 										<div class='card post-profile '>
@@ -87,7 +86,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 										</div>																		          
 										$introduction            
 										<div class='d-flex justify-content-center mt-auto pt-3'>
-											<a href='post/$row_name$row_repeat' class='btn btn-pm d-inline-flex align-items-center'>See Details</a>
+											<a href='post/" . urlencode($row_name) . "$row_repeat' class='btn btn-pm d-inline-flex align-items-center'>See Details</a>
 										</div>	
 									</div> 
 								</div>";
@@ -117,79 +116,73 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 		}
 		$eval2 = 'eval2';
 
-		$pagination_li_prev = "<li class='page-item disabled'><span class='page-link'>Prev</span></li>";
-		$pagination_li1 = '';
-		if($page > 0) {
-			$pagination_li1 = "<li class='page-item one'><a href='" . $url . 1 . "' class='page-link' href='#'>1</a></li>";
-			$pagination_li_prev = "<li class='page-item'><a class='page-link' href='" . $url . $page . "'>Prev</a></li>";
-		}
-		$pagination_li2 = '';
-		if($page > 3) {
+		
+$pagination_li_prev = "<li class='page-item disabled'><span class='page-link'>Prev</span></li>";
+$pagination_li1 = '';
+if($page > 0) {
+	$pagination_li1 = "<li class='page-item one'><a href='" . $url . 1 . "' class='page-link' href='#'>1</a></li>";
+	$pagination_li_prev = "<li class='page-item'><a class='page-link' href='" . $url . $page . "'>Prev</a></li>";
+}
+$pagination_li2 = '';
+if($page > 2) {
 			$pagination_li2 = "<li class='page-item disabled two'><span class='page-link' href='#'>...</span></li>";
 		}
-		$pagination_li3 = '';
-		if($page-2 > 0) {
-			$pagination_li3 = "<li class='page-item three'><a href='" . $url . $page-1 . "' class='page-link'>" . $page-1 . "</a></li>";
-		}
-		$pagination_li4 = '';
-		if($page-1 > 0) {
-			$pagination_li4 = "<li class='page-item four'><a href='" . $url . $page . "' class='page-link'>" . $page . "</a></li>";
-		}
-
-		$pagination_dots_last = "<li class='page-item disabled'><span class='page-link' href='#'>...</span></li>"; 
-		if($page+4 >= $page_count) {
-			$pagination_dots_last = '';
-		}
-		$pagination_li_last1 = "<li class='page-item'><a class='page-link' href='" . $url . $page+3 . "'>{$eval2($page+3)}</a></li>";
-		if($page+3 >= $page_count) {
-			$pagination_li_last1 = '';
-		}
-		$pagination_li_last2 = "<li class='page-item'><a class='page-link' href='" . $url . $page+2 . "'>{$eval2($page+2)}</a></li>";
-		if($page+2 >= $page_count) {
-			$pagination_li_last2 = '';
-		}
-		$pagination_li_last = "<li class='page-item'><a class='page-link' href='" . $url . $page_count . "'>$page_count</a></li>";
-		$pagination_li_next = "<li class='page-item'><a class='page-link' href='" . $url . $page+2 . "'>Next</a></li>";
-		if($page+1 >= $page_count) {
-			$pagination_li_last = '';
-			$pagination_li_next = "<li class='page-item disabled'><span class='page-link' href='#'>Next</span></li>";
-		}
+$pagination_li3 = '';
+if($page-1 > 0) {
+		$pagination_li3 = "<li class='page-item three'><a href='" . $url . $page . "' class='page-link'>" . $page . "</a></li>";
+	}
 
 
-		$pagination = <<<EOD
-		<nav aria-label="Search results pages">
-		<ul class="pagination pagination-sm d-sm-none justify-content-center">
-		$pagination_li_prev
-		$pagination_li1
-		$pagination_li2
-		$pagination_li3
-		$pagination_li4    
-		<li class="page-item active" aria-current="page">
-		<span class="page-link">{$eval2($page+1)}</span>
-		</li>
-		$pagination_li_last2
-		$pagination_li_last1
-		$pagination_dots_last
-		$pagination_li_last
-		$pagination_li_next
-		</ul>
-		<ul class="pagination d-none d-sm-flex justify-content-center">
-		$pagination_li_prev
-		$pagination_li1
-		$pagination_li2
-		$pagination_li3
-		$pagination_li4    
-		<li class="page-item active" aria-current="page">
-		<span class="page-link">{$eval2($page+1)}</span>
-		</li>
-		$pagination_li_last2
-		$pagination_li_last1
-		$pagination_dots_last
-		$pagination_li_last
-		$pagination_li_next
-		</ul>
-		</nav>
-		EOD;
+$pagination_dots_last = "<li class='page-item disabled'><span class='page-link' href='#'>...</span></li>"; 
+if($page+3 >= $page_count) {
+	$pagination_dots_last = '';
+}
+$pagination_li_last1 = "<li class='page-item'><a class='page-link' href='" . $url . $page+2 . "'>{$eval2($page+2)}</a></li>";
+if($page+2 >= $page_count) {
+	$pagination_li_last1 = '';
+}
+$pagination_li_last = "<li class='page-item'><a class='page-link' href='" . $url . $page_count . "'>$page_count</a></li>";
+$pagination_li_next = "<li class='page-item'><a class='page-link' href='" . $url . $page+2 . "'>Next</a></li>";
+if($page+1 >= $page_count) {
+	$pagination_li_last = '';
+	$pagination_li_next = "<li class='page-item disabled'><span class='page-link' href='#'>Next</span></li>";
+}
+
+
+$pagination = <<<EOD
+<nav aria-label="Search results pages">
+  <ul class="pagination pagination-sm d-sm-none justify-content-center">
+    $pagination_li_prev
+    $pagination_li1
+    $pagination_li2
+    $pagination_li3
+      
+    <li class="page-item active" aria-current="page">
+      <span class="page-link">{$eval2($page+1)}</span>
+    </li>
+    
+    $pagination_li_last1
+    $pagination_dots_last
+    $pagination_li_last
+    $pagination_li_next
+  </ul>
+  <ul class="pagination d-none d-sm-flex justify-content-center">
+    $pagination_li_prev
+    $pagination_li1
+    $pagination_li2
+    $pagination_li3
+    
+    <li class="page-item active" aria-current="page">
+      <span class="page-link">{$eval2($page+1)}</span>
+    </li>
+    
+    $pagination_li_last1
+    $pagination_dots_last
+    $pagination_li_last
+    $pagination_li_next
+  </ul>
+</nav>
+EOD;
 
 	}
 	
