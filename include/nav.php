@@ -50,7 +50,7 @@
       ?>                    
     </ul>    
   </div>
-  <form action="search" class="search-form form-inline my-3 my-lg-0" method="GET">
+  <form action="/search" class="search-form form-inline my-3 my-lg-0" method="GET">
     <input name="title" class="form-control w-100" type="search" placeholder="Search anything" aria-label="Search">
     <button class="btn search-icon" type="submit">
       <img class="d-block" src="/assets/icons/Search_alt.svg" alt="search icon"> 
