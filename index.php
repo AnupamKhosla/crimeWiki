@@ -18,6 +18,7 @@ require_once('include/index_code.php');
     <meta property="og:image" content="">
 
     <link rel="manifest" href="site.webmanifest">
+    <link rel="icon" type="image/x-icon" href="logo_single.svg">
     <link rel="apple-touch-icon" href="icon.png">
     <!-- Place favicon.ico in the root directory -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.css" >
