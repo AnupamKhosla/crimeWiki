@@ -100,11 +100,12 @@ require_once('include/index_code.php');
           </div>
           <div class="col-lg-7 about-text pl-lg-5">
             <h1 class="logo-text text-center font-weight-normal">The CrimeWiki</h1>
-            <img class="logo-double img-fluid d-block d-lg-none m-auto" src="../assets/img/logo_gun.png" alt="Logo double gun">
-            <p>
-              <?php echo $blog_about_text; ?>              
-            </p>
-            <button type="button" class="btn btn-pm d-block cta">Github Repo</button>
+            <img class="logo-double img-fluid d-block d-lg-none m-auto" src="../assets/img/logo_gun.png" alt="Logo double gun">            
+            <?php echo $blog_about_text; ?>             
+            <div class="d-flex justify-content-center mt-auto">
+              <a href="https://github.com/AnupamKhosla/crimeWiki" type="button" class="btn btn-pm d-inline-flex align-items-center cta mx-auto">Github Repo</a>       
+            </div>
+            
           </div>
         </div>
       </div>
@@ -123,7 +124,10 @@ require_once('include/index_code.php');
             <div class="wrapper2">
               <?php echo $introduction; ?>
             </div>
-            <button class="btn btn-pm m-auto2 details">See Details</button>
+            <div class="d-flex justify-content-center mt-auto">
+              <a href="<?php echo $blog_month_href; ?>" type="button" class="btn btn-pm m-auto2 mt-1 d-inline-flex align-items-center">See Details</a>
+            </div>
+            
           </div>
           <div class="col-xl-4 col-lg-5 wrapper">
             <div class="post-sources panel d-flex flex-column">

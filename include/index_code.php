@@ -40,15 +40,21 @@ if(!!$result && $result->num_rows) {
 //crime of the month  
 $result = $conn->query( "SELECT content, wikilink FROM `posts` WHERE title='\$blog_month_post';" );
 if(!!$result && $result->num_rows) {
-	$row = $result->fetch_assoc();;
+	$row = $result->fetch_assoc();
 	$month_id = $row["content"];
 	$video_link = $row["wikilink"];
-	$result = $conn->query("SELECT datetime, title, content FROM `posts` WHERE id=$month_id");
+	$result = $conn->query("SELECT datetime, title, titlerepeat, content FROM `posts` WHERE id=$month_id");
 	if(!!$result && $result->num_rows) {
 		$res_arr = $result->fetch_assoc();
 		$publish_date = $res_arr["datetime"];
-		$title = $res_arr["title"];
-
+		if($res_arr["titlerepeat"] != NULL) {
+			$titlerepeat = "/".$res_arr["titlerepeat"];
+		}
+		else {
+			$titlerepeat = "";			
+		}
+		$title = $res_arr["title"];	
+		$blog_month_href = "/post/" . $title . $titlerepeat;
 		libxml_use_internal_errors(true); // important
 			$content = new DOMDocument();
 			$content->loadHTML('<!DOCTYPE html><meta charset="UTF-8">' . $res_arr["content"]);		
