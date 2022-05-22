@@ -15,7 +15,7 @@ require_once('include/search_code.php')
     <meta property="og:title" content="">
     <meta property="og:type" content="">
     <meta property="og:url" content="">
-    <meta property="og:image" content="">
+    <meta property="og:image" content="../assets/img/logo_gun.png">
 
     <link rel="manifest" href="site.webmanifest">
     <link rel="icon" type="image/x-icon" href="logo_single.svg">
