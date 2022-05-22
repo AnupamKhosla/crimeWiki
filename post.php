@@ -15,10 +15,10 @@ require_once("include/post_code.php");
     <meta name="description" content=" <?php echo $title; ?> ">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <meta property="og:title" content="">
+    <meta property="og:title" content="<?php echo ($title); ?> | crimeWiki">
     <meta property="og:type" content="">
     <meta property="og:url" content="">
-    <meta property="og:image" content="">
+    <meta property="og:image" content="<?php echo image_path($image) ?>">
 
     <link rel="manifest" href="site.webmanifest">
     <link rel="apple-touch-icon" href="/logo_single.svg">

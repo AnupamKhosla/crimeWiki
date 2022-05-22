@@ -12,10 +12,11 @@ $result = $conn->query("SELECT COUNT(*) FROM posts;");
 if($result) {
   $count = $result->fetch_row()[0];
   
-  if($count > 5000) {    
-    for($pages = ceil($count/5000); $pages > 1; $pages--) {      
+  if($count > 50) {    
+      $max_pages = ceil($count/50);
+    for($pages = ceil($count/50); $pages > 1; $pages--) {      
       $sitemap .= "\n          <sitemap>
-            <loc>http://{$_SERVER['SERVER_NAME']}/sitemap/sitemap" . $pages . ".txt</loc>
+            <loc>http://{$_SERVER['SERVER_NAME']}/sitemap/sitemap" . ($max_pages-$pages+2) . ".txt</loc>
           </sitemap>";
     }
   }  

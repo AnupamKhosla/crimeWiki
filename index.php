@@ -15,7 +15,7 @@ require_once('include/index_code.php');
     <meta property="og:title" content="">
     <meta property="og:type" content="">
     <meta property="og:url" content="">
-    <meta property="og:image" content="">
+    <meta property="og:image" content="../assets/img/logo_gun.png">
 
     <link rel="manifest" href="site.webmanifest">
     <link rel="icon" type="image/x-icon" href="logo_single.svg">
@@ -30,6 +30,22 @@ require_once('include/index_code.php');
 
     <link rel="stylesheet" href="../assets/css/style.css">
     <meta name="theme-color" content="#E92222">
+    
+    <!-- Global site tag (gtag.js) - Google Ads: 10871239283 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10871239283"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'AW-10871239283');
+    </script>
+    <!-- Event snippet for Website traffic conversion page -->
+    <script>
+      gtag('event', 'conversion', {'send_to': 'AW-10871239283/_WI3COTa76oDEPPk578o'});
+    </script>
+
+
   </head>
 
   <body>
@@ -160,5 +176,12 @@ require_once('include/index_code.php');
       ga('create', 'UA-XXXXX-Y', 'auto'); ga('set', 'anonymizeIp', true); ga('set', 'transport', 'beacon'); ga('send', 'pageview')
     </script>
     <script src="https://www.google-analytics.com/analytics.js" async></script>
+
+
+
+
+
+
+
   </body>
   </html>
