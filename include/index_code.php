@@ -3,12 +3,13 @@ $conn = make_db_connection();
 
 //slider section
 $result = $conn->query( "SELECT title, image, titlerepeat, content FROM `posts` WHERE categoryname='criminals' ORDER BY rand() LIMIT 50;" );
+
 $slides = "";
 if(!!$result && $result->num_rows) { //query was successful	
 	while( $row = $result->fetch_assoc() ) { 
 		$title = htmlspecialchars($row['title']);			
 		$image = htmlspecialchars(image_path($row['image']));
-		$titleRepeat = htmlspecialchars($row['titlerepeat']) ?? "";	
+		$titleRepeat = htmlspecialchars($row['titlerepeat'] ?? "");	
 		$slides .= <<<EOT
 											<div class="slide">
 								        <div class="card">

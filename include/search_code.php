@@ -86,7 +86,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 										</div>																		          
 										$introduction            
 										<div class='d-flex justify-content-center mt-auto pt-3'>
-											<a href='post/" . urlencode($row_name) . "$row_repeat' class='btn btn-pm d-inline-flex align-items-center'>See Details</a>
+											<a href='post/" . rawurlencode($row_name) . "$row_repeat' class='btn btn-pm d-inline-flex align-items-center'>See Details</a>
 										</div>	
 									</div> 
 								</div>";

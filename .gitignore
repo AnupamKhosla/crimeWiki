@@ -4,5 +4,6 @@
 logs/*
 node_modules/*
 include/config.php 
+#.htaccess
 
 

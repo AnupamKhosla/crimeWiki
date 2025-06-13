@@ -37,14 +37,15 @@ Go to yourdomain and the website will work now.
 htaccess rewrites being used:  
 
 ```
+
 <IfModule mod_rewrite.c>
     Options -MultiViews
     RewriteEngine On
-    RewriteRule ^sitemap/sitemap-index.xml sitemap/sitemap-index.php
-    RewriteRule ^sitemap/sitemap(\d+).txt sitemap/sitemap.php?page=$1
-    RewriteRule ^post/(\d+$) post.php?id=$1 
-    RewriteRule ^post/([^/]+)/(\d+) post.php?title=$1&repeat=$2 
-    RewriteRule ^post/([^/]*) post.php?title=$1 
+    RewriteRule ^sitemap/sitemap-index.xml sitemap/sitemap-index.php    [QSA,B]
+    RewriteRule ^sitemap/sitemap(\d+).txt sitemap/sitemap.php?page=$1   [QSA,B]
+    RewriteRule ^post/(\d+$) post.php?id=$1                             [QSA,B]
+    RewriteRule ^post/([^/]+)/(\d+) post.php?title=$1&repeat=$2         [QSA,B]
+    RewriteRule ^post/([^/]*) post.php?title=$1                         [QSA,B]
  </IfModule>
   
  <IfModule mod_rewrite.c>
@@ -54,7 +55,20 @@ htaccess rewrites being used:
    # Very important regexes created for post.php page
  </IfModule>
 
+ <IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule (.*) $1.php [L]
+ </IfModule>
+
 ```
+
+Note June 2025: Apache rewrite was failing on URLs with spaces and special characters (e.g., %20, ', &) due to unescaped backreferences. Added [QSA,B] flags to .htaccess RewriteRule to ensure proper URL escaping. Error logged as: AH10411: Rewritten query string contains control characters or spaces.
+Ref: Apache mod_rewrite Flags documentation – B (escape backreferences)
+
+`search-code.php` file has beed modified to change `urlencode` function to be changed into `rawurlencode` to ensure proper escaping with [B].
 
 -------------------
 
