@@ -20,9 +20,24 @@ Admin Panel looks like :
 
 #### How to install on your server or local machine
 
-**Step 1:** Download this git repository. Note your server's databse name, username and password. Open `login.php` in your browser. Use the same database details. Fill in any username and password for cms login.  
+**Step 1:** Download this git repository.
 
-**Step 2:** 
+**Step 2:** Decide how your database credentials are provided.
+- Config file (shared hosting, most VPS setups): copy `include/config.example.php` to `include/config.php` and fill in DB values.
+- Environment variables (managed platforms): use platform‑provided env vars and skip manual DB entry in the UI.
+
+```
+cp include/config.example.php include/config.php
+```
+
+**Step 3:** Open `login.php` in your browser. The setup form will:
+- Connect using the DB user/password you enter.
+- Create the database if it doesn’t exist (and then write `include/config.php` with `SETUP = true`).
+- Create tables and the first admin account after you complete the registration form.
+
+Use a DB user that has permission to create databases/tables, or pre‑create the DB and grant it privileges.
+
+**Step 4:** 
 
 - Go to yourdomain/categories.php page first and create a category named `Criminals`.  Homepage will show `Criminals` category by default.  
 - Add a minimum of one post through yourdomain/wikipedea.php or yourdomain/addpost.php. 
@@ -31,6 +46,31 @@ Admin Panel looks like :
 - Set the `About The CrimeWiki text`. 
 
 Go to yourdomain and the website will work now.
+
+-------------------
+
+#### Environment setup (choose one)
+
+**Shared hosting (cPanel/DirectAdmin/etc.)**
+- Upload files to `public_html` (or the web root).
+- Create a MySQL database + user in the hosting panel.
+- Copy `include/config.example.php` → `include/config.php` and fill in DB values.
+- Visit `/login.php` to finish setup (creates tables + admin).
+
+**VPS / bare‑metal (manual PHP + Apache/Nginx)**
+- Ensure PHP, MySQL, and required extensions are installed (`mysqli`, `mbstring`, `dom`, `curl`).
+- Configure your web server to point to the project root.
+- Copy `include/config.example.php` → `include/config.php` and fill in DB values.
+- Visit `/login.php` to finish setup.
+
+**Docker (local or VM)**
+- Build and start containers: `docker compose up -d`
+- Visit `http://localhost/login.php` (or your VM IP) to run setup.
+- For DB import, uncomment the seed line in `docker-compose.yml` and start with an empty DB volume.
+
+**Managed platforms (env‑var based)**
+- Many managed PHP platforms inject DB credentials via environment variables and expect apps to read them at runtime. Examples include Platform.sh / Upsun and Pantheon.
+- In that model, you should avoid hard‑coding credentials and let the platform supply them.
 
 **Meta:** php will automatically create category named `Blog` -- this is mandatory for homepage to show dynamic posts and about us section text. php will make two posts in the blog category, namely `$blog_month_post` and `$blog_about_text`. These two will be used to store about us data and monthly-post data.
 
@@ -71,4 +111,3 @@ Ref: Apache mod_rewrite Flags documentation – B (escape backreferences)
 `search-code.php` file has beed modified to change `urlencode` function to be changed into `rawurlencode` to ensure proper escaping with [B].
 
 -------------------
-

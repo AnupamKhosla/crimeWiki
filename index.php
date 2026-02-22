@@ -7,6 +7,25 @@ error_reporting(E_ALL);
 
 require_once('include/config.php');
 require_once('include/functions.php');
+
+if(!defined('SETUP') || SETUP !== true) {
+  header("Location: login.php", true, 303);
+  exit();
+}
+
+// If tables are missing, redirect to setup to avoid fatal errors.
+try {
+  $conn = make_db_connection();
+  $check = $conn->query("SHOW TABLES LIKE 'posts'");
+  if($check === false || $check->num_rows === 0) {
+    header("Location: login.php", true, 303);
+    exit();
+  }
+} catch (Exception $e) {
+  header("Location: login.php", true, 303);
+  exit();
+}
+
 require_once('include/index_code.php');
 ?>
 <!doctype html>

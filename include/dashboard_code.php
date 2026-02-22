@@ -125,9 +125,9 @@ if(!!$result && $result->num_rows) {
 $result = $conn->query( "SELECT title, wikilink, titlerepeat, content FROM `posts` WHERE title='\$blog_month_post' AND creatorname='SuperUser';" );
 if(!!$result && $result->num_rows) {
 	$row = $result->fetch_assoc();
-	$post_id = mysqli_real_escape_string($conn, $row["content"]);
-	$video_link = htmlspecialchars($row["wikilink"]);
-	$title_repeat = htmlspecialchars($row["titlerepeat"]);
+	$post_id = mysqli_real_escape_string($conn, $row["content"] ?? "");
+	$video_link = htmlspecialchars($row["wikilink"] ?? "");
+	$title_repeat = htmlspecialchars($row["titlerepeat"] ?? "");
 	
 	if(empty($post_id)) {
 		$post_title = "";

@@ -38,11 +38,13 @@ if(SETUP) { //if db already setup
         $login_username = mysqli_real_escape_string($conn, $_POST["login_name"]);
         $login_pass = mysqli_real_escape_string($conn, $_POST["login_password"]);
 
-        $stmt = $conn->prepare("SELECT id FROM admins WHERE username=? AND password=?");
-        $stmt->bind_param("ss", $login_username, $login_pass);
+        $stmt = $conn->prepare("SELECT id, password FROM admins WHERE username=?");
+        $stmt->bind_param("s", $login_username);
         $result = $stmt->execute();
         $stmt->store_result();
-        if($result && ($stmt->num_rows > 0)) {
+        $stmt->bind_result($admin_id, $stored_hash);
+        $stmt->fetch();
+        if($result && ($stmt->num_rows > 0) && password_verify($login_pass, $stored_hash)) {
           $_SESSION["logged_in"] = true;
           header("Location: {$_SERVER['REQUEST_URI']}", true, 303); 
           exit();
@@ -73,7 +75,7 @@ if(SETUP) { //if db already setup
         $sql = 'CREATE TABLE admins (
           id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
           username VARCHAR(30) NOT NULL,
-          password VARCHAR(30) NOT NULL,
+          password VARCHAR(255) NOT NULL,
           reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         );
         CREATE TABLE categories (
@@ -92,16 +94,18 @@ if(SETUP) { //if db already setup
           creatorname VARCHAR(50) NOT NULL,  
           country VARCHAR(50), 
           image VARCHAR(500) NOT NULL,  
-          content VARCHAR(10000000),
+          content LONGTEXT,
           categoryname VARCHAR(100) NOT NULL,          
           FOREIGN KEY (categoryname) REFERENCES categories(name)
         );
-        INSERT INTO categories (id, datetime, name, creatorname) VALUES (1, ' . $date_time . ', "Blog", "Anupam");
+        INSERT INTO categories (id, datetime, name, creatorname) VALUES
+          (1, ' . $date_time . ', "Blog", "Anupam"),
+          (2, ' . ($date_time+1) . ', "Criminals", "Anupam");
         INSERT INTO posts(id, datetime, title, wikilink, titlerepeat, creatorname, country, image, content, categoryname) VALUES (
-          1, ' . $date_time . ', "$blog_month_post", NULL, NULL, "SuperUser", NULL, "default.png", NULL, "Blog"
+          1, ' . $date_time . ', "$blog_month_post", NULL, NULL, "SuperUser", NULL, "default.png", "Set this in Dashboard → Crime of the Month.", "Blog"
         ),
         (
-          2, ' . $date_time+1 . ', "$blog_about_text", NULL, NULL, "SuperUser", NULL, "default.png", NULL, "Blog"
+          2, ' . ($date_time+1) . ', "$blog_about_text", NULL, NULL, "SuperUser", NULL, "default.png", "Set this in Dashboard → About The CrimeWiki.", "Blog"
         );
         ';  
         $result = $conn->multi_query($sql);
@@ -112,7 +116,8 @@ if(SETUP) { //if db already setup
           $conn->next_result(); //flush fifth $sql result       
           $stmt = $conn->prepare("INSERT INTO `admins` (username, password) VALUES (?, ?)");
           var_dump($conn->error);
-          $stmt->bind_param("ss", $admin_name, $admin_pass1);
+          $admin_hash = password_hash($admin_pass1, PASSWORD_DEFAULT);
+          $stmt->bind_param("ss", $admin_name, $admin_hash);
           if($stmt->execute()) { //create table admins with input data     
           //super user has been created 
             echo "super user create | db created | reload this page again";            
@@ -140,13 +145,14 @@ if(SETUP) { //if db already setup
 else {
 
   //use setupe website form then
-  if($identifier == "setup" && !empty($_POST["username"]) && !empty($_POST["db_name"]) && !empty($_POST["password1"]) ) {
-    $username   = filter_var($_POST["username"], FILTER_SANITIZE_STRING);    
-    $password1  = filter_var($_POST["password1"], FILTER_SANITIZE_STRING);
+  if($identifier == "setup" && !empty($_POST["username"]) && !empty($_POST["db_name"]) && !empty($_POST["password1"]) && !empty($_POST["db_host"]) ) {
+    $username   = htmlspecialchars($_POST["username"], ENT_QUOTES, 'UTF-8');    
+    $password1  = $_POST["password1"];
+    $db_host    = htmlspecialchars($_POST["db_host"], ENT_QUOTES, 'UTF-8');
     
     
       
-      $conn = new mysqli("localhost", $username, $password1);
+      $conn = new mysqli($db_host, $username, $password1);
       $db_name = mysqli_real_escape_string($conn, $_POST["db_name"]);
       if ($conn->connect_error) {
         echo "Wrong database name or/and password";              
@@ -155,6 +161,7 @@ else {
         $config_file = fopen("include/config.php", "w");
         $db_credentials = <<<EOB
         <?php
+        const DB_HOST = '$db_host';
         const DB_USER_NAME = '$username';
         const DB_NAME = '$db_name';
         const DB_PASSWORD = '$password1'; 
@@ -175,4 +182,3 @@ else {
 }
 
 ?>
-

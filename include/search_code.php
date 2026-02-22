@@ -68,7 +68,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 			}					
 			$datetime = date( 'd/m/Y H:i:s', htmlspecialchars($row["datetime"]) );
 			$row_image = image_path(htmlspecialchars($row["image"]));
-			$row_repeat = htmlspecialchars($row['titlerepeat']);
+			$row_repeat = htmlspecialchars($row['titlerepeat'] ?? "");
 			if(!empty($row_repeat)) {
 				$row_repeat = "/" . $row_repeat;
 			}

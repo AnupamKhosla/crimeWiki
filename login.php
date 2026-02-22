@@ -43,9 +43,9 @@ require_once("include/setup.php");
       <main>
         <div class="card my-4 mx-auto">
           <div class="card-body p-3 p-sm-4">
-            <h5 class="card-title text-center mb-3 mb-sm-4 font-weight-lighter">
+            <h2 class="card-title text-center mb-3 mb-sm-4 font-weight-lighter">
               <?php echo $page_title ?>
-            </h5>
+            </h2>
 
             <!-- Setup database form -->
             <form method="post" class="<?php echo $db_form_vis ?>" 
@@ -53,6 +53,11 @@ require_once("include/setup.php");
               <div class="form-group mb-3">
                 <label for="username">Database User Name</label>
                 <input name="username" type="text" class="form-control" id="username" placeholder="crimewiki" required>                
+              </div>
+              <div class="form-group mb-2">
+                <label for="db_host">Database Host</label>
+                <input name="db_host" type="text" class="form-control" id="db_host" placeholder="localhost" required>
+                <small class="form-text text-muted">Docker uses <code>db</code>. Shared hosting usually uses <code>localhost</code>.</small>
               </div>
               <div class="form-group mb-3">
                 <label for="db_name">Set Database Name</label>

@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+      - phpmyadmin
+
+  db:
+    image: mysql:9.6
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+    volumes:
+      - db_data:/var/lib/mysql
+      # One-time seed import (uncomment when ready):
+      - ./u586058589_crimewiki_db2.sql:/docker-entrypoint-initdb.d/seed.sql:ro
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    environment:
+      PMA_HOST: db
+      PMA_ABSOLUTE_URI: http://localhost/phpmyadmin/
+    depends_on:
+      - db
+
+volumes:
+  db_data:
