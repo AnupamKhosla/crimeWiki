@@ -18,7 +18,7 @@ echo "[server_start] Pulling latest code..."
 git pull --ff-only
 
 echo "[server_start] Ensuring swap is enabled..."
-if ! swapon --show | grep -q "/swapfile"; then
+if ! sudo /sbin/swapon --show | grep -q "/swapfile"; then
   # Requires sudo for swap creation; will no-op if swap already exists.
   sudo ./scripts/setup_swap.sh 8G
 else

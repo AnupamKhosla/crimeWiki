@@ -9,7 +9,7 @@ set -euo pipefail
 SWAP_SIZE="${1:-8G}"
 SWAP_FILE="/swapfile"
 
-if swapon --show | grep -q "$SWAP_FILE"; then
+if /sbin/swapon --show | grep -q "$SWAP_FILE"; then
   echo "Swapfile already active at $SWAP_FILE"
   exit 0
 fi
@@ -22,11 +22,11 @@ else
   echo "Creating swapfile of size $SWAP_SIZE at $SWAP_FILE"
   fallocate -l "$SWAP_SIZE" "$SWAP_FILE"
   chmod 600 "$SWAP_FILE"
-  mkswap "$SWAP_FILE"
+  /sbin/mkswap "$SWAP_FILE"
 fi
 
 # Turn swap on for this boot.
-swapon "$SWAP_FILE"
+/sbin/swapon "$SWAP_FILE"
 
 # Persist across reboots if not already in /etc/fstab.
 # Persist swap across reboots.
