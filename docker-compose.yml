@@ -20,6 +20,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
     volumes:
       - db_data:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro
       # One-time seed import (uncomment when ready):
       - ./u586058589_crimewiki_db2.sql:/docker-entrypoint-initdb.d/seed.sql:ro
 
