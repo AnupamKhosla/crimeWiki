@@ -9,6 +9,15 @@ set -euo pipefail
 SWAP_SIZE="${1:-8G}"
 SWAP_FILE="/swapfile"
 
+# Safety prompt: prevent accidental runs on local machines.
+echo "WARNING: This will create /swapfile on this machine."
+echo "Do NOT run this on your local laptop/desktop."
+read -r -p "Continue? [y/N]: " CONFIRM
+if [ "${CONFIRM}" != "y" ] && [ "${CONFIRM}" != "Y" ]; then
+  echo "Aborted."
+  exit 1
+fi
+
 if /sbin/swapon --show | grep -q "$SWAP_FILE"; then
   echo "Swapfile already active at $SWAP_FILE"
   exit 0
