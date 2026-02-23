@@ -68,6 +68,27 @@ Go to yourdomain and the website will work now.
 - Visit `http://localhost/login.php` (or your VM IP) to run setup.
 - For DB import, uncomment the seed line in `docker-compose.yml` and start with an empty DB volume.
 
+**Server start helper (pull + swap + docker)**
+- Run on the VM when you want to update and start services:
+  - `bash scripts/server_start.sh`
+- This script:
+  - pulls latest code
+  - ensures swap is enabled
+  - starts Docker containers (without wiping DB volumes)
+
+**Low‑memory VM swap (recommended for e2‑micro / 1 GB RAM)**
+- Manual method (not needed if you use `scripts/server_start.sh`).
+- Create swap (VPS/VM only; not possible on shared hosting):
+  - `sudo ./scripts/setup_swap.sh 8G`
+- To run automatically on boot (recommended on GCP):
+  1. Copy the systemd unit file:
+     - `sudo cp scripts/setup_swap.service /etc/systemd/system/setup_swap.service`
+  2. Edit the `ExecStart` path in the unit if your repo path is different.
+  3. Enable and start it:
+     - `sudo systemctl daemon-reload`
+     - `sudo systemctl enable --now setup_swap.service`
+
+
 **Managed platforms (env‑var based)**
 - Many managed PHP platforms inject DB credentials via environment variables and expect apps to read them at runtime. Examples include Platform.sh / Upsun and Pantheon.
 - In that model, you should avoid hard‑coding credentials and let the platform supply them.

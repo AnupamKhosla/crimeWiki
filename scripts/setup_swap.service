@@ -1,0 +1,11 @@
+[Unit]
+Description=Ensure swapfile exists and is enabled
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /home/anupamkhosla1993/crimeWiki/scripts/setup_swap.sh 8G
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
