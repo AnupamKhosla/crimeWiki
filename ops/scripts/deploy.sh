@@ -17,6 +17,7 @@ set -euo pipefail
 
 DOMAIN="__DOMAIN__"
 REPO_DIR="__REPO_DIR__"
+DOMAIN_WWW="www.${DOMAIN}"
 
 # Set to 1 if you want to stop services during deploys (more RAM headroom)
 STOP_SERVICES="${STOP_SERVICES:-0}"
@@ -94,8 +95,16 @@ fi
 
 # Sync ops files from repo to VM locations (no reloads/restarts here)
 mkdir -p /etc/nginx/sites-available /etc/webhook /var/www/maintenance /etc/systemd/system
-cp -f "$REPO_DIR/ops/nginx/crimewiki.conf" /etc/nginx/sites-available/crimewiki.conf
-cp -f "$REPO_DIR/ops/nginx/crimewiki_maintenance.conf" /etc/nginx/sites-available/crimewiki_maintenance.conf
+sed \
+  -e "s#__DOMAIN__#${DOMAIN}#g" \
+  -e "s#__DOMAIN_WWW__#${DOMAIN_WWW}#g" \
+  "$REPO_DIR/ops/nginx/crimewiki.conf" \
+  > /etc/nginx/sites-available/crimewiki.conf
+sed \
+  -e "s#__DOMAIN__#${DOMAIN}#g" \
+  -e "s#__DOMAIN_WWW__#${DOMAIN_WWW}#g" \
+  "$REPO_DIR/ops/nginx/crimewiki_maintenance.conf" \
+  > /etc/nginx/sites-available/crimewiki_maintenance.conf
 cp -f "$REPO_DIR/ops/maintenance/index.html" /var/www/maintenance/index.html
 cp -f "$REPO_DIR/ops/systemd/webhook.service" /etc/systemd/system/webhook.service
 
