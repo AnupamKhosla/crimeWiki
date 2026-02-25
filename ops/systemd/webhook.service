@@ -3,7 +3,7 @@ Description=Webhook listener
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/webhook -hooks /etc/webhook/hooks.json -port 9000 -ip 0.0.0.0
+ExecStart=/usr/bin/webhook -hooks /etc/webhook/hooks.json -port 9000 -ip 127.0.0.1
 Restart=always
 User=root
 

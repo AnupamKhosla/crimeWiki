@@ -88,15 +88,15 @@ sudo bash /path/to/repo/ops/scripts/setup_proxy_and_webhook.sh \
 ```
 
 Outputs:
-- Webhook URL to add in GitHub/GitLab: `http://crimewiki.site:9000/hooks/deploy`
+- Webhook URL to add in GitHub/GitLab: `https://crimewiki.site/hooks/deploy`
 - Header required: `X-Webhook-Secret: YOUR_WEBHOOK_SECRET`
 
 **Deploy flow**
 When the webhook fires, `/usr/local/bin/deploy.sh` will:
 1) Switch Nginx to maintenance mode (503).
-2) Stop heavy services (MySQL + Docker containers).
+2) Optional: stop heavy services (set `STOP_SERVICES=1` in `/usr/local/bin/deploy.sh`).
 3) `git pull --ff-only origin main`
-4) Start services again.
+4) Optional: start services again (if `STOP_SERVICES=1`).
 5) Switch Nginx back to the app.
 
 **Server start helper (pull + swap + docker)**

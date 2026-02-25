@@ -73,6 +73,6 @@ systemctl enable --now webhook
 
 cat <<EOF
 Setup complete.
-Webhook URL: http://${DOMAIN}:9000/hooks/deploy
+Webhook URL: https://${DOMAIN}/hooks/deploy
 Webhook header: X-Webhook-Secret: ${WEBHOOK_SECRET}
 EOF
