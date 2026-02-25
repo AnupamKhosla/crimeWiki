@@ -26,7 +26,37 @@ mkdir -p /var/www/maintenance
 # Install maintenance page
 cp -f "$REPO_DIR/ops/maintenance/index.html" /var/www/maintenance/index.html
 
-# Install nginx configs
+# Stop services that can block port 80 during initial cert issuance
+if command -v docker >/dev/null 2>&1; then
+  if [ -f "$REPO_DIR/docker-compose.yml" ]; then
+    docker compose -f "$REPO_DIR/docker-compose.yml" down || true
+  fi
+fi
+systemctl stop nginx || true
+
+# Bootstrap Nginx with HTTP-only config for ACME
+cat > /etc/nginx/sites-available/crimewiki_bootstrap.conf <<NGINX
+server {
+  listen 80;
+  server_name ${DOMAIN} ${DOMAIN_WWW};
+
+  location /.well-known/acme-challenge/ {
+    root /var/www/letsencrypt;
+  }
+}
+NGINX
+
+ln -sf /etc/nginx/sites-available/crimewiki_bootstrap.conf /etc/nginx/sites-enabled/crimewiki.conf
+rm -f /etc/nginx/sites-enabled/default
+nginx -t
+systemctl start nginx
+
+# Issue certs (non-interactive)
+certbot certonly --nginx \
+  -d "$DOMAIN" -d "$DOMAIN_WWW" \
+  --non-interactive --agree-tos -m "$EMAIL"
+
+# Install nginx configs (now that certs exist)
 sed \
   -e "s/__DOMAIN__/${DOMAIN}/g" \
   -e "s/__DOMAIN_WWW__/${DOMAIN_WWW}/g" \
@@ -40,16 +70,15 @@ sed \
   > /etc/nginx/sites-available/crimewiki_maintenance.conf
 
 ln -sf /etc/nginx/sites-available/crimewiki.conf /etc/nginx/sites-enabled/crimewiki.conf
-rm -f /etc/nginx/sites-enabled/default
 nginx -t
 systemctl reload nginx
 
-# Issue certs (non-interactive)
-certbot certonly --nginx \
-  -d "$DOMAIN" -d "$DOMAIN_WWW" \
-  --non-interactive --agree-tos -m "$EMAIL"
-
-systemctl reload nginx
+# Start app stack now that reverse proxy is active
+if command -v docker >/dev/null 2>&1; then
+  if [ -f "$REPO_DIR/docker-compose.yml" ]; then
+    docker compose -f "$REPO_DIR/docker-compose.yml" up -d
+  fi
+fi
 
 # Install deploy script
 sed \
