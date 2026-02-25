@@ -79,7 +79,7 @@ require_once('include/index_code.php');
       <div class="container">
         
         <?php require_once("include/nav.php") ?>
-        <h1 class="main-title h3 font-weight-light w-100 text-center mt-2">A Wikipedea of world-wide crime (testing2)</h1>
+        <h1 class="main-title h3 font-weight-light w-100 text-center mt-2">A Wikipedea of world-wide crime (testing33)</h1>
         <!--
         <form action="" class="filters">  
           <div class="row custom-container m-auto">
