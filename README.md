@@ -107,6 +107,11 @@ Why run this:
 - After this runs once, normal webhook deploys will auto‑copy ops files; you only need to re‑run it when you change ops files and want to force a refresh immediately.
 - It also marks the repo as a safe Git directory for root, so webhook deploys can run `git pull`.
 
+**If the domain changes**
+- The domain is baked into `/usr/local/bin/deploy.sh`. If you change the domain, re-run:
+  - `sudo bash /path/to/repo/ops/scripts/update_deploy.sh NEWDOMAIN /path/to/repo`
+- This ensures future deploys render the Nginx templates with the correct domain.
+
 **Why `/etc` and `/usr/local/bin`**
 - The webhook calls `/usr/local/bin/deploy.sh`, not the repo script, because it must be a stable entrypoint even while the repo is mid‑pull.
 - `/etc` holds system configuration (Nginx, webhook), so we copy from `ops/` into `/etc` rather than running from the repo.
