@@ -15,8 +15,8 @@
   response-message: deploy triggered
   trigger-rule:
     match:
-      type: value
-      value: __WEBHOOK_SECRET__
+      type: payload-hmac-sha256
+      secret: __WEBHOOK_SECRET__
       parameter:
         source: header
-        name: X-Webhook-Secret
+        name: X-Hub-Signature-256

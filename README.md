@@ -89,7 +89,7 @@ sudo bash /path/to/repo/ops/scripts/setup_server.sh \
 
 Outputs:
 - Webhook URL to add in GitHub/GitLab: `https://crimewiki.site/hooks/deploy`
-- Header required: `X-Webhook-Secret: <value printed by script>`
+- GitHub Webhook Secret: `<value printed by script>` (uses `X-Hub-Signature-256`)
 - Secret is stored on VM in `/etc/webhook/secret.env`
 - Environment file is stored on VM in `/etc/crimewiki.env`
 
