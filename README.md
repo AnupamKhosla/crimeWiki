@@ -105,6 +105,7 @@ Why run this:
 - It copies the latest deploy script and webhook config into the VM system paths (`/usr/local/bin` and `/etc`) so the webhook always runs the correct version.
 - It is a safety “sync” step if a webhook deploy didn’t copy new ops files for any reason.
 - After this runs once, normal webhook deploys will auto‑copy ops files; you only need to re‑run it when you change ops files and want to force a refresh immediately.
+- It also marks the repo as a safe Git directory for root, so webhook deploys can run `git pull`.
 
 **Why `/etc` and `/usr/local/bin`**
 - The webhook calls `/usr/local/bin/deploy.sh`, not the repo script, because it must be a stable entrypoint even while the repo is mid‑pull.

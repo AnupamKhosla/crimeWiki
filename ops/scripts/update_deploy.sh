@@ -63,6 +63,9 @@ sed \
   > /usr/local/bin/deploy.sh
 chmod +x /usr/local/bin/deploy.sh
 
+# Allow root (webhook) to run git in this repo
+git config --system --add safe.directory "$REPO_DIR"
+
 # Install webhook config
 sed \
   -e "s#__WEBHOOK_SECRET__#${WEBHOOK_SECRET}#g" \
