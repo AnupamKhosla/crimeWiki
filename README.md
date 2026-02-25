@@ -99,6 +99,12 @@ When the webhook fires, `/usr/local/bin/deploy.sh` will:
 4) Optional: start services again (if `STOP_SERVICES=1`).
 5) Switch Nginx back to the app.
 
+**Deploy script behavior knobs**
+- `KEEP_MAINT_ON_ERROR=1` (default): if deploy fails, keep maintenance mode on.
+- `KEEP_MAINT_ON_ERROR=0`: always switch back, even on errors.
+- `PULL_USER=...`: run `git pull` as a specific user (defaults to the sudo user).
+- `LOG_FILE=/var/log/deploy.log`: append deploy logs here.
+
 **Server start helper (pull + swap + docker)**
 - Run on the VM when you want to update and start services:
   - `bash scripts/server_start.sh`
