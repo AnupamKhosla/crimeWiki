@@ -12,11 +12,24 @@
 # want a specific account. If you prefer automatic recovery, set
 # KEEP_MAINT_ON_ERROR=0. Keep this file stable and small: it is the safety rail
 # between your public site and the VM under deployment pressure.
+# It reads DOMAIN and REPO_DIR from /etc/crimewiki.env.
 #
 set -euo pipefail
 
-DOMAIN="__DOMAIN__"
-REPO_DIR="__REPO_DIR__"
+# Load VM environment (domain + repo path)
+if [ -f /etc/crimewiki.env ]; then
+  # shellcheck disable=SC1091
+  . /etc/crimewiki.env
+else
+  echo "ERROR: /etc/crimewiki.env not found. Copy ops/env/crimewiki.env to /etc/crimewiki.env." >&2
+  exit 1
+fi
+
+if [ -z "${DOMAIN:-}" ] || [ -z "${REPO_DIR:-}" ]; then
+  echo "ERROR: DOMAIN or REPO_DIR missing in /etc/crimewiki.env" >&2
+  exit 1
+fi
+
 DOMAIN_WWW="www.${DOMAIN}"
 
 # Set to 1 if you want to stop services during deploys (more RAM headroom)
@@ -95,6 +108,7 @@ fi
 
 # Sync ops files from repo to VM locations (no reloads/restarts here)
 mkdir -p /etc/nginx/sites-available /etc/webhook /var/www/maintenance /etc/systemd/system
+cp -f "$REPO_DIR/ops/env/crimewiki.env" /etc/crimewiki.env
 sed \
   -e "s#__DOMAIN__#${DOMAIN}#g" \
   -e "s#__DOMAIN_WWW__#${DOMAIN_WWW}#g" \

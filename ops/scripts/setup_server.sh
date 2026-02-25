@@ -10,8 +10,7 @@
 # forwarding app traffic to localhost:8080, and allows safe deploys even on
 # constrained machines. Use this script when first setting up a new VM or when
 # you want to reapply the proxy configuration after changes. It can preserve an
-# existing webhook secret or accept a new one. For frequent updates, use the
-# update_deploy.sh script instead so you don’t touch TLS or Nginx.
+# existing webhook secret or accept a new one.
 #
 set -euo pipefail
 
@@ -51,9 +50,13 @@ apt-get install -y nginx certbot python3-certbot-nginx webhook
 mkdir -p /var/www/letsencrypt
 mkdir -p /var/www/maintenance
 mkdir -p /etc/webhook
+mkdir -p /etc
 
 # Install maintenance page
 cp -f "$REPO_DIR/ops/maintenance/index.html" /var/www/maintenance/index.html
+
+# Install environment file (domain + repo path)
+cp -f "$REPO_DIR/ops/env/crimewiki.env" /etc/crimewiki.env
 
 # Stop services that can block port 80 during initial cert issuance
 if [ -n "$COMPOSE_CMD" ] && [ -f "$REPO_DIR/docker-compose.yml" ]; then
