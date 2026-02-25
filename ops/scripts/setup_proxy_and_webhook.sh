@@ -27,10 +27,23 @@ mkdir -p /var/www/maintenance
 cp -f "$REPO_DIR/ops/maintenance/index.html" /var/www/maintenance/index.html
 
 # Stop services that can block port 80 during initial cert issuance
-if command -v docker >/dev/null 2>&1; then
-  if [ -f "$REPO_DIR/docker-compose.yml" ]; then
-    docker compose -f "$REPO_DIR/docker-compose.yml" down || true
+compose_cmd() {
+  if command -v docker-compose >/dev/null 2>&1; then
+    echo "docker-compose"
+    return
   fi
+  if command -v docker >/dev/null 2>&1; then
+    if docker compose version >/dev/null 2>&1; then
+      echo "docker compose"
+      return
+    fi
+  fi
+  echo ""
+}
+
+COMPOSE_CMD="$(compose_cmd)"
+if [ -n "$COMPOSE_CMD" ] && [ -f "$REPO_DIR/docker-compose.yml" ]; then
+  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" down || true
 fi
 systemctl stop nginx || true
 
@@ -74,10 +87,8 @@ nginx -t
 systemctl reload nginx
 
 # Start app stack now that reverse proxy is active
-if command -v docker >/dev/null 2>&1; then
-  if [ -f "$REPO_DIR/docker-compose.yml" ]; then
-    docker compose -f "$REPO_DIR/docker-compose.yml" up -d
-  fi
+if [ -n "$COMPOSE_CMD" ] && [ -f "$REPO_DIR/docker-compose.yml" ]; then
+  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d
 fi
 
 # Install deploy script

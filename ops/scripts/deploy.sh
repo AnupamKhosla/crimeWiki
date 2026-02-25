@@ -15,6 +15,22 @@ if ! flock -n 9; then
   exit 1
 fi
 
+compose_cmd() {
+  if command -v docker-compose >/dev/null 2>&1; then
+    echo "docker-compose"
+    return
+  fi
+  if command -v docker >/dev/null 2>&1; then
+    if docker compose version >/dev/null 2>&1; then
+      echo "docker compose"
+      return
+    fi
+  fi
+  echo ""
+}
+
+COMPOSE_CMD="$(compose_cmd)"
+
 # Switch to maintenance mode
 ln -sf /etc/nginx/sites-available/crimewiki_maintenance.conf /etc/nginx/sites-enabled/crimewiki.conf
 systemctl reload nginx
@@ -24,10 +40,8 @@ if [ "$STOP_SERVICES" = "1" ]; then
     systemctl stop mysql
   fi
 
-  if command -v docker >/dev/null 2>&1; then
-    if [ -f "$REPO_DIR/docker-compose.yml" ]; then
-      docker compose -f "$REPO_DIR/docker-compose.yml" stop || true
-    fi
+  if [ -n "$COMPOSE_CMD" ] && [ -f "$REPO_DIR/docker-compose.yml" ]; then
+    $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" stop || true
   fi
 fi
 
@@ -36,10 +50,8 @@ cd "$REPO_DIR"
 git pull --ff-only origin main
 
 if [ "$STOP_SERVICES" = "1" ]; then
-  if command -v docker >/dev/null 2>&1; then
-    if [ -f "$REPO_DIR/docker-compose.yml" ]; then
-      docker compose -f "$REPO_DIR/docker-compose.yml" up -d
-    fi
+  if [ -n "$COMPOSE_CMD" ] && [ -f "$REPO_DIR/docker-compose.yml" ]; then
+    $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d
   fi
 
   if systemctl is-enabled --quiet mysql || systemctl is-active --quiet mysql; then
