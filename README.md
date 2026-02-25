@@ -68,6 +68,37 @@ Go to yourdomain and the website will work now.
 - Visit `http://localhost/login.php` (or your VM IP) to run setup.
 - For DB import, uncomment the seed line in `docker-compose.yml` and start with an empty DB volume.
 
+**Reverse proxy + HTTPS + webhook deploy (VPS/VM)**
+- This repo includes a lightweight ops bundle under `ops/` for:
+  - Nginx reverse proxy (HTTP->HTTPS)
+  - Let's Encrypt certs (non-interactive)
+  - maintenance mode during deploys
+  - webhook-triggered deploys on low-memory VMs
+- Prereqs:
+  - DNS A record for `crimewiki.site` (and `www`) pointing to the VM
+  - Port 80/443 open in firewall
+  - Docker app moved to host port 8080 (already set in `docker-compose.yml`)
+
+**One-time setup on the VM**
+Run this on your VM (as root or with sudo):
+
+```
+sudo bash /path/to/repo/ops/scripts/setup_proxy_and_webhook.sh \
+  crimewiki.site admin@crimewiki.site /path/to/repo "YOUR_WEBHOOK_SECRET"
+```
+
+Outputs:
+- Webhook URL to add in GitHub/GitLab: `http://crimewiki.site:9000/hooks/deploy`
+- Header required: `X-Webhook-Secret: YOUR_WEBHOOK_SECRET`
+
+**Deploy flow**
+When the webhook fires, `/usr/local/bin/deploy.sh` will:
+1) Switch Nginx to maintenance mode (503).
+2) Stop heavy services (MySQL + Docker containers).
+3) `git pull --ff-only origin main`
+4) Start services again.
+5) Switch Nginx back to the app.
+
 **Server start helper (pull + swap + docker)**
 - Run on the VM when you want to update and start services:
   - `bash scripts/server_start.sh`
