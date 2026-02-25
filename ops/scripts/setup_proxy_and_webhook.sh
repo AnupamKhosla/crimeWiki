@@ -100,6 +100,7 @@ sed \
 chmod +x /usr/local/bin/deploy.sh
 
 # Install webhook config
+mkdir -p /etc/webhook
 sed \
   -e "s#__WEBHOOK_SECRET__#${WEBHOOK_SECRET}#g" \
   "$REPO_DIR/ops/webhook/hooks.json" \
