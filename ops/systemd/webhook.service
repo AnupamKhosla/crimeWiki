@@ -1,9 +1,19 @@
 [Unit]
+# This systemd unit runs the webhook listener as a background service. The
+# webhook process listens on localhost only and is exposed publicly through
+# Nginx, which avoids opening extra firewall ports. The listener triggers the
+# deploy script on incoming POST requests and uses a shared secret header for
+# validation. Keeping this as a system service ensures it restarts on boot and
+# crashes. The unit is intentionally minimal to reduce memory usage and avoid
+# dependencies on large runtimes. If you update webhook configuration, restart
+# this unit. If it is not running, GitHub/GitLab will receive 502 errors because
+# Nginx cannot reach the upstream. This file is installed by the setup scripts
+# and should not be edited manually on the VM.
 Description=Webhook listener
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/webhook -hooks /etc/webhook/hooks.json -port 9000 -ip 127.0.0.1
+ExecStart=/usr/bin/webhook -hooks /etc/webhook/hooks.yml -port 9000 -ip 127.0.0.1
 Restart=always
 User=root
 

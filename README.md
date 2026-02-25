@@ -79,17 +79,29 @@ Go to yourdomain and the website will work now.
   - Port 80/443 open in firewall
   - Docker app moved to host port 8080 (already set in `docker-compose.yml`)
 
-**One-time setup on the VM**
+**One-time server bootstrap**
 Run this on your VM (as root or with sudo):
 
 ```
-sudo bash /path/to/repo/ops/scripts/setup_proxy_and_webhook.sh \
-  crimewiki.site admin@crimewiki.site /path/to/repo "YOUR_WEBHOOK_SECRET"
+sudo bash /path/to/repo/ops/scripts/setup_server.sh \
+  crimewiki.site admin@crimewiki.site /path/to/repo
 ```
 
 Outputs:
 - Webhook URL to add in GitHub/GitLab: `https://crimewiki.site/hooks/deploy`
-- Header required: `X-Webhook-Secret: YOUR_WEBHOOK_SECRET`
+- Header required: `X-Webhook-Secret: <value printed by script>`
+- Secret is stored on VM in `/etc/webhook/secret.env`
+
+**Update deploy automation only (no cert/NGINX changes)**
+```
+sudo bash /path/to/repo/ops/scripts/update_deploy.sh \
+  crimewiki.site /path/to/repo
+```
+
+**Why `/etc` and `/usr/local/bin`**
+- The webhook calls `/usr/local/bin/deploy.sh`, not the repo script, because it must be a stable entrypoint even while the repo is mid‑pull.
+- `/etc` holds system configuration (Nginx, webhook), so we copy from `ops/` into `/etc` rather than running from the repo.
+- This avoids partial updates, path drift, and deploy failures caused by running scripts directly from a repo that is actively changing.
 
 **Deploy flow**
 When the webhook fires, `/usr/local/bin/deploy.sh` will:
@@ -97,7 +109,7 @@ When the webhook fires, `/usr/local/bin/deploy.sh` will:
 2) Optional: stop heavy services (set `STOP_SERVICES=1` in `/usr/local/bin/deploy.sh`).
 3) `git pull --ff-only origin main`
 4) Optional: start services again (if `STOP_SERVICES=1`).
-5) Switch Nginx back to the app.
+5) Switch Nginx back to the app unless a failure occurs and `KEEP_MAINT_ON_ERROR=1`.
 
 **Deploy script behavior knobs**
 - `KEEP_MAINT_ON_ERROR=1` (default): if deploy fails, keep maintenance mode on.

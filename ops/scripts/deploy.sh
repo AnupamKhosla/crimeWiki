@@ -1,4 +1,18 @@
 #!/usr/bin/env bash
+#
+# This deploy script is triggered by the webhook and is intentionally simple.
+# It flips Nginx into maintenance mode, pulls the latest code, and then returns
+# traffic to the live site. On small VMs, deployments can collide with traffic,
+# so the maintenance switch ensures no half-rendered PHP or DB work runs while
+# files are changing. The script supports a lock to prevent concurrent deploys,
+# optional service stops to free memory, and a conservative default to keep the
+# site in maintenance mode if anything fails. It also logs to /var/log/deploy.log
+# so you can see exactly what happened in SSH. The git pull runs as the sudo
+# user by default to avoid ownership issues, but you can set PULL_USER if you
+# want a specific account. If you prefer automatic recovery, set
+# KEEP_MAINT_ON_ERROR=0. Keep this file stable and small: it is the safety rail
+# between your public site and the VM under deployment pressure.
+#
 set -euo pipefail
 
 DOMAIN="__DOMAIN__"
@@ -68,12 +82,42 @@ if [ "$STOP_SERVICES" = "1" ]; then
   fi
 fi
 
-# Pull code
-if [ "$PULL_USER" = "root" ]; then
-  cd "$REPO_DIR"
-  git pull --ff-only origin main
+# Pull code (skip on self-reexec)
+if [ -z "${SKIP_PULL:-}" ]; then
+  if [ "$PULL_USER" = "root" ]; then
+    cd "$REPO_DIR"
+    git pull --ff-only origin main
+  else
+    su -s /bin/bash "$PULL_USER" -c "cd \"$REPO_DIR\" && git pull --ff-only origin main"
+  fi
+fi
+
+# Sync ops files from repo to VM locations (no reloads/restarts here)
+mkdir -p /etc/nginx/sites-available /etc/webhook /var/www/maintenance /etc/systemd/system
+cp -f "$REPO_DIR/ops/nginx/crimewiki.conf" /etc/nginx/sites-available/crimewiki.conf
+cp -f "$REPO_DIR/ops/nginx/crimewiki_maintenance.conf" /etc/nginx/sites-available/crimewiki_maintenance.conf
+cp -f "$REPO_DIR/ops/maintenance/index.html" /var/www/maintenance/index.html
+cp -f "$REPO_DIR/ops/systemd/webhook.service" /etc/systemd/system/webhook.service
+
+if [ -f /etc/webhook/secret.env ]; then
+  # shellcheck disable=SC1091
+  . /etc/webhook/secret.env
+fi
+if [ -n "${WEBHOOK_SECRET:-}" ] && [ -f "$REPO_DIR/ops/webhook/hooks.yml" ]; then
+  sed -e "s#__WEBHOOK_SECRET__#${WEBHOOK_SECRET}#g" \
+    "$REPO_DIR/ops/webhook/hooks.yml" \
+    > /etc/webhook/hooks.yml
 else
-  su -s /bin/bash "$PULL_USER" -c "cd \"$REPO_DIR\" && git pull --ff-only origin main"
+  echo "WARN: /etc/webhook/secret.env missing or empty; skipping hooks.yml sync"
+fi
+
+# Self-update: after pull, if the repo has a newer deploy.sh, replace and re-exec once.
+if [ -z "${DEPLOY_SELF_UPDATED:-}" ] && [ -f "$REPO_DIR/ops/scripts/deploy.sh" ]; then
+  if ! cmp -s "$REPO_DIR/ops/scripts/deploy.sh" /usr/local/bin/deploy.sh; then
+    cp -f "$REPO_DIR/ops/scripts/deploy.sh" /usr/local/bin/deploy.sh
+    chmod +x /usr/local/bin/deploy.sh
+    DEPLOY_SELF_UPDATED=1 SKIP_PULL=1 exec /usr/local/bin/deploy.sh
+  fi
 fi
 
 if [ "$STOP_SERVICES" = "1" ]; then
