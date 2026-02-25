@@ -11,6 +11,8 @@
 # you only want the deployment automation updated. If the secret file is missing
 # it will prompt or auto-generate one, so it can still recover a broken webhook
 # state. Keep this script small and safe because it may be used frequently.
+# Example usage:
+#   sudo bash /home/anupamkhosla1993/crimeWiki/ops/scripts/update_deploy.sh crimewiki.site /home/anupamkhosla1993/crimeWiki
 #
 set -euo pipefail
 

@@ -97,6 +97,14 @@ Outputs:
 sudo bash /path/to/repo/ops/scripts/update_deploy.sh \
   crimewiki.site /path/to/repo
 ```
+Example:
+```
+sudo bash /home/anupamkhosla1993/crimeWiki/ops/scripts/update_deploy.sh crimewiki.site /home/anupamkhosla1993/crimeWiki
+```
+Why run this:
+- It copies the latest deploy script and webhook config into the VM system paths (`/usr/local/bin` and `/etc`) so the webhook always runs the correct version.
+- It is a safety “sync” step if a webhook deploy didn’t copy new ops files for any reason.
+- After this runs once, normal webhook deploys will auto‑copy ops files; you only need to re‑run it when you change ops files and want to force a refresh immediately.
 
 **Why `/etc` and `/usr/local/bin`**
 - The webhook calls `/usr/local/bin/deploy.sh`, not the repo script, because it must be a stable entrypoint even while the repo is mid‑pull.
