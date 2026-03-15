@@ -76,7 +76,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 									<div class='col-xl-3 col-md-4'>									
 										<h3 class='text-pm d-md-none text-center pt-0 mb-3'>$row_name</h3>			
 										<div class='card post-profile '>
-											<img src='$row_image' class='card-img-top post-pic' alt='profile pic'>              
+											<img src='$row_image' " . image_fallback_attr() . " class='card-img-top post-pic' alt='profile pic'>              
 										</div>
 									</div>
 									<div class='col-xl-9 col-md-8 d-flex flex-column'>		

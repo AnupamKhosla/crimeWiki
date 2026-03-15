@@ -216,11 +216,14 @@ ul ul {
   object-fit: cover;
   object-position: center top;
   border-radius: 5px;
-  background: #fff url("https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/ajax-loader.gif") center center no-repeat;
+  background: #d8dce2 url("https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/ajax-loader.gif") center center no-repeat;
 }
 
 .post .post-pic {
   object-fit: fill;
+  min-height: 230px;
+  width: 100%;
+  display: block;
 }
 
 .panel {

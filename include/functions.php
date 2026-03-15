@@ -50,13 +50,43 @@ function isAbsolute($url) {
   return isset(parse_url($url)['host']);
 }
 
+function default_image_path() {
+	return "/Uploads/default.png";
+}
+
 function image_path($str) {
+	$str = trim((string)$str);
+	if($str === "") {
+		return default_image_path();
+	}
+
 	if(isAbsolute($str)) {
 		return $str;
 	}
-	else {
-		return "/Uploads/" . $str;
+
+	$normalized = ltrim($str, "/");
+	if(
+		stripos($normalized, "uploads/") === 0 ||
+		stripos($normalized, "Uploads/") === 0 ||
+		stripos($normalized, "assets/") === 0
+	) {
+		$path = "/" . $normalized;
 	}
+	else {
+		$path = "/Uploads/" . $normalized;
+	}
+
+	$diskPath = __DIR__ . "/.." . $path;
+	if(file_exists($diskPath)) {
+		return $path;
+	}
+
+	return default_image_path();
+}
+
+function image_fallback_attr() {
+	$default = htmlspecialchars(default_image_path(), ENT_QUOTES, 'UTF-8');
+	return "onerror=\"this.onerror=null;this.src='{$default}';\"";
 }
 
 

@@ -9,11 +9,12 @@ if(!!$result && $result->num_rows) { //query was successful
 	while( $row = $result->fetch_assoc() ) { 
 		$title = htmlspecialchars($row['title']);			
 		$image = htmlspecialchars(image_path($row['image']));
+		$imageFallback = image_fallback_attr();
 		$titleRepeat = htmlspecialchars($row['titlerepeat'] ?? "");	
 		$slides .= <<<EOT
 											<div class="slide">
 								        <div class="card">
-								          <img data-lazy="$image" class="card-img-top post-pic" alt="profile pic" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+								          <img data-lazy="$image" $imageFallback class="card-img-top post-pic" alt="profile pic" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
 								          <div class="card-body">                
 								            <a href="post/$title/$titleRepeat" class="">$title</a>
 								          </div>

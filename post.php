@@ -58,7 +58,7 @@ require_once("include/post_code.php");
               </div>
               <div class="card-container">
                 <div class="card post-profile ">
-                <img src="<?php echo image_path($image) ?>" class="card-img-top post-pic" alt="profile pic">
+                <img src="<?php echo image_path($image) ?>" <?php echo image_fallback_attr(); ?> class="card-img-top post-pic" alt="profile pic">
                 <div class="card-body">                
                   <a href="#" class=""> <?php echo ($title); ?> </a>
                 </div>
