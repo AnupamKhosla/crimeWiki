@@ -6,12 +6,14 @@
 # so the maintenance switch ensures no half-rendered PHP or DB work runs while
 # files are changing. The script supports a lock to prevent concurrent deploys,
 # optional service stops to free memory, and a conservative default to keep the
-# site in maintenance mode if anything fails. It also logs to /var/log/deploy.log
-# so you can see exactly what happened in SSH. The git pull runs as the sudo
-# user by default to avoid ownership issues, but you can set PULL_USER if you
-# want a specific account. If you prefer automatic recovery, set
-# KEEP_MAINT_ON_ERROR=0. Keep this file stable and small: it is the safety rail
-# between your public site and the VM under deployment pressure.
+# site in maintenance mode if hard failures occur. It also logs to
+# /var/log/deploy.log so you can see exactly what happened in SSH. Git pull
+# failures are treated as warnings: the deploy continues with the last working
+# local checkout so a temporary GitHub/network issue does not leave the site in
+# maintenance mode. The git pull runs as the sudo user by default to avoid
+# ownership issues, but you can set PULL_USER if you want a specific account.
+# Keep this file stable and small: it is the safety rail between your public
+# site and the VM under deployment pressure.
 # It reads DOMAIN and REPO_DIR from /etc/crimewiki.env.
 #
 set -euo pipefail
@@ -40,6 +42,7 @@ KEEP_MAINT_ON_ERROR="${KEEP_MAINT_ON_ERROR:-1}"
 PULL_USER="${PULL_USER:-${SUDO_USER:-root}}"
 # Log file for deploy output
 LOG_FILE="${LOG_FILE:-/var/log/deploy.log}"
+GIT_PULL_FAILED=0
 
 # Single-run lock to avoid overlapping deploys
 LOCK_FILE="/tmp/deploy.lock"
@@ -68,6 +71,20 @@ compose_cmd() {
 
 COMPOSE_CMD="$(compose_cmd)"
 
+ensure_nginx_running() {
+  if systemctl is-active --quiet nginx; then
+    return
+  fi
+
+  echo "WARN: nginx is not running; attempting to start it."
+  systemctl start nginx
+
+  if ! systemctl is-active --quiet nginx; then
+    echo "ERROR: nginx failed to start." >&2
+    return 1
+  fi
+}
+
 on_exit() {
   status="$?"
   if [ "$status" -ne 0 ]; then
@@ -76,14 +93,18 @@ on_exit() {
       exit "$status"
     fi
   fi
+  ensure_nginx_running
   ln -sf /etc/nginx/sites-available/crimewiki.conf /etc/nginx/sites-enabled/crimewiki.conf
   systemctl reload nginx
   exit "$status"
 }
 trap on_exit EXIT
 
+ensure_nginx_running
+
 # Switch to maintenance mode
 ln -sf /etc/nginx/sites-available/crimewiki_maintenance.conf /etc/nginx/sites-enabled/crimewiki.conf
+ensure_nginx_running
 systemctl reload nginx
 
 if [ "$STOP_SERVICES" = "1" ]; then
@@ -100,9 +121,15 @@ fi
 if [ -z "${SKIP_PULL:-}" ]; then
   if [ "$PULL_USER" = "root" ]; then
     cd "$REPO_DIR"
-    git pull --ff-only origin main
+    if ! git pull --ff-only origin main; then
+      GIT_PULL_FAILED=1
+      echo "WARN: git pull failed; continuing with the existing local checkout."
+    fi
   else
-    su -s /bin/bash "$PULL_USER" -c "cd \"$REPO_DIR\" && git pull --ff-only origin main"
+    if ! su -s /bin/bash "$PULL_USER" -c "cd \"$REPO_DIR\" && git pull --ff-only origin main"; then
+      GIT_PULL_FAILED=1
+      echo "WARN: git pull failed for user $PULL_USER; continuing with the existing local checkout."
+    fi
   fi
 fi
 
@@ -121,6 +148,9 @@ sed \
   > /etc/nginx/sites-available/crimewiki_maintenance.conf
 cp -f "$REPO_DIR/ops/maintenance/index.html" /var/www/maintenance/index.html
 cp -f "$REPO_DIR/ops/systemd/webhook.service" /etc/systemd/system/webhook.service
+cp -f "$REPO_DIR/ops/systemd/crimewiki-app.service" /etc/systemd/system/crimewiki-app.service
+cp -f "$REPO_DIR/ops/scripts/start_stack.sh" /usr/local/bin/crimewiki-start.sh
+chmod +x /usr/local/bin/crimewiki-start.sh
 
 if [ -f /etc/webhook/secret.env ]; then
   # shellcheck disable=SC1091
@@ -141,6 +171,17 @@ if [ -z "${DEPLOY_SELF_UPDATED:-}" ] && [ -f "$REPO_DIR/ops/scripts/deploy.sh" ]
     chmod +x /usr/local/bin/deploy.sh
     DEPLOY_SELF_UPDATED=1 SKIP_PULL=1 exec /usr/local/bin/deploy.sh
   fi
+fi
+
+systemctl daemon-reload
+systemctl enable webhook crimewiki-app
+if ! systemctl is-active --quiet webhook; then
+  systemctl start webhook
+fi
+systemctl start crimewiki-app
+
+if [ "$GIT_PULL_FAILED" = "1" ]; then
+  echo "WARN: deploy finished using the previously checked out code because git pull failed."
 fi
 
 if [ "$STOP_SERVICES" = "1" ]; then

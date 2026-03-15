@@ -140,6 +140,10 @@ sed \
   > /usr/local/bin/deploy.sh
 chmod +x /usr/local/bin/deploy.sh
 
+# Install boot-time app start helper
+cp -f "$REPO_DIR/ops/scripts/start_stack.sh" /usr/local/bin/crimewiki-start.sh
+chmod +x /usr/local/bin/crimewiki-start.sh
+
 # Allow root (webhook) to run git in this repo
 git config --system --add safe.directory "$REPO_DIR"
 
@@ -151,9 +155,11 @@ sed \
 
 # Install systemd unit
 cp -f "$REPO_DIR/ops/systemd/webhook.service" /etc/systemd/system/webhook.service
+cp -f "$REPO_DIR/ops/systemd/crimewiki-app.service" /etc/systemd/system/crimewiki-app.service
 
 systemctl daemon-reload
 systemctl enable --now webhook
+systemctl enable --now crimewiki-app
 
 # Start app stack now that reverse proxy is active
 if [ -n "$COMPOSE_CMD" ] && [ -f "$REPO_DIR/docker-compose.yml" ]; then

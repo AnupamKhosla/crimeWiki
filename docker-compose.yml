@@ -3,6 +3,7 @@ version: "3.8"
 services:
   app:
     build: .
+    restart: unless-stopped
     ports:
       - "8080:80"
     volumes:
@@ -13,6 +14,7 @@ services:
 
   db:
     image: mysql:9.6
+    restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
@@ -26,6 +28,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin:latest
+    restart: unless-stopped
     environment:
       PMA_HOST: db
       PMA_ABSOLUTE_URI: http://localhost/phpmyadmin/

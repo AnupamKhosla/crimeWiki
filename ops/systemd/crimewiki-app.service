@@ -1,0 +1,15 @@
+[Unit]
+Description=CrimeWiki Docker application stack
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/crimewiki-start.sh start
+ExecStop=/usr/local/bin/crimewiki-start.sh stop
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target
