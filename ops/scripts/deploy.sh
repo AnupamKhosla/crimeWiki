@@ -46,10 +46,12 @@ GIT_PULL_FAILED=0
 
 # Single-run lock to avoid overlapping deploys
 LOCK_FILE="/tmp/deploy.lock"
-exec 9>"$LOCK_FILE"
-if ! flock -n 9; then
-  echo "Deploy already running" >&2
-  exit 1
+if [ -z "${SKIP_LOCK:-}" ]; then
+  exec 9>"$LOCK_FILE"
+  if ! flock -n 9; then
+    echo "Deploy already running" >&2
+    exit 1
+  fi
 fi
 
 touch "$LOG_FILE"
@@ -169,7 +171,7 @@ if [ -z "${DEPLOY_SELF_UPDATED:-}" ] && [ -f "$REPO_DIR/ops/scripts/deploy.sh" ]
   if ! cmp -s "$REPO_DIR/ops/scripts/deploy.sh" /usr/local/bin/deploy.sh; then
     cp -f "$REPO_DIR/ops/scripts/deploy.sh" /usr/local/bin/deploy.sh
     chmod +x /usr/local/bin/deploy.sh
-    DEPLOY_SELF_UPDATED=1 SKIP_PULL=1 exec /usr/local/bin/deploy.sh
+    DEPLOY_SELF_UPDATED=1 SKIP_PULL=1 SKIP_LOCK=1 exec /usr/local/bin/deploy.sh
   fi
 fi
 
