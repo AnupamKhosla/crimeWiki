@@ -52,3 +52,5 @@ if command -v systemctl >/dev/null 2>&1; then
 fi
 
 echo "Secrets ensured at $SECRETS_FILE"
+echo "WEBHOOK_SECRET=$WEBHOOK_SECRET"
+echo "PROXY_SECRET_TOKEN=$PROXY_SECRET_TOKEN"

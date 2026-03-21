@@ -70,10 +70,20 @@ $(document).ready(function(){
     });
 
     $(".slick").on("lazyLoadError", function(event, slick, image){
-      if(image) {
-        $(image).addClass("is-default-image");
-        image.style.background = "#d8dce2";
-        syncImagePlaceholder(image);
+      var targetImage = image;
+
+      if(!targetImage && event && event.target && event.target.tagName === "IMG") {
+        targetImage = event.target;
+      }
+
+      if(targetImage && targetImage.tagName !== "IMG") {
+        targetImage = $(targetImage).find("img")[0];
+      }
+
+      if(targetImage) {
+        $(targetImage).addClass("is-default-image");
+        targetImage.style.background = "#d8dce2";
+        syncImagePlaceholder(targetImage);
       }
     });
 
