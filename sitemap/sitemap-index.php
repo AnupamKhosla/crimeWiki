@@ -3,8 +3,16 @@ header('Content-Type: text/xml');
 require_once('../include/config.php');
 require_once('../include/functions.php');
 
+$scheme = 'http';
+if (
+  (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ||
+  (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+) {
+  $scheme = 'https';
+}
+
 $sitemap = "<sitemap>
-            <loc>http://{$_SERVER['SERVER_NAME']}/sitemap/sitemap1.txt</loc>
+            <loc>{$scheme}://{$_SERVER['SERVER_NAME']}/sitemap/sitemap1.txt</loc>
           </sitemap>";
 
 $conn = make_db_connection();
@@ -16,7 +24,7 @@ if($result) {
       $max_pages = ceil($count/50);
     for($pages = ceil($count/50); $pages > 1; $pages--) {      
       $sitemap .= "\n          <sitemap>
-            <loc>http://{$_SERVER['SERVER_NAME']}/sitemap/sitemap" . ($max_pages-$pages+2) . ".txt</loc>
+            <loc>{$scheme}://{$_SERVER['SERVER_NAME']}/sitemap/sitemap" . ($max_pages-$pages+2) . ".txt</loc>
           </sitemap>";
     }
   }  

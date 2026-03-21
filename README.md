@@ -134,7 +134,7 @@ sudo bash /path/to/repo/ops/scripts/setup_server.sh \
 Outputs:
 - Webhook URL to add in GitHub/GitLab: `https://crimewiki.site/hooks/deploy`
 - GitHub Webhook Secret: `<value printed by script>` (uses `X-Hub-Signature-256`)
-- Secret is stored on VM in `/etc/webhook/secret.env`
+- Secrets are stored on VM in `/etc/secrets/secrets.env`
 - Environment file is stored on VM in `/etc/crimewiki.env`
 - The script also installs `/usr/local/bin/deploy.sh`, `/usr/local/bin/crimewiki-start.sh`, and the systemd units for `webhook` and `crimewiki-app`
 
@@ -162,8 +162,8 @@ sudo nginx -t && sudo systemctl reload nginx
 **Config and secret ownership**
 - `include/config.php` is app/database config. It is git-ignored and is normally created by the browser setup flow in `login.php` / `include/setup.php`.
 - `/etc/crimewiki.env` is deploy-managed VM config. It currently contains only `DOMAIN` and `REPO_DIR` and is intentionally overwritten from `ops/env/crimewiki.env` during deploys.
-- `/etc/webhook/secret.env` holds the real webhook secret. It is created once during `setup_server.sh` and reused on later deploys.
-- `/etc/webhook/hooks.yml` is generated from `ops/webhook/hooks.yml` plus the real secret stored in `/etc/webhook/secret.env`.
+- `/etc/secrets/secrets.env` holds live VM secrets such as `WEBHOOK_SECRET` and `PROXY_SECRET_TOKEN`. It is created by `setup_server.sh` / `crimewiki-ensure-secrets.sh` and reused on later deploys.
+- `/etc/webhook/hooks.yml.template` is copied from `ops/webhook/hooks.yml`. At service start, `webhook.service` renders the live runtime config at `/run/crimewiki-hooks.yml` using `WEBHOOK_SECRET` from `/etc/secrets/secrets.env`.
 - Docker Compose may also rely on a local `.env` file for `DB_NAME`, `DB_USER`, `DB_PASS`, and `DB_ROOT_PASS`. That file is git-ignored and VM-specific.
 
 **Files copied into the VM by setup/deploy**
@@ -175,6 +175,7 @@ sudo nginx -t && sudo systemctl reload nginx
 - `ops/systemd/crimewiki-app.service` -> `/etc/systemd/system/crimewiki-app.service`
 - `ops/scripts/start_stack.sh` -> `/usr/local/bin/crimewiki-start.sh`
 - `ops/scripts/deploy.sh` -> `/usr/local/bin/deploy.sh`
+- `ops/scripts/ensure_secrets.sh` -> `/usr/local/bin/crimewiki-ensure-secrets.sh`
 
 **Deploy flow**
 When the webhook fires, `/usr/local/bin/deploy.sh` will:
@@ -183,7 +184,7 @@ When the webhook fires, `/usr/local/bin/deploy.sh` will:
 3) Optional: stop heavy services (set `STOP_SERVICES=1` in `/usr/local/bin/deploy.sh`).
 4) Best-effort `git pull --ff-only origin main`. If pull fails, the script logs a warning and continues with the existing local checkout instead of leaving the site down.
 5) Copy deploy-managed templates from the repo into `/etc/...` and `/usr/local/bin/...`.
-6) Regenerate `/etc/webhook/hooks.yml` using the real secret from `/etc/webhook/secret.env`.
+6) Refresh the webhook template/service files. The running `webhook.service` renders its live runtime config from `ops/webhook/hooks.yml` using `WEBHOOK_SECRET` from `/etc/secrets/secrets.env`.
 7) If the repo contains a newer `deploy.sh`, install it to `/usr/local/bin/deploy.sh` and re-exec once with `SKIP_PULL=1`.
 8) `systemctl enable webhook crimewiki-app`, then start them if needed.
 9) Switch Nginx back to the live app config.
@@ -251,6 +252,8 @@ sudo systemctl enable --now crimewiki-app
 - This repo does not currently read DB credentials from environment variables in its default PHP code path, so managed platforms usually still need a platform-specific adaptation or a generated `include/config.php`.
 
 **Meta:** php will automatically create category named `Blog` -- this is mandatory for homepage to show dynamic posts and about us section text. php will make two posts in the blog category, namely `$blog_month_post` and `$blog_about_text`. These two will be used to store about us data and monthly-post data.
+
+**Footer note:** the homepage category filter includes `Blog`, but the footer category lists intentionally exclude `Blog`.
 
 htaccess rewrites being used:  
 

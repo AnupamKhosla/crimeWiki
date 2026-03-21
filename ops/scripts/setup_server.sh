@@ -9,20 +9,18 @@
 # The goal is a reliable, low-RAM setup that keeps public traffic on HTTPS while
 # forwarding app traffic to localhost:8080, and allows safe deploys even on
 # constrained machines. Use this script when first setting up a new VM or when
-# you want to reapply the proxy configuration after changes. It can preserve an
-# existing webhook secret or accept a new one.
+# you want to reapply the proxy configuration after changes.
 #
 set -euo pipefail
 
 if [ "$#" -lt 3 ]; then
-  echo "Usage: $0 <domain> <email> <repo_dir> [webhook_secret]"
+  echo "Usage: $0 <domain> <email> <repo_dir>"
   exit 1
 fi
 
 DOMAIN="$1"
 EMAIL="$2"
 REPO_DIR="$3"
-WEBHOOK_SECRET="${4:-}"
 DOMAIN_WWW="www.${DOMAIN}"
 
 FORCE_CERT="${FORCE_CERT:-0}"
@@ -50,6 +48,7 @@ apt-get install -y nginx certbot python3-certbot-nginx webhook
 mkdir -p /var/www/letsencrypt
 mkdir -p /var/www/maintenance
 mkdir -p /etc/webhook
+mkdir -p /etc/secrets
 mkdir -p /etc
 
 # Install maintenance page
@@ -105,32 +104,15 @@ ln -sf /etc/nginx/sites-available/crimewiki.conf /etc/nginx/sites-enabled/crimew
 nginx -t
 systemctl reload nginx
 
-# Webhook secret handling
-SECRET_FILE="/etc/webhook/secret.env"
-if [ -z "$WEBHOOK_SECRET" ]; then
-  if [ -f "$SECRET_FILE" ]; then
-    # shellcheck disable=SC1090
-    . "$SECRET_FILE"
-  fi
-fi
+# Install secrets helper and ensure all missing secrets exist
+cp -f "$REPO_DIR/ops/scripts/ensure_secrets.sh" /usr/local/bin/crimewiki-ensure-secrets.sh
+chmod +x /usr/local/bin/crimewiki-ensure-secrets.sh
+/usr/local/bin/crimewiki-ensure-secrets.sh
 
-if [ -z "${WEBHOOK_SECRET:-}" ]; then
-  if [ "$NONINTERACTIVE" = "1" ]; then
-    WEBHOOK_SECRET="$(openssl rand -hex 24)"
-  else
-    read -r -p "Webhook secret (leave empty to auto-generate): " INPUT_SECRET
-    if [ -n "$INPUT_SECRET" ]; then
-      WEBHOOK_SECRET="$INPUT_SECRET"
-    else
-      WEBHOOK_SECRET="$(openssl rand -hex 24)"
-    fi
-  fi
+if [ -f /etc/secrets/secrets.env ]; then
+  # shellcheck disable=SC1091
+  . /etc/secrets/secrets.env
 fi
-
-cat > "$SECRET_FILE" <<EOF
-WEBHOOK_SECRET=${WEBHOOK_SECRET}
-EOF
-chmod 600 "$SECRET_FILE"
 
 # Install deploy script
 sed \
@@ -147,11 +129,8 @@ chmod +x /usr/local/bin/crimewiki-start.sh
 # Allow root (webhook) to run git in this repo
 git config --system --add safe.directory "$REPO_DIR"
 
-# Install webhook config (YAML with comments)
-sed \
-  -e "s#__WEBHOOK_SECRET__#${WEBHOOK_SECRET}#g" \
-  "$REPO_DIR/ops/webhook/hooks.yml" \
-  > /etc/webhook/hooks.yml
+# Install webhook template (secret is injected by webhook.service at runtime)
+cp -f "$REPO_DIR/ops/webhook/hooks.yml" /etc/webhook/hooks.yml.template
 
 # Install systemd unit
 cp -f "$REPO_DIR/ops/systemd/webhook.service" /etc/systemd/system/webhook.service
@@ -163,11 +142,19 @@ systemctl enable --now crimewiki-app
 
 # Start app stack now that reverse proxy is active
 if [ -n "$COMPOSE_CMD" ] && [ -f "$REPO_DIR/docker-compose.yml" ]; then
+  if [ -f /etc/secrets/secrets.env ]; then
+    set -a
+    # shellcheck disable=SC1091
+    . /etc/secrets/secrets.env
+    set +a
+  fi
   $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d
 fi
 
 cat <<EOF
 Setup complete.
+Secrets file: /etc/secrets/secrets.env
+Secret recovery: sudo /usr/local/bin/crimewiki-ensure-secrets.sh
 Webhook URL: https://${DOMAIN}/hooks/deploy
 Webhook header: X-Webhook-Secret: ${WEBHOOK_SECRET}
 EOF

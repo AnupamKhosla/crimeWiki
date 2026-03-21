@@ -4,11 +4,11 @@
 # localhost; Nginx proxies external traffic to it. This keeps the firewall
 # simple (only 80/443 open) and prevents direct access to the webhook port. The
 # deploy script handles maintenance mode, optional service stops, and git pulls.
-# If you change the secret, re-run setup_server.sh so the generated
-# /etc/webhook/hooks.yml and the GitHub/GitLab webhook header match.
+# The live webhook service renders this template at startup using
+# `WEBHOOK_SECRET` from `/etc/secrets/secrets.env`.
 # Keep this file short and explicit; it is security-sensitive and should not
-# accept unauthenticated requests. This YAML is used as a template; the setup
-# scripts substitute __WEBHOOK_SECRET__ before installing it on the VM.
+# accept unauthenticated requests. This YAML is used as a template; the systemd
+# service substitutes __WEBHOOK_SECRET__ into a runtime file under `/run`.
 
 - id: deploy
   execute-command: /usr/local/bin/deploy.sh

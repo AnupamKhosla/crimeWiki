@@ -219,6 +219,10 @@ ul ul {
   background: #d8dce2 url("https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/ajax-loader.gif") center center no-repeat;
 }
 
+.slider .post-pic.is-default-image, .post .post-pic.is-default-image {
+  background: #d8dce2;
+}
+
 .post .post-pic {
   object-fit: fill;
   min-height: 230px;

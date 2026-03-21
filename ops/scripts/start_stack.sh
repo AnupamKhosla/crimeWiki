@@ -23,6 +23,13 @@ if [ -z "${REPO_DIR:-}" ]; then
   exit 1
 fi
 
+if [ -f /etc/secrets/secrets.env ]; then
+  set -a
+  # shellcheck disable=SC1091
+  . /etc/secrets/secrets.env
+  set +a
+fi
+
 compose_cmd() {
   if command -v docker-compose >/dev/null 2>&1; then
     echo "docker-compose"

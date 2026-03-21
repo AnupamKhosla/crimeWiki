@@ -46,6 +46,23 @@ function category_select($category = NULL) {
 	return $list;
 }
 
+function category_filter_options($selected = NULL) {
+	global $conn;
+	$list = "";
+	$result = $conn->query("SELECT name FROM `categories` ORDER BY name");
+	if($result != false) {
+		while($row = $result->fetch_assoc()) {
+			$row_name = htmlspecialchars($row['name']);
+			$is_selected = ($row['name'] === $selected) ? " selected" : "";
+			$list .= "<option value=\"$row_name\"$is_selected>$row_name</option>";
+		}
+	}
+	else {
+		die("Can't fetch names from categories table" . $conn->error);
+	}
+	return $list;
+}
+
 function isAbsolute($url) {
   return isset(parse_url($url)['host']);
 }
@@ -86,7 +103,7 @@ function image_path($str) {
 
 function image_fallback_attr() {
 	$default = htmlspecialchars(default_image_path(), ENT_QUOTES, 'UTF-8');
-	return "onerror=\"this.onerror=null;this.src='{$default}';\"";
+	return "data-default-src=\"{$default}\" onerror=\"this.onerror=null;this.classList.add('is-default-image');this.style.background='#d8dce2';this.src='{$default}';\"";
 }
 
 

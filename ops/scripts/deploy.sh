@@ -32,6 +32,11 @@ if [ -z "${DOMAIN:-}" ] || [ -z "${REPO_DIR:-}" ]; then
   exit 1
 fi
 
+if [ -f /etc/secrets/secrets.env ]; then
+  # shellcheck disable=SC1091
+  . /etc/secrets/secrets.env
+fi
+
 DOMAIN_WWW="www.${DOMAIN}"
 
 # Set to 1 if you want to stop services during deploys (more RAM headroom)
@@ -149,22 +154,13 @@ sed \
   "$REPO_DIR/ops/nginx/crimewiki_maintenance.conf" \
   > /etc/nginx/sites-available/crimewiki_maintenance.conf
 cp -f "$REPO_DIR/ops/maintenance/index.html" /var/www/maintenance/index.html
+cp -f "$REPO_DIR/ops/webhook/hooks.yml" /etc/webhook/hooks.yml.template
 cp -f "$REPO_DIR/ops/systemd/webhook.service" /etc/systemd/system/webhook.service
 cp -f "$REPO_DIR/ops/systemd/crimewiki-app.service" /etc/systemd/system/crimewiki-app.service
 cp -f "$REPO_DIR/ops/scripts/start_stack.sh" /usr/local/bin/crimewiki-start.sh
+cp -f "$REPO_DIR/ops/scripts/ensure_secrets.sh" /usr/local/bin/crimewiki-ensure-secrets.sh
 chmod +x /usr/local/bin/crimewiki-start.sh
-
-if [ -f /etc/webhook/secret.env ]; then
-  # shellcheck disable=SC1091
-  . /etc/webhook/secret.env
-fi
-if [ -n "${WEBHOOK_SECRET:-}" ] && [ -f "$REPO_DIR/ops/webhook/hooks.yml" ]; then
-  sed -e "s#__WEBHOOK_SECRET__#${WEBHOOK_SECRET}#g" \
-    "$REPO_DIR/ops/webhook/hooks.yml" \
-    > /etc/webhook/hooks.yml
-else
-  echo "WARN: /etc/webhook/secret.env missing or empty; skipping hooks.yml sync"
-fi
+chmod +x /usr/local/bin/crimewiki-ensure-secrets.sh
 
 # Self-update: after pull, if the repo has a newer deploy.sh, replace and re-exec once.
 if [ -z "${DEPLOY_SELF_UPDATED:-}" ] && [ -f "$REPO_DIR/ops/scripts/deploy.sh" ]; then
@@ -188,6 +184,12 @@ fi
 
 if [ "$STOP_SERVICES" = "1" ]; then
   if [ -n "$COMPOSE_CMD" ] && [ -f "$REPO_DIR/docker-compose.yml" ]; then
+    if [ -f /etc/secrets/secrets.env ]; then
+      set -a
+      # shellcheck disable=SC1091
+      . /etc/secrets/secrets.env
+      set +a
+    fi
     $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d
   fi
 

@@ -4,6 +4,8 @@ services:
   app:
     build: .
     restart: unless-stopped
+    environment:
+      PROXY_SECRET_TOKEN: ${PROXY_SECRET_TOKEN:-}
     ports:
       - "8080:80"
     volumes:

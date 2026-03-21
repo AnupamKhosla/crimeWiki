@@ -50,9 +50,38 @@ $(document).ready(function(){
 
   //image loading gif to be removed on load  
   !function(){
-    $(".slider .post-pic, .post .post-pic").on("load", function(){      
-      $(this).css("background", "transparent");
-    }).each(function(){
+    function syncImagePlaceholder(img) {
+      var $img = $(img);
+      var defaultSrc = img.getAttribute("data-default-src") || "";
+      var currentSrc = img.currentSrc || img.src || "";
+      var isDefaultImage = $img.hasClass("is-default-image") ||
+        (!!defaultSrc && currentSrc.indexOf(defaultSrc) !== -1) ||
+        $img.hasClass("slick-lazyload-error");
+
+      $img.css("background", isDefaultImage ? "#d8dce2" : "transparent");
+    }
+
+    $(".slider .post-pic, .post .post-pic").on("load error", function(){      
+      if($(this).hasClass("slick-lazyload-error")) {
+        $(this).addClass("is-default-image");
+      }
+
+      syncImagePlaceholder(this);
+    });
+
+    $(".slick").on("lazyLoadError", function(event, slick, image){
+      if(image) {
+        $(image).addClass("is-default-image");
+        image.style.background = "#d8dce2";
+        syncImagePlaceholder(image);
+      }
+    });
+
+    $(".slider .post-pic, .post .post-pic").each(function(){
+      var defaultSrc = this.getAttribute("data-default-src") || "";
+      if(defaultSrc && (this.currentSrc || this.src || "").indexOf(defaultSrc) !== -1) {
+        $(this).addClass("is-default-image");
+      }
       if (this.complete || this.complete === undefined){ this.src = this.src; } //needed for potential cached images
     });
   }();

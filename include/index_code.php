@@ -1,20 +1,59 @@
 <?php 
 $conn = make_db_connection();
+$sliderPlaceholderSrc = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3Crect width='1' height='1' fill='%23d8dce2'/%3E%3C/svg%3E";
 
 //slider section
-$result = $conn->query( "SELECT title, image, titlerepeat, content FROM `posts` WHERE categoryname='criminals' ORDER BY rand() LIMIT 50;" );
+$selectedCategory = trim((string)($_GET["category"] ?? "Criminals"));
+$selectedFilter = trim((string)($_GET["filter"] ?? ""));
+
+$allowedCategories = [];
+$categoryResult = $conn->query("SELECT name FROM `categories` WHERE name!='Blog'");
+if($categoryResult != false) {
+	while($categoryRow = $categoryResult->fetch_assoc()) {
+		$allowedCategories[] = $categoryRow["name"];
+	}
+}
+
+if($selectedCategory === "" || !in_array($selectedCategory, $allowedCategories, true)) {
+	$selectedCategory = "Criminals";
+}
+
+$orderBy = "ORDER BY rand()";
+if($selectedFilter === "datetime") {
+	$orderBy = "ORDER BY datetime DESC";
+}
+else if($selectedFilter === "alphabetically") {
+	$orderBy = "ORDER BY title";
+}
+else if($selectedFilter === "popular") {
+	$orderBy = "ORDER BY CHAR_LENGTH(content) DESC";
+}
+else if($selectedFilter === "country") {
+	$orderBy = "ORDER BY ISNULL(country), country, title";
+}
+
+$stmt = $conn->prepare("SELECT title, image, titlerepeat, content FROM `posts` WHERE categoryname=? $orderBy LIMIT 50");
+$stmt->bind_param("s", $selectedCategory);
+$stmt->execute();
+$result = $stmt->get_result();
 
 $slides = "";
 if(!!$result && $result->num_rows) { //query was successful	
-	while( $row = $result->fetch_assoc() ) { 
-		$title = htmlspecialchars($row['title']);			
-		$image = htmlspecialchars(image_path($row['image']));
-		$imageFallback = image_fallback_attr();
-		$titleRepeat = htmlspecialchars($row['titlerepeat'] ?? "");	
-		$slides .= <<<EOT
+			while( $row = $result->fetch_assoc() ) { 
+				$title = htmlspecialchars($row['title']);			
+				$rawImage = trim((string)($row['image'] ?? ""));
+				$image = htmlspecialchars(image_path($rawImage));
+				$imageAttrs = "";
+				$imageClasses = "card-img-top post-pic";
+				if($rawImage === "" || $image === htmlspecialchars(default_image_path(), ENT_QUOTES, 'UTF-8')) {
+					$imageClasses .= " is-default-image";
+					$imageAttrs = "data-default-src=\"" . htmlspecialchars(default_image_path(), ENT_QUOTES, 'UTF-8') . "\"";
+				}
+				$titleRepeat = htmlspecialchars($row['titlerepeat'] ?? "");	
+				$slides .= <<<EOT
 											<div class="slide">
 								        <div class="card">
-								          <img data-lazy="$image" $imageFallback class="card-img-top post-pic" alt="profile pic" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+								          <img data-lazy="$image" $imageAttrs class="$imageClasses" alt="profile pic" src="$sliderPlaceholderSrc">
 								          <div class="card-body">                
 								            <a href="post/$title/$titleRepeat" class="">$title</a>
 								          </div>

@@ -14,12 +14,12 @@ This repository contains a PHP CMS/wiki app plus a small VM ops bundle for a low
 - `include/config.php`: app DB config, git-ignored, normally created by the browser setup flow in `login.php` / `include/setup.php`.
 - `.env`: optional Docker Compose env file, git-ignored, used for `DB_NAME`, `DB_USER`, `DB_PASS`, `DB_ROOT_PASS` if present on the VM.
 - `ops/env/crimewiki.env` -> `/etc/crimewiki.env`: deploy-managed VM config with `DOMAIN` and `REPO_DIR`.
-- `/etc/webhook/secret.env`: live webhook secret; do not commit it.
+- `/etc/secrets/secrets.env`: live VM secrets file with `WEBHOOK_SECRET` and `PROXY_SECRET_TOKEN`; do not commit it.
 
 ## Deploy Flow
 
 - Webhook runs `/usr/local/bin/deploy.sh`.
-- Deploy ensures Nginx is running, switches to maintenance mode, does best-effort `git pull --ff-only`, syncs templates into `/etc` and `/usr/local/bin`, regenerates webhook config from `/etc/webhook/secret.env`, self-updates `deploy.sh` if needed, enables/starts `webhook` and `crimewiki-app`, then switches back live.
+- Deploy ensures Nginx is running, switches to maintenance mode, does best-effort `git pull --ff-only`, syncs templates into `/etc` and `/usr/local/bin`, refreshes webhook template/service files, self-updates `deploy.sh` if needed, enables/starts `webhook` and `crimewiki-app`, then switches back live.
 - Deploy logs go to `/var/log/deploy.log`.
 
 ## Boot Recovery
@@ -39,15 +39,17 @@ This repository contains a PHP CMS/wiki app plus a small VM ops bundle for a low
 - `ops/systemd/crimewiki-app.service` -> `/etc/systemd/system/crimewiki-app.service`
 - `ops/scripts/start_stack.sh` -> `/usr/local/bin/crimewiki-start.sh`
 - `ops/scripts/deploy.sh` -> `/usr/local/bin/deploy.sh`
+- `ops/scripts/ensure_secrets.sh` -> `/usr/local/bin/crimewiki-ensure-secrets.sh`
 
 ## Secrets And Safety
 
 - The repo should not contain the real webhook secret.
 - The repo should not contain `include/config.php`.
 - Overwriting `/etc/crimewiki.env` during deploy is intentional because the repo owns `DOMAIN` and `REPO_DIR`.
-- Regenerating `/etc/webhook/hooks.yml` during deploy is safe because the real secret is sourced from `/etc/webhook/secret.env`.
+- Rendering the live webhook runtime config is safe because `WEBHOOK_SECRET` is sourced from `/etc/secrets/secrets.env` by `webhook.service`.
 
 ## Working Tree Notes
 
 - `index.php` currently has an intentional local content change restoring the homepage heading text.
 - `.DS_Store` may appear in the working tree and should not be committed.
+- The homepage category filter includes `Blog`, but the footer category lists intentionally exclude `Blog`.

@@ -433,6 +433,8 @@ AddDefaultCharset utf-8
 <IfModule mod_rewrite.c>
     Options -MultiViews
     RewriteEngine On
+    RewriteRule ^proxy/(.+)$ proxy.php?url=$1                           [QSA,L]
+    RewriteRule ^sitemap\.xml$ sitemap/sitemap-index.php                [QSA,B]
     RewriteRule ^sitemap/sitemap-index.xml sitemap/sitemap-index.php    [QSA,B]
     RewriteRule ^sitemap/sitemap(\d+).txt sitemap/sitemap.php?page=$1   [QSA,B]
     RewriteRule ^post/(\d+$) post.php?id=$1                             [QSA,B]

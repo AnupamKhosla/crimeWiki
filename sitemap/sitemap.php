@@ -3,6 +3,14 @@ header('Content-Type: text/plain; charset=utf-8');
 require_once('../include/config.php');
 require_once('../include/functions.php');
 
+$scheme = 'http';
+if (
+  (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ||
+  (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+) {
+  $scheme = 'https';
+}
+
 if(isset($_GET["page"])) {
 	$page = ($_GET["page"]-1)*50;
 }
@@ -21,7 +29,7 @@ if( $result && ($result = $stmt->get_result()) ) {
 		if($row["titlerepeat"] != NULL) {
 			$title_repeat = "/".$row["titlerepeat"];
 		}
-		$links .= "http://{$_SERVER['SERVER_NAME']}/post/" . $row["title"] . $title_repeat . "\n";
+		$links .= "{$scheme}://{$_SERVER['SERVER_NAME']}/post/" . $row["title"] . $title_repeat . "\n";
 	}	
 }
 else {

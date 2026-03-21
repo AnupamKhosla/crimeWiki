@@ -51,10 +51,10 @@ require_once('include/index_code.php');
     <!-- Add the slick-theme.css if you want default styling -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
     <!-- Add the slick-theme.css if you want default styling -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+	    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
 
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <meta name="theme-color" content="#E92222">
+	    <link rel="stylesheet" href="../assets/css/style.css">
+	    <meta name="theme-color" content="#E92222">
     
     <!-- Global site tag (gtag.js) - Google Ads: 10871239283 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10871239283"></script>
@@ -80,8 +80,7 @@ require_once('include/index_code.php');
         
         <?php require_once("include/nav.php") ?>
         <h1 class="main-title h3 font-weight-light w-100 text-center mt-2">A Wikipedea of world-wide crime</h1>
-        <!--
-        <form action="" class="filters">  
+	        <form action="" class="filters" method="GET">  
           <div class="row custom-container m-auto">
             <div class="col-lg-5 col-md-12 d-flex">
               <h1 class="main-title h3 font-weight-light w-100 text-center text-lg-left">A Wikipedea of world-wide crime</h1>
@@ -96,21 +95,20 @@ require_once('include/index_code.php');
             <div class="col pl-lg-0">
               <div class="row sort-dropdown d-none d-md-flex">
                 <div class="col-sm-6 offset-sm-3 col-md-3 offset-md-2 col-lg-5 offset-lg-0 pl-lg-0 mt-3 mt-md-0">
-                  <select class="w-100" name="Choose_Catgory">
-                    <option value="">Category</option>
-                    <option value="saab">Criminal</option>
-                    <option value="opel">Gang</option>
-                    <option value="audi">Crime</option>
-                  </select>
-                </div>    
-                <div class="col-sm-6 offset-sm-3 col-md-3 offset-md-0 col-lg-5 pl-lg-0 mt-3 mt-md-0">
-                  <select class="w-100" name="filter_by">
-                    <option value="">Sort By</option>
-                    <option value="saab">Latest</option>
-                    <option value="opel">Popular</option>
-                    <option value="audi">Country</option>
-                  </select>
-                </div>
+	                  <select class="w-100" name="category">
+	                    <option value="">Category</option>
+	                    <?php echo category_filter_options($_GET["category"] ?? NULL); ?>
+	                  </select>
+	                </div>    
+	                <div class="col-sm-6 offset-sm-3 col-md-3 offset-md-0 col-lg-5 pl-lg-0 mt-3 mt-md-0">
+	                  <select class="w-100" name="filter">
+	                    <option <?php if(($_GET["filter"] ?? "") == "") echo "selected" ?> value="">Sort By</option>
+	                    <option <?php if(($_GET["filter"] ?? "") == "datetime") echo "selected" ?> value="datetime">Latest</option>
+	                    <option <?php if(($_GET["filter"] ?? "") == "alphabetically") echo "selected" ?> value="alphabetically">Alphabetically</option>
+	                    <option <?php if(($_GET["filter"] ?? "") == "popular") echo "selected" ?> value="popular">Popular</option>
+	                    <option <?php if(($_GET["filter"] ?? "") == "country") echo "selected" ?> value="country">Country</option>
+	                  </select>
+	                </div>
                 <div class="col-sm-6 offset-sm-3 offset-md-0 col-lg-2 col-md-2 pl-lg-0 mt-3 mt-md-0">
                   <button class="go btn text-white d-flex align-items-center justify-content-center w-100">
                     Go 
@@ -121,7 +119,6 @@ require_once('include/index_code.php');
             </div>
           </div>
         </form>
-      -->
         <div class="slider row ">
           <div class="col-md-10 offset-md-1">
             <div class="slick">                       
