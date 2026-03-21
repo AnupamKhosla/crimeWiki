@@ -13,7 +13,7 @@ Description=Webhook listener
 After=network.target
 
 [Service]
-ExecStart=/bin/bash -lc '. /etc/secrets/secrets.env && sed -e "s#__WEBHOOK_SECRET__#${WEBHOOK_SECRET}#g" /etc/webhook/hooks.yml.template > /run/crimewiki-hooks.yml && exec /usr/bin/webhook -hooks /run/crimewiki-hooks.yml -port 9000 -ip 127.0.0.1'
+ExecStart=/bin/bash -lc '. /etc/secrets/secrets.env && sed -e "s#__WEBHOOK_SECRET__#$${WEBHOOK_SECRET}#g" /etc/webhook/hooks.yml.template > /run/crimewiki-hooks.yml && exec /usr/bin/webhook -hooks /run/crimewiki-hooks.yml -port 9000 -ip 127.0.0.1'
 Restart=always
 User=root
 
