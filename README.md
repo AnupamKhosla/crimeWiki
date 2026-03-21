@@ -255,6 +255,8 @@ sudo systemctl enable --now crimewiki-app
 
 **Footer note:** the homepage category filter includes `Blog`, but the footer category lists intentionally exclude `Blog`.
 
+**Proxy note:** use `proxy.php?url=...` for the live proxy. The path-style route `/proxy/<urlencoded-url>` is currently unreliable on production because encoded slashes in the path can be rejected before the rewrite reaches PHP.
+
 htaccess rewrites being used:  
 
 ```

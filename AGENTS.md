@@ -53,3 +53,4 @@ This repository contains a PHP CMS/wiki app plus a small VM ops bundle for a low
 - `index.php` currently has an intentional local content change restoring the homepage heading text.
 - `.DS_Store` may appear in the working tree and should not be committed.
 - The homepage category filter includes `Blog`, but the footer category lists intentionally exclude `Blog`.
+- Use `proxy.php?url=...` for live proxy requests. The path-style `/proxy/<urlencoded-url>` route is currently unreliable on production because encoded slashes may be rejected before Apache rewrite reaches PHP.
