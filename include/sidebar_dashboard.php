@@ -1,5 +1,5 @@
 <?php 
-  $pages = array( "dashboard" => "", "addpost" => "", "allposts" => "", "categories" => "", "wikipedea" => "");
+  $pages = array( "dashboard" => "", "addpost" => "", "allposts" => "", "categories" => "", "wikipedea" => "", "rewrite" => "");
   $page = pathinfo($_SERVER["REQUEST_URI"], PATHINFO_FILENAME);
   $pages[$page] = "active";  
 ?>
@@ -45,6 +45,12 @@
           <a class="nav-link <?php echo $pages['wikipedea']; ?>" href="wikipedea.php">
             <img class="icon mb-n3px" src="assets/icons/wikipedea.svg" alt="category icon"> 
             Wikipedea
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <?php echo isset($pages['rewrite']) ? $pages['rewrite'] : ''; ?>" href="rewrite.php">
+            <img class="icon mb-n1px" src="assets/icons/edit.svg" alt="rewrite icon"> 
+            Rewrite
           </a>
         </li>
         <li class="nav-item">

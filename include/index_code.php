@@ -82,9 +82,12 @@ if(!!$result && $result->num_rows) {
 $result = $conn->query( "SELECT content, wikilink FROM `posts` WHERE title='\$blog_month_post';" );
 if(!!$result && $result->num_rows) {
 	$row = $result->fetch_assoc();
-	$month_id = $row["content"];
+	$month_id = (int)$row["content"];
 	$video_link = $row["wikilink"];
-	$result = $conn->query("SELECT datetime, title, titlerepeat, content FROM `posts` WHERE id=$month_id");
+	$stmt = $conn->prepare("SELECT datetime, title, titlerepeat, content FROM `posts` WHERE id=?");
+	$stmt->bind_param("i", $month_id);
+	$stmt->execute();
+	$result = $stmt->get_result();
 	if(!!$result && $result->num_rows) {
 		$res_arr = $result->fetch_assoc();
 		$publish_date = $res_arr["datetime"];
