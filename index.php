@@ -34,7 +34,7 @@ require_once('include/index_code.php');
   <head>
     <meta charset="utf-8">
     <title>crimeWiki | Wikipedea of crime</title>
-    <meta name="description" content="A Wikipedea of world-wide crime">
+    <meta name="description" content="A Wikipedea of world-wide crime stories">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta property="og:title" content="">
