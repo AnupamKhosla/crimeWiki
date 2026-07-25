@@ -139,7 +139,7 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
               <button class="btn btn-rewrite px-5 mr-2" id="rewrite-all" onclick="rewriteAll()" <?php echo !$has_key ? "disabled" : ""; ?>>
                 Rewrite Entire Batch
               </button>
-              <button class="btn btn-success px-5" id="approve-all" onclick="approveAll()">
+              <button class="btn btn-success px-5" id="approve-all" onclick="approveAll()" disabled>
                 Approve All Ready
               </button>
             </div>
@@ -233,6 +233,7 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
       btn.classList.add("d-none");
       badge.textContent = "Preview Ready";
       badge.className = "status-badge status-pending";
+      refreshApproveAll();
     }
 
     function rewriteAll() {
@@ -258,6 +259,15 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
       next();
     }
 
+    function refreshApproveAll() {
+      const anyReady = postIds.some(id => {
+        const content = document.getElementById("content-" + id);
+        const saveBtn = document.getElementById("save-" + id);
+        return content && content.value && saveBtn && !saveBtn.classList.contains("d-none") && !saveBtn.disabled;
+      });
+      document.getElementById("approve-all").disabled = !anyReady;
+    }
+
     function savePost(id) {
       const content = document.getElementById("content-" + id).value;
       const saveBtn = document.getElementById("save-" + id);
@@ -277,6 +287,7 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
           badge.className = "status-badge status-done";
           saveBtn.textContent = "Saved";
           document.getElementById("reject-" + id).classList.add("d-none");
+          refreshApproveAll();
         } else {
           saveBtn.disabled = false;
           saveBtn.textContent = "Approve & Save";
@@ -319,6 +330,7 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
       btn.disabled = false;
       btn.textContent = "Retry";
       document.getElementById("badge-" + id).textContent = "Rejected";
+      refreshApproveAll();
     }
   </script>
 </body>
