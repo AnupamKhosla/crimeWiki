@@ -74,16 +74,18 @@ $request_body = json_encode([
     "stream" => true
 ]);
 
+if (function_exists("apache_setenv")) { apache_setenv("no-gzip", "1"); }
+@ini_set("zlib.output_compression", "0");
+@ini_set("output_buffering", "0");
+while (ob_get_level() > 0) { ob_end_flush(); }
+ob_implicit_flush(true);
+
 header("Content-Type: text/event-stream");
 header("Cache-Control: no-cache");
 header("Connection: keep-alive");
 header("X-Accel-Buffering: no");
 
-if (ob_get_level()) ob_end_flush();
-flush();
-
 echo "data: " . json_encode(["status" => "researching"]) . "\n\n";
-if (ob_get_level()) ob_flush();
 flush();
 
 $max_duration = 1800;
