@@ -4,6 +4,8 @@ require_once("include/config.php");
 require_once("include/functions.php");
 require_once("include/check_login.php");
 
+set_time_limit(0);
+
 if (empty($_SESSION["qwen_api_key"])) {
     header("Content-Type: text/event-stream");
     echo "data: " . json_encode(["error" => "No API key set"]) . "\n\n";
@@ -84,6 +86,11 @@ echo "data: " . json_encode(["status" => "researching"]) . "\n\n";
 if (ob_get_level()) ob_flush();
 flush();
 
+$max_duration = 1800;
+$heartbeat_interval = 15;
+$started = time();
+$last_activity = $started;
+
 $ch = curl_init($api_url);
 curl_setopt_array($ch, [
     CURLOPT_POST => true,
@@ -92,8 +99,9 @@ curl_setopt_array($ch, [
         "Authorization: Bearer " . $_SESSION["qwen_api_key"]
     ],
     CURLOPT_POSTFIELDS => $request_body,
-    CURLOPT_TIMEOUT => 0,
-    CURLOPT_WRITEFUNCTION => function($ch, $data) {
+    CURLOPT_TIMEOUT => $max_duration,
+    CURLOPT_WRITEFUNCTION => function($ch, $data) use (&$last_activity) {
+        $last_activity = time();
         $lines = explode("\n", $data);
         foreach ($lines as $line) {
             $line = trim($line);
@@ -128,7 +136,36 @@ curl_setopt_array($ch, [
     }
 ]);
 
-curl_exec($ch);
+$mh = curl_multi_init();
+curl_multi_add_handle($mh, $ch);
+$running = null;
+
+do {
+    $status = curl_multi_exec($mh, $running);
+
+    if (time() - $last_activity >= $heartbeat_interval) {
+        echo ": keep-alive\n\n";
+        if (ob_get_level()) ob_flush();
+        flush();
+        $last_activity = time();
+    }
+
+    if (time() - $started >= $max_duration) {
+        echo "data: " . json_encode(["error" => "Timed out after " . (int)($max_duration / 60) . " minutes waiting for Qwen"]) . "\n\n";
+        echo "data: [DONE]\n\n";
+        if (ob_get_level()) ob_flush();
+        flush();
+        break;
+    }
+
+    if ($running) {
+        curl_multi_select($mh, 1.0);
+    }
+} while ($running && $status === CURLM_OK);
+
+curl_multi_remove_handle($mh, $ch);
+curl_multi_close($mh);
+
 $curl_error = curl_error($ch);
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
