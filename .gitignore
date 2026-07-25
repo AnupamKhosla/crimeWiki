@@ -7,3 +7,4 @@ include/config.php
 .env
 u586058589_crimewiki_db2.sql
 #.htaccess
+tmp/

@@ -1,0 +1,140 @@
+<?php
+require_once("include/sessions.php");
+require_once("include/config.php");
+require_once("include/functions.php");
+require_once("include/check_login.php");
+
+if (empty($_SESSION["qwen_api_key"])) {
+    header("Content-Type: text/event-stream");
+    echo "data: " . json_encode(["error" => "No API key set"]) . "\n\n";
+    echo "data: [DONE]\n\n";
+    exit;
+}
+
+$post_id = isset($_POST["post_id"]) ? (int)$_POST["post_id"] : 0;
+if (!$post_id || $post_id <= 2) {
+    header("Content-Type: text/event-stream");
+    echo "data: " . json_encode(["error" => "Invalid post_id (system rows are protected)"]) . "\n\n";
+    echo "data: [DONE]\n\n";
+    exit;
+}
+
+$conn = make_db_connection();
+
+$stmt = $conn->prepare("SELECT id, title, wikilink FROM posts WHERE id = ?");
+$stmt->bind_param("i", $post_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if (!$result->num_rows) {
+    header("Content-Type: text/event-stream");
+    echo "data: " . json_encode(["error" => "Post not found"]) . "\n\n";
+    echo "data: [DONE]\n\n";
+    exit;
+}
+
+$post = $result->fetch_assoc();
+
+$wikilink = trim((string)($post["wikilink"] ?? ""));
+if ($wikilink === "") {
+    header("Content-Type: text/event-stream");
+    echo "data: " . json_encode(["error" => "Post \"" . $post["title"] . "\" has no Wikipedia link (wikilink). Add one first so the AI can research it."]) . "\n\n";
+    echo "data: [DONE]\n\n";
+    exit;
+}
+$research_target = "https://" . $wikilink;
+
+$contract = file_get_contents(__DIR__ . "/include/qwen_contract.txt");
+$styleguide = file_get_contents(__DIR__ . "/include/qwen_styleguide.css");
+
+$system_prompt = $contract
+    . "\n\n=== SITE STYLESHEET (content-relevant CSS — reuse these classes for rich formatting) ===\n"
+    . $styleguide;
+
+$user_prompt = "Research this topic thoroughly: " . $research_target . "\n\n"
+    . "1. Read the topic's Wikipedia article AND the sources it cites (read as many cited sources as you can). "
+    . "2. Also consult recent, reputable reporting and records (including but not limited to BBC, CNN, The New York Times, court records, books, documentaries, official reports). "
+    . "3. Then write a completely original encyclopedia entry per the rules — your own structure, words, emphasis and conclusions. "
+    . "If you can access the page's raw HTML, inspect and reuse its CSS classes. "
+    . "Output ONLY the five XML blocks. No markdown, no code fences, no commentary.";
+
+$api_url = "https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions";
+
+$request_body = json_encode([
+    "model" => "qwen3.8-max-preview",
+    "messages" => [
+        ["role" => "system", "content" => $system_prompt],
+        ["role" => "user", "content" => $user_prompt]
+    ],
+    "enable_search" => true,
+    "temperature" => 0.8,
+    "max_tokens" => 8000,
+    "stream" => true
+]);
+
+header("Content-Type: text/event-stream");
+header("Cache-Control: no-cache");
+header("Connection: keep-alive");
+header("X-Accel-Buffering: no");
+
+if (ob_get_level()) ob_end_flush();
+flush();
+
+echo "data: " . json_encode(["status" => "researching"]) . "\n\n";
+if (ob_get_level()) ob_flush();
+flush();
+
+$ch = curl_init($api_url);
+curl_setopt_array($ch, [
+    CURLOPT_POST => true,
+    CURLOPT_HTTPHEADER => [
+        "Content-Type: application/json",
+        "Authorization: Bearer " . $_SESSION["qwen_api_key"]
+    ],
+    CURLOPT_POSTFIELDS => $request_body,
+    CURLOPT_TIMEOUT => 0,
+    CURLOPT_WRITEFUNCTION => function($ch, $data) {
+        $lines = explode("\n", $data);
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (strpos($line, "data:") !== 0) {
+                continue;
+            }
+            $payload = trim(substr($line, 5));
+            if ($payload === "") {
+                continue;
+            }
+            if ($payload === "[DONE]") {
+                echo "data: [DONE]\n\n";
+                continue;
+            }
+            $chunk = json_decode($payload, true);
+            if (!is_array($chunk)) {
+                continue;
+            }
+            if (isset($chunk["error"]) || isset($chunk["code"])) {
+                $msg = $chunk["error"]["message"] ?? $chunk["message"] ?? "API error";
+                echo "data: " . json_encode(["error" => $msg]) . "\n\n";
+                continue;
+            }
+            $token = $chunk["choices"][0]["delta"]["content"] ?? "";
+            if ($token !== "") {
+                echo "data: " . json_encode(["token" => $token]) . "\n\n";
+            }
+        }
+        if (ob_get_level()) ob_flush();
+        flush();
+        return strlen($data);
+    }
+]);
+
+curl_exec($ch);
+$curl_error = curl_error($ch);
+$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+
+if ($curl_error) {
+    echo "data: " . json_encode(["error" => $curl_error]) . "\n\n";
+}
+if (ob_get_level()) ob_flush();
+flush();

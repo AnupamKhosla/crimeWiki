@@ -15,17 +15,24 @@ if (!empty($_POST["set_api_key"])) {
     $_SESSION["qwen_api_key"] = trim($_POST["api_key"]);
 }
 
-if (!empty($_POST["save_post"])) {
-    $save_id = (int)$_POST["save_post_id"];
-    $save_content = $_POST["save_content"];
-    $stmt = $conn->prepare("UPDATE posts SET content = ?, cleansed = 1 WHERE id = ?");
-    $stmt->bind_param("si", $save_content, $save_id);
-    $stmt->execute();
-    $stmt->close();
+if (!empty($_POST["ajax_save"])) {
+    header("Content-Type: application/json");
+    $save_id = (int)($_POST["save_post_id"] ?? 0);
+    $save_content = $_POST["save_content"] ?? "";
+    if ($save_id > 2 && $save_content !== "") {
+        $stmt = $conn->prepare("UPDATE posts SET content = ?, cleansed = 1 WHERE id = ?");
+        $stmt->bind_param("si", $save_content, $save_id);
+        $ok = $stmt->execute();
+        $stmt->close();
+        echo json_encode(["success" => (bool)$ok, "id" => $save_id]);
+    } else {
+        echo json_encode(["success" => false, "error" => "Invalid post or empty content"]);
+    }
+    exit;
 }
 
 $batch = [];
-$result = $conn->query("SELECT id, title, cleansed FROM posts WHERE cleansed = 0 ORDER BY id LIMIT 5");
+$result = $conn->query("SELECT id, title, cleansed FROM posts WHERE cleansed = 0 AND id > 2 AND wikilink IS NOT NULL AND wikilink <> '' ORDER BY id LIMIT 10");
 if ($result) {
     while ($row = $result->fetch_assoc()) {
         $batch[] = $row;
@@ -44,7 +51,7 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
 <html class="no-js dashboard" lang="">
 <head>
   <meta charset="utf-8">
-  <title>Rewrite | CrimeWiki Admin</title>
+  <title>AI Rewrite Studio | CrimeWiki Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/png" href="assets/img/logo_single.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.1/css/bootstrap.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -70,7 +77,7 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
 
       <div class="col-lg-10 content d-flex justify-content-between flex-column">
         <main class="pb-5">
-          <h1 class="text-center text-pm font-weight-lighter h4">Content Rewrite (AI Cleansing)</h1>
+          <h1 class="text-center text-pm font-weight-lighter h4">AI Rewrite Studio</h1>
           <hr>
 
           <div class="row mb-3">
@@ -123,18 +130,17 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
                     </button>
                   </div>
                   <div class="preview-box d-none" id="preview-<?php echo $post["id"]; ?>"></div>
-                  <form method="post" id="form-<?php echo $post["id"]; ?>" class="d-none">
-                    <input type="hidden" name="save_post_id" value="<?php echo $post["id"]; ?>">
-                    <input type="hidden" name="save_content" id="content-<?php echo $post["id"]; ?>">
-                    <input type="hidden" name="save_post" value="1">
-                  </form>
+                  <input type="hidden" id="content-<?php echo $post["id"]; ?>" value="">
                 </div>
               <?php endforeach; ?>
             </div>
 
             <div class="text-center mt-3">
-              <button class="btn btn-rewrite px-5" id="rewrite-all" onclick="rewriteAll()" <?php echo !$has_key ? "disabled" : ""; ?>>
+              <button class="btn btn-rewrite px-5 mr-2" id="rewrite-all" onclick="rewriteAll()" <?php echo !$has_key ? "disabled" : ""; ?>>
                 Rewrite Entire Batch
+              </button>
+              <button class="btn btn-success px-5" id="approve-all" onclick="approveAll()">
+                Approve All Ready
               </button>
             </div>
           <?php endif; ?>
@@ -158,34 +164,75 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> Rewriting...';
       preview.classList.remove("d-none");
-      preview.textContent = "Contacting Qwen AI... (this may take 30-90 seconds)";
+      preview.textContent = "Contacting Qwen AI...";
+      let fullContent = "";
 
-      fetch("include/rewrite_api.php", {
+      fetch("rewrite_api.php", {
         method: "POST",
         headers: {"Content-Type": "application/x-www-form-urlencoded"},
         body: "post_id=" + id
       })
-      .then(r => r.json())
-      .then(data => {
-        if (data.error) {
-          preview.textContent = "ERROR: " + data.error;
-          btn.disabled = false;
-          btn.textContent = "Retry";
-          return;
+      .then(response => {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        function read() {
+          return reader.read().then(({done, value}) => {
+            if (done) {
+              finishStream(id, fullContent, preview, badge, btn);
+              return;
+            }
+            buffer += decoder.decode(value, {stream: true});
+            const lines = buffer.split("\n");
+            buffer = lines.pop();
+            for (const line of lines) {
+              if (line.startsWith("data: ")) {
+                const payload = line.slice(6);
+                if (payload === "[DONE]") {
+                  finishStream(id, fullContent, preview, badge, btn);
+                  return;
+                }
+                try {
+                  const parsed = JSON.parse(payload);
+                  if (parsed.error) {
+                    preview.textContent = "ERROR: " + parsed.error;
+                    btn.disabled = false;
+                    btn.textContent = "Retry";
+                    return;
+                  }
+                  if (parsed.status === "researching") {
+                    preview.textContent = "Qwen is researching the topic and its cited sources — first text usually appears in 30–90 seconds…";
+                  }
+                  if (parsed.token) {
+                    fullContent += parsed.token;
+                    preview.textContent = fullContent;
+                    preview.scrollTop = preview.scrollHeight;
+                  }
+                } catch(e) {}
+              }
+            }
+            return read();
+          });
         }
-        preview.textContent = data.new_content;
-        document.getElementById("content-" + id).value = data.new_content;
-        document.getElementById("save-" + id).classList.remove("d-none");
-        document.getElementById("reject-" + id).classList.remove("d-none");
-        btn.classList.add("d-none");
-        badge.textContent = "Preview Ready";
-        badge.className = "status-badge status-pending";
+        return read();
       })
       .catch(err => {
         preview.textContent = "Network error: " + err.message;
         btn.disabled = false;
         btn.textContent = "Retry";
       });
+    }
+
+    function finishStream(id, content, preview, badge, btn) {
+      content = content.replace(/^```(?:xml|html)?\s*/i, "").replace(/\s*```$/, "");
+      preview.textContent = content;
+      document.getElementById("content-" + id).value = content;
+      document.getElementById("save-" + id).classList.remove("d-none");
+      document.getElementById("reject-" + id).classList.remove("d-none");
+      btn.classList.add("d-none");
+      badge.textContent = "Preview Ready";
+      badge.className = "status-badge status-pending";
     }
 
     function rewriteAll() {
@@ -212,7 +259,55 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
     }
 
     function savePost(id) {
-      document.getElementById("form-" + id).submit();
+      const content = document.getElementById("content-" + id).value;
+      const saveBtn = document.getElementById("save-" + id);
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<span class="spinner"></span> Saving...';
+      fetch("rewrite.php", {
+        method: "POST",
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        body: "ajax_save=1&save_post_id=" + id + "&save_content=" + encodeURIComponent(content)
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById("card-" + id).classList.add("done");
+          const badge = document.getElementById("badge-" + id);
+          badge.textContent = "Saved";
+          badge.className = "status-badge status-done";
+          saveBtn.textContent = "Saved";
+          document.getElementById("reject-" + id).classList.add("d-none");
+        } else {
+          saveBtn.disabled = false;
+          saveBtn.textContent = "Approve & Save";
+          alert("Save failed: " + (data.error || "unknown error"));
+        }
+      })
+      .catch(err => {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Approve & Save";
+        alert("Save failed: " + err.message);
+      });
+    }
+
+    function approveAll() {
+      const readyIds = postIds.filter(id => {
+        const content = document.getElementById("content-" + id);
+        const saveBtn = document.getElementById("save-" + id);
+        return content && content.value && saveBtn && !saveBtn.classList.contains("d-none") && !saveBtn.disabled;
+      });
+      if (readyIds.length === 0) {
+        alert("No previews are ready to approve yet. Rewrite posts first.");
+        return;
+      }
+      let i = 0;
+      function next() {
+        if (i >= readyIds.length) return;
+        savePost(readyIds[i]);
+        i++;
+        setTimeout(next, 400);
+      }
+      next();
     }
 
     function rejectPost(id) {

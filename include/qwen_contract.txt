@@ -1,0 +1,74 @@
+You are writing an entry for CrimeWiki, an educational reference wiki. Produce a 100% ORIGINAL encyclopedia entry — NOT a paraphrase of any existing article. Your structure, wording, emphasis and conclusions must be your own.
+
+=== RESEARCH (mandatory) ===
+1. Read the target topic's Wikipedia article in full.
+2. Then read the SOURCES that article cites — follow and consult those primary references. This is required, not optional: read as many of the cited sources as you can.
+3. Also consult additional reputable material, including but not limited to: BBC, CNN, The New York Times, The Guardian, Reuters, Associated Press, court records and judgments, official government reports, books, academic papers and documentaries. Use your judgment to find the most authoritative and (where possible) recent sources — this list is not exhaustive.
+4. Synthesize everything and reach your OWN conclusions. Do not copy Wikipedia's phrasing, section order, or its reference list.
+
+=== LANGUAGE & STYLE ===
+- Write in clear, easy, accessible English that a general reader can follow.
+- Use an engaging narrative style, but stay factual and accurate.
+- Prefer active voice and concrete detail. Explain any necessary jargon.
+
+=== CSS CLASSES (how to style your output) ===
+Our stylesheet is built on the same CSS classes Wikipedia uses. If you are able to retrieve the raw HTML of the Wikipedia page, inspect the class names it uses and reuse them. Either way, you already know Wikipedia's standard content classes (thumb, thumbinner, thumbcaption, tright, tleft, wikitable, infobox, hatnote, image) — use them as described in the attached SITE STYLESHEET so your output is styled correctly.
+
+=== OUTPUT STRUCTURE (exact — these are custom tags our site renders) ===
+Return ONLY the five blocks below, in this order, well-formed and properly nested. No markdown, no code fences, no commentary before or after.
+
+<intro-data>
+<tr><th>Label</th><td>Value</td></tr>
+... (exactly 5 rows of the most important quick facts for THIS subject. Choose labels that fit the topic — e.g. Born / Died / Known For / Location / Outcome. Do NOT force crime-specific labels onto a non-crime subject.)
+</intro-data>
+
+<details>
+<tr><th>Label</th><td>Value</td></tr>
+... (a fuller fact table, 6-12 bare rows — no <tbody> wrapper, the page supplies the <table>. When the subject has a location, include a "Country" or "Nationality" or "Location" row. Use clean <th>/<td> only — NO infobox-* or other Wikipedia classes inside this block.)
+</details>
+
+<sources>
+<ul class="list">
+<li><a href="FULL_URL">Source title — Publication or Author, Year</a></li>
+... (3-6 REAL, verifiable sources from your research. NOT Wikipedia. Prefer primary sources and reputable outlets.)
+</ul>
+</sources>
+
+<related>
+</related>
+(Leave this block exactly like this — EMPTY. A separate process fills related links later. Do not put anything inside it.)
+
+<content>
+<h2>Introduction</h2>
+<p>Opening paragraph...</p>
+<p>Second paragraph...</p>
+<hr>
+<h2>Next section</h2>
+<p>...</p>
+<hr>
+<h2>Another section</h2>
+<p>...</p>
+... (4-8 sections. IMPORTANT formatting rules:
+  - Keep the structure FLAT: <h2> headings, <p> paragraphs, separated by <hr>. Do NOT wrap sections in <section> tags.
+  - The FIRST section must be "Introduction" with 1-3 paragraphs BEFORE the first <hr> — this becomes the page teaser.
+  - Use <h3>/<h4> for sub-headings inside a section.
+  - Add richness where it helps using the classes from the SITE STYLESHEET:
+      * data/comparison table: <table class="wikitable"><tr><th>…</th><td>…</td></tr></table>
+      * floating key-fact box: <table class="infobox"><tr><th>…</th><td>…</td></tr></table>
+      * lists: <ul><li>…</li></ul> or <ol><li>…</li></ol>
+      * inline links: <a href="FULL_URL">text</a> to reputable external sources
+      * short italic note: <p class="hatnote">…</p>)
+</content>
+
+=== IMAGES ===
+Image handling on this site is being rebuilt. For THIS output, do NOT include any <img> tags or image markup — focus on text, headings, tables, lists and links. (The .thumb / .thumbinner / .thumbcaption structure is documented in the stylesheet for a future phase; do not use it yet.)
+
+=== FORBIDDEN (do not output any of these) ===
+- Wikipedia citation/reference markup: classes reference-text, cs1, cs2, Z3988, mw-references; <sup class="reference">; <ol class="references">.
+- Wikipedia UI/edit elements: classes magnify, mw-editsection, mw-headline, noprint, mw-empty-elt.
+- Specialized Wikipedia templates: ahnentafel, navbox, sidebar, tracklist, or raw Wikipedia infobox internals.
+- Inline style="…" attributes (use the provided classes instead).
+- Hotlinks to upload.wikimedia.org or en.wikipedia.org asset files (icons, SVGs, gifs, images).
+- Copying Wikipedia's exact sentences, section order, or its reference list.
+
+Output ONLY the five XML blocks. Nothing else.

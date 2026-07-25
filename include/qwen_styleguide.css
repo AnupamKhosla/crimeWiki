@@ -1,0 +1,59 @@
+/* ============================================================
+   CrimeWiki — CONTENT STYLESHEET (subset of assets/css/style.css)
+   These are the classes our site actually renders inside a post.
+   Reuse them so your output is styled correctly. The values below
+   show what each class DOES so you can choose the right one.
+   ============================================================ */
+
+/* ---- Section typography (inside <content>) ---- */
+.post h2 { color: #E92222; font-size: 1.5rem; margin-bottom: 19px; }  /* main section heading (red) */
+.post h3 { font-size: 1.25rem; padding-top: 8px; }                    /* sub-heading */
+.post h4 { font-size: 1.125rem; margin-bottom: 0; }                   /* minor heading */
+.post h5, .post h6 { font-size: 1rem; margin-bottom: 0; }
+.post p  { margin-bottom: 8px; }                                      /* paragraph */
+.post hr { margin: 24px 0; }                                          /* section separator */
+.post th { font-weight: 500; vertical-align: top; }                   /* table header cell */
+
+/* ---- Lists ---- */
+.post .panel ul li { margin-bottom: 7.5px; }
+.post .panel ol { padding: 0 15px; }
+
+/* ---- Body tables (inside <content>) ---- */
+.post .post-content table { display: block; overflow-x: auto; }       /* tables scroll horizontally on small screens */
+.post .post-content .wikitable { margin: 7.5px auto; padding: 7px; background-color: #fff; }  /* general data/comparison table */
+.post .post-content .wikitable td { padding: 0 3px; }
+.post .post-content table.infobox {                                    /* compact key-fact box, floats to the right */
+  margin: 7.5px 0 15px 7.5px; padding: 7px; float: right; clear: right;
+  background-color: #fff; border-radius: 4px; font-size: 0.875rem;
+}
+.post .post-content table.infobox td { padding-left: 15px; }
+
+/* ---- Short italic note line ---- */
+.post .post-content .hatnote { padding-left: 15px; font-size: 0.875rem; font-style: italic; margin-bottom: 7.5px; }
+
+/* ---- Images with captions (thumbnails) ---- */
+.post .tright, .post .tleft {                                          /* wrapper that floats an image right (tright) or left (tleft) */
+  background-color: #f8f9fa; float: right; clear: right; padding: 7.5px 0 7.5px 15px; overflow: auto;
+}
+.post .tleft { float: left; clear: left; padding: 7.5px 15px 7.5px 0; }
+.post .thumbinner { max-width: 100%; padding: 7px; border-radius: 4px; box-sizing: content-box; background-color: #fff; }  /* white framed box around the image */
+.post .thumbcaption { text-align: left; font-size: 0.875rem; padding: 4px; line-height: 1.4; }  /* caption under the image */
+.post .image img { max-width: 100%; display: block; height: auto; margin: auto; }  /* responsive image */
+.post .tmulti .trow { display: flex; }                                 /* a row of multiple thumbnails */
+.post .tmulti .tsingle { margin: 1px; }
+
+/* ---- The five structural panels (rendered by the page template) ---- */
+.post .intro-table { margin-bottom: 77px; margin-top: 20px; }          /* header fact card (holds <intro-data> rows) */
+.post .intro-table .table-wrapper { height: 130px; overflow: auto; }   /* intro rows scroll if tall */
+.post .intro-table td { padding-left: 30px; }
+.post .intro-table a { color: #fff; text-decoration: underline; }
+
+.post .details table { font-size: 0.875rem; border-collapse: separate; border-spacing: 0 5px; }  /* the Details fact table (holds <details> rows) */
+.post .details th + td { padding-left: 30px; }
+.post .details div, .post .details span { white-space: normal !important; }
+
+.post .sources { margin-bottom: 15px; }                                /* Sources panel (holds a <ul class="list">) */
+.post .related { margin-top: 25px; }                                   /* Related panel (holds an <ol class="list">) */
+
+/* Note: images, tables and the intro card are fully responsive — the
+   template/CSS reflows them on small screens. You do not need media queries. */

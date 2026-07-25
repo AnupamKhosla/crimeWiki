@@ -50,7 +50,7 @@
         <li class="nav-item">
           <a class="nav-link <?php echo isset($pages['rewrite']) ? $pages['rewrite'] : ''; ?>" href="rewrite.php">
             <img class="icon mb-n1px" src="assets/icons/edit.svg" alt="rewrite icon"> 
-            Rewrite
+            AI Rewrite
           </a>
         </li>
         <li class="nav-item">
