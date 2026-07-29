@@ -146,7 +146,7 @@ do {
     $status = curl_multi_exec($mh, $running);
 
     if (time() - $last_activity >= $heartbeat_interval) {
-        echo ": keep-alive\n\n";
+        echo ": keep-alive " . str_repeat(" ", 8192) . "\n\n";
         if (ob_get_level()) ob_flush();
         flush();
         $last_activity = time();
