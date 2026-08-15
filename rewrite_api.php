@@ -54,23 +54,26 @@ $system_prompt = $contract
     . $styleguide;
 
 $user_prompt = "Research this topic thoroughly: " . $research_target . "\n\n"
+    . "0. Use the web_search tool to research the topic, its Wikipedia article, and the sources it cites before writing. "
     . "1. Read the topic's Wikipedia article AND the sources it cites (read as many cited sources as you can). "
     . "2. Also consult recent, reputable reporting and records (including but not limited to BBC, CNN, The New York Times, court records, books, documentaries, official reports). "
     . "3. Then write a completely original encyclopedia entry per the rules — your own structure, words, emphasis and conclusions. "
     . "If you can access the page's raw HTML, inspect and reuse its CSS classes. "
     . "Output ONLY the five XML blocks. No markdown, no code fences, no commentary.";
 
-$api_url = "https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions";
+$api_url = "https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/responses";
 
 $request_body = json_encode([
-    "model" => "qwen3.8-max-preview",
-    "messages" => [
-        ["role" => "system", "content" => $system_prompt],
-        ["role" => "user", "content" => $user_prompt]
+    "model" => "deepseek-v4-flash-0731",
+    "instructions" => $system_prompt,
+    "input" => [
+        ["role" => "user", "content" => [["type" => "input_text", "text" => $user_prompt]]]
     ],
-    "enable_search" => true,
+    "tools" => [
+        ["type" => "web_search"]
+    ],
     "temperature" => 0.8,
-    "max_tokens" => 8000,
+    "max_output_tokens" => 12000,
     "stream" => true
 ]);
 
@@ -122,14 +125,16 @@ curl_setopt_array($ch, [
             if (!is_array($chunk)) {
                 continue;
             }
-            if (isset($chunk["error"]) || isset($chunk["code"])) {
+            if (($chunk["type"] ?? "") === "error" || isset($chunk["error"])) {
                 $msg = $chunk["error"]["message"] ?? $chunk["message"] ?? "API error";
                 echo "data: " . json_encode(["error" => $msg]) . "\n\n";
                 continue;
             }
-            $token = $chunk["choices"][0]["delta"]["content"] ?? "";
-            if ($token !== "") {
-                echo "data: " . json_encode(["token" => $token]) . "\n\n";
+            if (($chunk["type"] ?? "") === "response.output_text.delta") {
+                $token = $chunk["delta"] ?? "";
+                if ($token !== "") {
+                    echo "data: " . json_encode(["token" => $token]) . "\n\n";
+                }
             }
         }
         if (ob_get_level()) ob_flush();
@@ -153,7 +158,7 @@ do {
     }
 
     if (time() - $started >= $max_duration) {
-        echo "data: " . json_encode(["error" => "Timed out after " . (int)($max_duration / 60) . " minutes waiting for Qwen"]) . "\n\n";
+        echo "data: " . json_encode(["error" => "Timed out after " . (int)($max_duration / 60) . " minutes waiting for the model"]) . "\n\n";
         echo "data: [DONE]\n\n";
         if (ob_get_level()) ob_flush();
         flush();

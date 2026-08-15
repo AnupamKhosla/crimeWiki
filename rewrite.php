@@ -226,6 +226,16 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
 
     function finishStream(id, content, preview, badge, btn) {
       content = content.replace(/^```(?:xml|html)?\s*/i, "").replace(/\s*```$/, "");
+      if (content.trim() === "") {
+        preview.textContent = "Qwen returned no content for this topic. This usually means the AI's content filter blocked it (common for sensitive/violent topics), or the stream was cut. Try the Retry button, or write this post manually.";
+        document.getElementById("content-" + id).value = "";
+        badge.textContent = "No Content";
+        badge.className = "status-badge status-pending";
+        btn.classList.remove("d-none");
+        btn.disabled = false;
+        btn.textContent = "Retry";
+        return;
+      }
       preview.textContent = content;
       document.getElementById("content-" + id).value = content;
       document.getElementById("save-" + id).classList.remove("d-none");
@@ -278,7 +288,14 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
         headers: {"Content-Type": "application/x-www-form-urlencoded"},
         body: "ajax_save=1&save_post_id=" + id + "&save_content=" + encodeURIComponent(content)
       })
-      .then(r => r.json())
+      .then(async r => {
+        const text = await r.text();
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          throw new Error("server returned HTML, not JSON — usually a login/session timeout or a PHP error. Reload the page, log in again, and retry.");
+        }
+      })
       .then(data => {
         if (data.success) {
           document.getElementById("card-" + id).classList.add("done");

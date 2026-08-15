@@ -13,6 +13,19 @@ Rules for any AI agent working on this project.
 - Teach the *why*, not just the *what*. One concept per response max.
 - **Never do something without asking or telling the owner first.** No surprise installs, deletes, renames, refactors, or file additions — even if they seem helpful. Ask, then act only after approval.
 - When a command might fail or have side effects, say so before running it.
+- **Do NOT run commands on the production VPS** (no SSH / `gcloud compute ssh`). The owner handles all server-side actions and deploys. Make local repo edits and hand over commands. Note: `git push` triggers the webhook deploy on the VPS, so do not push unless explicitly told.
+
+## Model quirks
+
+- **qwen3.8-max-preview: DISABLE extended thinking.** It has a bug where
+  thinking balloons to absurd length once context passes ~100-200k tokens.
+  If you are qwen, keep reasoning to a sentence or two and answer fast.
+  Long internal monologues here are a defect, not diligence.
+
+## Stay Within the Project Folder
+
+- **NEVER** write temp files, logs, scratch files, debug dumps, or any generated output OUTSIDE the project folder (`~/Desktop/Projects/crimeWiki`). Do not use `/tmp`, `/var/folders/...`, the home directory, or any other external path.
+- For ALL temporary work (dev-server logs, scratch files, intermediate artifacts, downloads), use the project's own `tmp/` folder: `~/Desktop/Projects/crimeWiki/tmp/`.
 
 ## API / Future-Proofing
 
@@ -102,15 +115,18 @@ With a concise summary covering:
 Keep each memory entry under 30 lines. Use bullet points. Include file paths.
 If a memory becomes stale (work completed), use `supermemory forget` to remove it before adding the updated one.
 
-### Current Project State (last updated: 2026-07-24)
+### Current Project State
 
-- **Goal**: Port all Wikipedia-scraped posts to fully original AI-written content (keep same XML structure/CSS).
-- **Done**: Post ID 6 "1965 Highway 101 sniper attack" rewritten and uploaded to DB. Zero Wikipedia text remains; narrative crime-journalism voice; new sections (legal case Reida v. Lund, film Targets, cultural impact); sources replaced; related links now internal.
-- **In progress**: Remaining posts (IDs 3-5, 7-22+) still have Wikipedia-scraped content.
-- **Rewrite script pattern**: `scripts/rewrite_postN.php` — writes new content via prepared statement UPDATE. Run with `docker exec crimewiki-app-1 php /var/www/html/scripts/rewrite_postN.php`.
-- **Content structure to preserve**: `<intro-data>` (5 rows), `<details>` (tbody table), `<sources>` (ul.list), `<related>` (ol.list), `<content>` (h2 sections separated by hr).
-- **Pending security fixes**: SQL injection in `include/index_code.php:87` ($month_id unparameterized), CSRF tokens missing on all forms, session cookie flags, display_errors in production.
-- **Pending cleanup**: Remove `post copy.php`, `Tennis.php`, `test.php`, `u586058589_crimewiki_db2.sql` from repo.
+_Live project state (DB counts, what was done this session, open bugs, next steps) lives in **supermemory**, NOT here — this file is for stable rules only. Run the `supermemory search "crimeWiki project state"` above at the start of every session to load it._
+
+## Tech Debt & Future Refactoring (Deferred)
+
+Recorded 2026-07-29. **Do NOT start this work until the rewrite pipeline is fully functional and reliable.** Functionality is priority #1; restructuring is deliberately deferred.
+
+- **Naming**: flat root files have awkward, non-conventional names — most notably `rewrite_api.php` (the streaming Qwen endpoint). Rename these to something clear and conventional during the restructure.
+- **Structure**: the app is currently flat PHP files in the repo root (`index.php`, `post.php`, `rewrite.php`, `rewrite_api.php`, `login.php`, `include/*`). Long-term it should move to a proper MVC / framework layout (e.g., Laravel-style: routes → controllers → models → views) with a clean `public/` web root.
+- **Hard constraints on any restructure**: preserve the five-tag XML contract and its rendering (`post.php`/`post_code.php`, validated by `check_xml()` in `include/addpost_code.php`); keep the SSE streaming behaviour; keep the webhook deploy flow working (`ops/scripts/deploy.sh` + Nginx template render). The CSS/frontend must not break.
+- **Sequencing**: stabilise the rewrite pipeline (streaming works reliably, posts rewritten, AdSense-safe) → then do the refactor as one focused effort, not piecemeal.
 
 ## Working Tree Notes
 
