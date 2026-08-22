@@ -18,8 +18,25 @@ if($selectedCategory === "" || !in_array($selectedCategory, $allowedCategories, 
 	$selectedCategory = "Criminals";
 }
 
-$orderBy = "ORDER BY rand()";
-if($selectedFilter === "datetime") {
+$sliderLimit = 50;
+$sliderRandomOrder = !in_array($selectedFilter, ["datetime", "alphabetically", "popular", "country"], true);
+
+if($sliderRandomOrder) {
+	// Do not use ORDER BY RAND() with full article XML. It forces MySQL to read
+	// and sort every matching post body before it can return the slider cards.
+	$countStmt = $conn->prepare("SELECT COUNT(*) FROM `posts` WHERE categoryname=?");
+	$countStmt->bind_param("s", $selectedCategory);
+	$countStmt->execute();
+	$countResult = $countStmt->get_result();
+	$sliderCount = (int)$countResult->fetch_row()[0];
+	$sliderOffset = $sliderCount > $sliderLimit ? random_int(0, $sliderCount - $sliderLimit) : 0;
+
+	$stmt = $conn->prepare("SELECT title, image, titlerepeat FROM `posts` WHERE categoryname=? ORDER BY id LIMIT ? OFFSET ?");
+	$stmt->bind_param("sii", $selectedCategory, $sliderLimit, $sliderOffset);
+}
+else {
+	$orderBy = "";
+	if($selectedFilter === "datetime") {
 	$orderBy = "ORDER BY datetime DESC";
 }
 else if($selectedFilter === "alphabetically") {
@@ -32,14 +49,19 @@ else if($selectedFilter === "country") {
 	$orderBy = "ORDER BY ISNULL(country), country, title";
 }
 
-$stmt = $conn->prepare("SELECT title, image, titlerepeat, content FROM `posts` WHERE categoryname=? $orderBy LIMIT 50");
-$stmt->bind_param("s", $selectedCategory);
+	$stmt = $conn->prepare("SELECT title, image, titlerepeat FROM `posts` WHERE categoryname=? $orderBy LIMIT ?");
+	$stmt->bind_param("si", $selectedCategory, $sliderLimit);
+}
 $stmt->execute();
 $result = $stmt->get_result();
 
 $slides = "";
 if(!!$result && $result->num_rows) { //query was successful	
-			while( $row = $result->fetch_assoc() ) { 
+			$sliderRows = $result->fetch_all(MYSQLI_ASSOC);
+			if($sliderRandomOrder && count($sliderRows) > 1) {
+				shuffle($sliderRows);
+			}
+			foreach($sliderRows as $row) {
 				$title = htmlspecialchars($row['title']);			
 				$rawImage = trim((string)($row['image'] ?? ""));
 				$image = htmlspecialchars(image_path($rawImage));
