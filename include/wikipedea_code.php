@@ -301,8 +301,15 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "wikipedea_form" && is
 					$title_repeat = $rows;			
 				}
 							
-				$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, wikilink, titlerepeat, creatorname, country, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");	
-    		$stmt->bind_param("sssssssss", $upload_time, $title, $wikilink, $title_repeat, $creator, $country, $category, $pic_src, $content_mysql);
+				if(posts_have_homepage_rank($conn)) {
+					$homepageRank = homepage_rank();
+					$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, wikilink, titlerepeat, creatorname, country, categoryname, image, content, homepage_rank) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					$stmt->bind_param("sssssssssi", $upload_time, $title, $wikilink, $title_repeat, $creator, $country, $category, $pic_src, $content_mysql, $homepageRank);
+				}
+				else {
+					$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title, wikilink, titlerepeat, creatorname, country, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					$stmt->bind_param("sssssssss", $upload_time, $title, $wikilink, $title_repeat, $creator, $country, $category, $pic_src, $content_mysql);
+				}
 				$stmt->execute();
 		}		
 		curl_multi_remove_handle($mh, $chs[$key]);		

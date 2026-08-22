@@ -71,6 +71,15 @@ function default_image_path() {
 	return "/Uploads/default.png";
 }
 
+function homepage_rank() {
+	return random_int(1, 4294967295);
+}
+
+function posts_have_homepage_rank(mysqli $conn): bool {
+	$result = $conn->query("SHOW COLUMNS FROM `posts` LIKE 'homepage_rank'");
+	return $result !== false && $result->num_rows === 1;
+}
+
 function image_path($str) {
 	$str = trim((string)$str);
 	if($str === "") {

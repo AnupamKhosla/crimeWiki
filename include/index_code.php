@@ -22,17 +22,45 @@ $sliderLimit = 50;
 $sliderRandomOrder = !in_array($selectedFilter, ["datetime", "alphabetically", "popular", "country"], true);
 
 if($sliderRandomOrder) {
-	// Do not use ORDER BY RAND() with full article XML. It forces MySQL to read
-	// and sort every matching post body before it can return the slider cards.
-	$countStmt = $conn->prepare("SELECT COUNT(*) FROM `posts` WHERE categoryname=?");
-	$countStmt->bind_param("s", $selectedCategory);
-	$countStmt->execute();
-	$countResult = $countStmt->get_result();
-	$sliderCount = (int)$countResult->fetch_row()[0];
-	$sliderOffset = $sliderCount > $sliderLimit ? random_int(0, $sliderCount - $sliderLimit) : 0;
+	$hasHomepageRank = posts_have_homepage_rank($conn);
 
-	$stmt = $conn->prepare("SELECT title, image, titlerepeat FROM `posts` WHERE categoryname=? ORDER BY id LIMIT ? OFFSET ?");
-	$stmt->bind_param("sii", $selectedCategory, $sliderLimit, $sliderOffset);
+	if($hasHomepageRank) {
+		// homepage_rank is indexed with categoryname. Choose one random point in
+		// that stable shuffled order, then read only the next 50 card records.
+		$sliderRank = homepage_rank();
+		$stmt = $conn->prepare("SELECT title, image, titlerepeat FROM `posts` WHERE categoryname=? AND homepage_rank>=? ORDER BY homepage_rank, id LIMIT ?");
+		$stmt->bind_param("sii", $selectedCategory, $sliderRank, $sliderLimit);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		$sliderRows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+
+		// Wrap to the beginning of the shuffled index when the chosen point was
+		// close to its end, so every homepage has up to 50 cards.
+		$remainingSlides = $sliderLimit - count($sliderRows);
+		if($remainingSlides > 0) {
+			$stmt = $conn->prepare("SELECT title, image, titlerepeat FROM `posts` WHERE categoryname=? AND homepage_rank<? ORDER BY homepage_rank, id LIMIT ?");
+			$stmt->bind_param("sii", $selectedCategory, $sliderRank, $remainingSlides);
+			$stmt->execute();
+			$wrapResult = $stmt->get_result();
+			if($wrapResult) {
+				$sliderRows = array_merge($sliderRows, $wrapResult->fetch_all(MYSQLI_ASSOC));
+			}
+		}
+	}
+	else {
+		$countStmt = $conn->prepare("SELECT COUNT(*) FROM `posts` WHERE categoryname=?");
+		$countStmt->bind_param("s", $selectedCategory);
+		$countStmt->execute();
+		$countResult = $countStmt->get_result();
+		$sliderCount = (int)$countResult->fetch_row()[0];
+		$sliderOffset = $sliderCount > $sliderLimit ? random_int(0, $sliderCount - $sliderLimit) : 0;
+
+		$stmt = $conn->prepare("SELECT title, image, titlerepeat FROM `posts` WHERE categoryname=? ORDER BY id LIMIT ? OFFSET ?");
+		$stmt->bind_param("sii", $selectedCategory, $sliderLimit, $sliderOffset);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		$sliderRows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+	}
 }
 else {
 	$orderBy = "";
@@ -52,12 +80,14 @@ else if($selectedFilter === "country") {
 	$stmt = $conn->prepare("SELECT title, image, titlerepeat FROM `posts` WHERE categoryname=? $orderBy LIMIT ?");
 	$stmt->bind_param("si", $selectedCategory, $sliderLimit);
 }
-$stmt->execute();
-$result = $stmt->get_result();
+if(!$sliderRandomOrder) {
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$sliderRows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+}
 
 $slides = "";
-if(!!$result && $result->num_rows) { //query was successful	
-			$sliderRows = $result->fetch_all(MYSQLI_ASSOC);
+	if(!empty($sliderRows)) {
 			if($sliderRandomOrder && count($sliderRows) > 1) {
 				shuffle($sliderRows);
 			}

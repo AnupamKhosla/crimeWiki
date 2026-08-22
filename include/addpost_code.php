@@ -204,8 +204,15 @@ if(isset($_POST["identifier"]) && $_POST["identifier"] == "add_post_form") { //a
     	$stmt->bind_param("ssssssssi", $date_time, $post_title, $title_repeat, $creator, $country, $post_category, $choose_image, $content, $post_id);
 		}
 		else {
-			$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title,  titlerepeat, creatorname, country, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");	
-    	$stmt->bind_param("ssssssss", $date_time, $post_title, $title_repeat, $creator, $country, $post_category, $choose_image, $content);
+			if(posts_have_homepage_rank($conn)) {
+				$homepageRank = homepage_rank();
+				$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title,  titlerepeat, creatorname, country, categoryname, image, content, homepage_rank) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+				$stmt->bind_param("ssssssssi", $date_time, $post_title, $title_repeat, $creator, $country, $post_category, $choose_image, $content, $homepageRank);
+			}
+			else {
+				$stmt = $conn->prepare("INSERT INTO `posts` (datetime, title,  titlerepeat, creatorname, country, categoryname, image, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+				$stmt->bind_param("ssssssss", $date_time, $post_title, $title_repeat, $creator, $country, $post_category, $choose_image, $content);
+			}
 		}
 		
     $result = $stmt->execute();
