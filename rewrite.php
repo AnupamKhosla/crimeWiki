@@ -89,7 +89,7 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
             </div>
             <div class="col-md-6">
               <form method="post" class="form-inline justify-content-md-end">
-                <label class="mr-2 font-weight-normal" for="api_key">Qwen API Key:</label>
+                <label class="mr-2 font-weight-normal" for="api_key">Neuralwatt API Key:</label>
                 <input type="password" name="api_key" id="api_key" class="form-control form-control-sm mr-2" style="width: 250px;" value="<?php echo $has_key ? "••••••••" : ""; ?>" placeholder="sk-..." <?php echo $has_key ? "disabled" : ""; ?>>
                 <?php if (!$has_key): ?>
                   <button type="submit" name="set_api_key" value="1" class="btn btn-sm btn-rewrite">Set Key</button>
@@ -101,7 +101,7 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
           </div>
 
           <?php if (!$has_key): ?>
-            <div class="alert alert-warning">Set your Qwen API key above to enable rewriting. The key is stored in your session only — never saved to DB or files.</div>
+            <div class="alert alert-warning">Set your Neuralwatt API key above to enable rewriting. The key is stored in your session only — never saved to DB or files.</div>
           <?php endif; ?>
 
           <h2 class="h5 text-pm text-center my-4">Next Batch (Uncleansed Posts)</h2>
@@ -164,7 +164,8 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> Rewriting...';
       preview.classList.remove("d-none");
-      preview.textContent = "Contacting Qwen AI...";
+      preview.textContent = "Contacting Neuralwatt AI...";
+      let streamError = false;
       let fullContent = "";
 
       fetch("rewrite_api.php", {
@@ -180,7 +181,7 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
         function read() {
           return reader.read().then(({done, value}) => {
             if (done) {
-              finishStream(id, fullContent, preview, badge, btn);
+              finishStream(id, fullContent, preview, badge, btn, streamError);
               return;
             }
             buffer += decoder.decode(value, {stream: true});
@@ -190,12 +191,13 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
               if (line.startsWith("data: ")) {
                 const payload = line.slice(6);
                 if (payload === "[DONE]") {
-                  finishStream(id, fullContent, preview, badge, btn);
+                  finishStream(id, fullContent, preview, badge, btn, streamError);
                   return;
                 }
                 try {
                   const parsed = JSON.parse(payload);
                   if (parsed.error) {
+                    streamError = true;
                     preview.textContent = "ERROR: " + parsed.error;
                     btn.disabled = false;
                     btn.textContent = "Retry";
@@ -224,10 +226,11 @@ $has_key = !empty($_SESSION["qwen_api_key"]);
       });
     }
 
-    function finishStream(id, content, preview, badge, btn) {
+    function finishStream(id, content, preview, badge, btn, streamError) {
+      if (streamError) return;
       content = content.replace(/^```(?:xml|html)?\s*/i, "").replace(/\s*```$/, "");
       if (content.trim() === "") {
-        preview.textContent = "Qwen returned no content for this topic. This usually means the AI's content filter blocked it (common for sensitive/violent topics), or the stream was cut. Try the Retry button, or write this post manually.";
+        preview.textContent = "Neuralwatt returned no content for this topic. The stream may have been cut or the model may have refused the request. Try the Retry button, or write this post manually.";
         document.getElementById("content-" + id).value = "";
         badge.textContent = "No Content";
         badge.className = "status-badge status-pending";

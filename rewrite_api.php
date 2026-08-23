@@ -13,6 +13,9 @@ if (empty($_SESSION["qwen_api_key"])) {
     exit;
 }
 
+$api_key = trim((string)$_SESSION["qwen_api_key"]);
+session_write_close();
+
 $post_id = isset($_POST["post_id"]) ? (int)$_POST["post_id"] : 0;
 if (!$post_id || $post_id <= 2) {
     header("Content-Type: text/event-stream");
@@ -61,19 +64,16 @@ $user_prompt = "Research this topic thoroughly: " . $research_target . "\n\n"
     . "If you can access the page's raw HTML, inspect and reuse its CSS classes. "
     . "Output ONLY the five XML blocks. No markdown, no code fences, no commentary.";
 
-$api_url = "https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/responses";
+$api_url = "https://api.neuralwatt.com/v1/chat/completions";
 
 $request_body = json_encode([
-    "model" => "deepseek-v4-flash-0731",
-    "instructions" => $system_prompt,
-    "input" => [
-        ["role" => "user", "content" => [["type" => "input_text", "text" => $user_prompt]]]
-    ],
-    "tools" => [
-        ["type" => "web_search"]
+    "model" => "deepseek-v4-flash",
+    "messages" => [
+        ["role" => "system", "content" => $system_prompt],
+        ["role" => "user", "content" => $user_prompt]
     ],
     "temperature" => 0.8,
-    "max_output_tokens" => 12000,
+    "max_tokens" => 12000,
     "stream" => true
 ]);
 
@@ -95,43 +95,53 @@ $max_duration = 1800;
 $heartbeat_interval = 15;
 $started = time();
 $last_activity = $started;
+$sse_buffer = "";
+$stream_done = false;
+$error_sent = false;
 
 $ch = curl_init($api_url);
 curl_setopt_array($ch, [
     CURLOPT_POST => true,
     CURLOPT_HTTPHEADER => [
         "Content-Type: application/json",
-        "Authorization: Bearer " . $_SESSION["qwen_api_key"]
+        "Authorization: Bearer " . $api_key
     ],
     CURLOPT_POSTFIELDS => $request_body,
     CURLOPT_TIMEOUT => $max_duration,
-    CURLOPT_WRITEFUNCTION => function($ch, $data) use (&$last_activity) {
+    CURLOPT_WRITEFUNCTION => function($ch, $data) use (&$last_activity, &$sse_buffer, &$stream_done, &$error_sent) {
         $last_activity = time();
-        $lines = explode("\n", $data);
-        foreach ($lines as $line) {
-            $line = trim($line);
-            if (strpos($line, "data:") !== 0) {
-                continue;
-            }
-            $payload = trim(substr($line, 5));
-            if ($payload === "") {
-                continue;
-            }
-            if ($payload === "[DONE]") {
-                echo "data: [DONE]\n\n";
-                continue;
-            }
-            $chunk = json_decode($payload, true);
-            if (!is_array($chunk)) {
-                continue;
-            }
-            if (($chunk["type"] ?? "") === "error" || isset($chunk["error"])) {
-                $msg = $chunk["error"]["message"] ?? $chunk["message"] ?? "API error";
-                echo "data: " . json_encode(["error" => $msg]) . "\n\n";
-                continue;
-            }
-            if (($chunk["type"] ?? "") === "response.output_text.delta") {
-                $token = $chunk["delta"] ?? "";
+        $sse_buffer .= str_replace("\r\n", "\n", $data);
+
+        while (($event_end = strpos($sse_buffer, "\n\n")) !== false) {
+            $event = substr($sse_buffer, 0, $event_end);
+            $sse_buffer = substr($sse_buffer, $event_end + 2);
+
+            foreach (explode("\n", $event) as $line) {
+                if (strpos($line, "data:") !== 0) {
+                    continue;
+                }
+                $payload = trim(substr($line, 5));
+                if ($payload === "") {
+                    continue;
+                }
+                if ($payload === "[DONE]") {
+                    if (!$stream_done) {
+                        echo "data: [DONE]\n\n";
+                        $stream_done = true;
+                    }
+                    continue;
+                }
+                $chunk = json_decode($payload, true);
+                if (!is_array($chunk)) {
+                    continue;
+                }
+                if (isset($chunk["error"])) {
+                    $msg = $chunk["error"]["message"] ?? $chunk["message"] ?? "API error";
+                    echo "data: " . json_encode(["error" => $msg]) . "\n\n";
+                    $error_sent = true;
+                    continue;
+                }
+                $token = $chunk["choices"][0]["delta"]["content"] ?? "";
                 if ($token !== "") {
                     echo "data: " . json_encode(["token" => $token]) . "\n\n";
                 }
@@ -179,6 +189,10 @@ curl_close($ch);
 
 if ($curl_error) {
     echo "data: " . json_encode(["error" => $curl_error]) . "\n\n";
+    $error_sent = true;
+}
+if (!$error_sent && $http_code >= 400) {
+    echo "data: " . json_encode(["error" => "Neuralwatt request failed (HTTP " . $http_code . ")"]) . "\n\n";
 }
 if (ob_get_level()) ob_flush();
 flush();
