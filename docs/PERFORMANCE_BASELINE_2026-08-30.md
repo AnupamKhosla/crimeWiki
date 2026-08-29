@@ -183,6 +183,18 @@ The same 50-request burst against the advanced search route did not complete dur
 
 This confirms that 50 simultaneous expensive searches are beyond the safe capacity of the current 1GiB VM. It also validates the next order: remove Apache from the request path, use a small ondemand PHP-FPM pool, keep MySQL unchanged, add search limits/indexing/cache work separately, and never run AI generation synchronously inside a public request pool.
 
+## Post-FPM production verification
+
+This section is the after snapshot captured on 2026-08-29 UTC after commit `dab2b75` was deployed by the existing webhook. It must not be confused with the pre-cutover baseline above.
+
+The live runtime is now host Nginx → Docker `web` Nginx → Docker `app-fpm` → Docker MySQL. Apache is no longer running. phpMyAdmin is present but exited and is not part of normal runtime. Host port 8080 is loopback-only; webhook port 9000 remains separate; FPM port 9000 is internal to the Docker network.
+
+Public HTTPS smoke requests all returned HTTP 200: homepage TTFB 0.585s, login 0.392s, post 0.492s, sitemap 0.344s, CSS 0.614s, and advanced search 1.882s total. Direct loopback-origin requests all returned HTTP 200: homepage 0.138s, login 0.014s, post 0.132s, sitemap 0.023s, CSS 0.001s, and advanced search 0.484s total. These are one-sample validation values, not replacement averages.
+
+The repeated stress test sent 50 concurrent requests directly to `127.0.0.1:8080`. The homepage burst returned `50 200`; the advanced-search burst also returned `50 200`. After the search burst, load was `0.59, 1.03, 1.38`, available RAM was 219MiB, `vmstat` was about 99% idle with negligible I/O wait, and swap use was about 292MiB. Container memory was web 5.4MiB, FPM 72.0MiB at peak capture, and MySQL 303.1MiB. This is a major capacity improvement over the pre-FPM 50-search event, which reached load 29.95, 87–92% I/O wait, and active swap-in before the diagnostic was stopped.
+
+The first FPM deployment required about two minutes because the VPS had to pull `php:8.5-fpm`/`nginx:stable-alpine` and compile `mysqli`; subsequent builds should use Docker cache. Keep maintenance mode during image changes. The remaining search warning (`Undefined array key "category"`) and the high absolute search cost are application/query work, not reasons to revert FPM.
+
 ## Current bottleneck ranking
 
 1. **Apache/PHP application working set and prefork workers.** The app container is about 137MiB and holds multiple Apache/PHP processes. This is the first runtime target. FPM should use a deliberately small ondemand pool, initially two workers, and should not carry long AI streams indefinitely.

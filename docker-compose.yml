@@ -10,11 +10,16 @@ services:
       dockerfile: docker/php/Dockerfile.fpm
     restart: unless-stopped
     environment:
+      # Defaults to the Docker db service. Native-MariaDB migration can set
+      # DB_HOST=host.docker.internal in the VM-only .env file.
+      DB_HOST: ${DB_HOST:-db}
       PROXY_SECRET_TOKEN: ${PROXY_SECRET_TOKEN:-}
     expose:
       - "9000"
     volumes:
       - .:/var/www/html
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - db
 
