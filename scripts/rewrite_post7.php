@@ -1,6 +1,12 @@
 <?php
-$conn = new mysqli('db', 'crimewiki', 'crimewiki', 'crimewiki');
-$conn->set_charset('utf8mb4');
+require_once __DIR__ . '/../include/config.php';
+require_once __DIR__ . '/../include/functions.php';
+
+$conn = make_db_connection();
+if ($conn->connect_errno) {
+    fwrite(STDERR, "Database connection failed: " . $conn->connect_error . "\n");
+    exit(1);
+}
 
 $content = <<<'CONTENT'
 <intro-data>

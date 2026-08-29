@@ -445,7 +445,7 @@ The owner-approved FPM operation completed through the webhook. These steps rema
 
 1. Take and verify a fresh logical database backup. Keep it outside Git and do not place its password in shell history, logs, or this repository.
 2. Confirm the working tree/commit intended for release and that `/etc/secrets/secrets.env`, the VM Compose `.env`, and `include/config.php` remain present only on the VM.
-3. Deploy through the existing webhook, or run the repository-installed `/usr/local/bin/deploy.sh` during an owner-scheduled window. It switches host Nginx to maintenance, pulls code, explicitly rebuilds `app-fpm` with one compiler job, removes the retired Apache Compose orphan, force-recreates only `web` so it resolves the new FPM container address, stops phpMyAdmin, and restarts the stack.
+3. Deploy through the existing webhook, or run the repository-installed `/usr/local/bin/deploy.sh` during an owner-scheduled window. It switches host Nginx to maintenance, pulls code, explicitly rebuilds `app-fpm` with one compiler job, removes the retired Apache Compose orphan, force-recreates only `web` so it resolves the new FPM container address, leaves the optional phpMyAdmin profile untouched, and restarts the stack.
 4. Verify on the VM:
 
        sudo docker-compose config --services
@@ -453,7 +453,7 @@ The owner-approved FPM operation completed through the webhook. These steps rema
        sudo docker-compose exec -T app-fpm php-fpm -t
        sudo ss -ltnp
 
-   The running containers must be `db`, `app-fpm`, and `web`; legacy Compose may still list the profile-only phpMyAdmin service in `config --services`, but phpMyAdmin must be exited/stopped and no `app` Apache container may remain. Host port `8080` is the only application listener and webhook port `9000` remains separate.
+   The running containers must be `db`, `app-fpm`, and `web`; legacy Compose may still list the profile-only phpMyAdmin service in `config --services`, but phpMyAdmin must be exited/stopped unless the owner explicitly started it for a tunnel session, and no `app` Apache container may remain. Host port `8080` is the only application listener and webhook port `9000` remains separate; optional phpMyAdmin uses loopback port `8082` only.
 5. Verify loopback routes through `http://127.0.0.1:8080/` and the public HTTPS routes, then run the exact baseline timing, memory, worker, disk, and swap tests. Check the app log for FPM startup and Nginx errors before disabling maintenance.
 6. If acceptance fails, switch the checkout to the last accepted Git revision and run the same maintenance/deploy path. This is the documented rollback; no Apache container is kept alongside FPM.
 
