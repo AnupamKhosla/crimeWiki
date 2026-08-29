@@ -1,0 +1,12 @@
+# The runtime mounts the repository into the containers. These files are not
+# needed while building the small PHP-FPM image and make deploys expensive.
+.git/
+.github/
+node_modules/
+tmp/
+Uploads/
+docs/
+u586058589_crimewiki_db2.sql
+*.sql
+.DS_Store
+CHAT_HANDOFF_*.md
