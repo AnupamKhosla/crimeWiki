@@ -53,6 +53,18 @@ fi
 
 cd "$REPO_DIR"
 
+compose_up() {
+  # Build FPM and remove containers for services retired from the repository-
+  # owned Compose file. This retires the old Apache app container after the
+  # cutover. Recreate only web afterward: Docker may assign app-fpm a new IP
+  # during a rebuild, while Nginx otherwise keeps its old DNS-resolved address.
+  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d --build --remove-orphans app-fpm
+  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d --force-recreate --no-deps web
+  # phpMyAdmin is an explicit tools profile and must not remain running from
+  # an older default-stack deployment.
+  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" stop phpmyadmin >/dev/null 2>&1 || true
+}
+
 case "$ACTION" in
   start)
     if [ "$PULL_ON_START" = "1" ]; then
@@ -67,13 +79,13 @@ case "$ACTION" in
         fi
       fi
     fi
-    exec $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d
+    compose_up
     ;;
   stop)
     exec $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" stop
     ;;
   restart)
-    $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d
+    compose_up
     ;;
   *)
     echo "Usage: $0 {start|stop|restart}" >&2

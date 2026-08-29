@@ -78,6 +78,15 @@ compose_cmd() {
 
 COMPOSE_CMD="$(compose_cmd)"
 
+compose_up() {
+  # The repository owns the runtime. Build FPM and reconcile retired Compose
+  # services (such as the former Apache app), then recreate only web so its
+  # Nginx process resolves the new app-fpm container IP after a rebuild.
+  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d --build --remove-orphans app-fpm
+  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d --force-recreate --no-deps web
+  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" stop phpmyadmin >/dev/null 2>&1 || true
+}
+
 ensure_nginx_running() {
   if systemctl is-active --quiet nginx; then
     return
@@ -176,23 +185,13 @@ systemctl enable webhook crimewiki-app
 if ! systemctl is-active --quiet webhook; then
   systemctl start webhook
 fi
-systemctl start crimewiki-app
+systemctl restart crimewiki-app
 
 if [ "$GIT_PULL_FAILED" = "1" ]; then
   echo "WARN: deploy finished using the previously checked out code because git pull failed."
 fi
 
 if [ "$STOP_SERVICES" = "1" ]; then
-  if [ -n "$COMPOSE_CMD" ] && [ -f "$REPO_DIR/docker-compose.yml" ]; then
-    if [ -f /etc/secrets/secrets.env ]; then
-      set -a
-      # shellcheck disable=SC1091
-      . /etc/secrets/secrets.env
-      set +a
-    fi
-    $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d
-  fi
-
   if systemctl is-enabled --quiet mysql || systemctl is-active --quiet mysql; then
     systemctl start mysql || true
   fi

@@ -721,59 +721,6 @@ ul ul {
   margin: 26px auto 0 auto;
 }
 
-.month {
-  background-color: var(--white-bg);
-  padding: 50px 0 60px;
-}
-
-.month .month-heading {
-  margin-bottom: 13.5px;
-}
-
-.month .youtube {
-  margin: 37.5px 0 45px;
-  border: 5px solid var(--theme-pm);
-  border-radius: 5px;
-  background-color: var(--theme-pm);
-}
-
-.month .youtube > iframe {
-  border-radius: 5px;
-}
-
-.month .wrapper {
-  padding-left: 30px;
-}
-
-.month .post-sources {
-  display: flow-root;
-  height: 100%;
-  background-color: var(--white-bg-dark);
-  border-radius: 5px;
-  padding-bottom: 25px;
-  margin-top: 0;
-}
-
-.month .post-sources ul {
-  max-height: 500px;
-}
-
-.month .sources {
-  margin-top: 22.5px;
-  margin-bottom: 17.5px;
-}
-
-.month .publish-date {
-  color: #999;
-  font-size: 0.875rem;
-  padding-left: 15px;
-  margin-top: 15px;
-}
-
-.month .details {
-  margin-top: 20px;
-}
-
 .results {
   padding: 30px 0;
 }
@@ -801,19 +748,6 @@ ul ul {
     max-width: 200px;
     margin-bottom: 15px !important;
   }
-  .month {
-    padding: 35px 0 45px;
-  }
-  .month .youtube {
-    margin: 30px 0 30px;
-  }
-  .month .wrapper {
-    padding-left: 15px;
-  }
-  .month .post-sources {
-    margin-top: 30px;
-    height: auto;
-  }
 }
 
 @media (max-width: 767.8px) {
@@ -835,18 +769,6 @@ ul ul {
   }
   .about .logo-double {
     margin-bottom: 7.5px !important;
-  }
-  .month {
-    padding: 20px 0 30px;
-  }
-  .month .youtube {
-    margin: 22.5px 0 22.5px;
-  }
-  .month .post-sources ul {
-    padding-left: 30px;
-  }
-  .month .publish-date {
-    padding-left: 30px;
   }
   .results {
     padding: 22.5px 7.5px;

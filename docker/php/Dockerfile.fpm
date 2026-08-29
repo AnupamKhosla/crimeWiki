@@ -1,0 +1,13 @@
+FROM php:8.5-fpm
+
+# Keep image builds predictable on the 1 GiB VPS. A single compiler job takes
+# longer but avoids a needless parallel memory spike during deployment.
+RUN docker-php-ext-install -j1 mysqli
+
+COPY ./docker/php/custom.ini /usr/local/etc/php/conf.d/zz-custom.ini
+COPY ./docker/php/fpm.ini /usr/local/etc/php/conf.d/zz-fpm.ini
+COPY ./docker/php/fpm-pool.conf /usr/local/etc/php-fpm.d/www.conf
+
+WORKDIR /var/www/html
+
+CMD ["php-fpm", "-F"]

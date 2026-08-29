@@ -42,7 +42,7 @@ Rules for any AI agent working on this project.
 - The same XML structure is preserved so CSS/frontend never breaks: `<intro-data>` (5 rows), `<details>` (tbody table), `<sources>` (ul.list), `<related>` (ol.list), `<content>` (h2 sections separated by hr).
 - Wikipedia links in content are replaced with internal CrimeWiki links. Sources are replaced with fresh ones (court records, newspapers, books, films).
 - Each post gets a "researched on [date]" feel with sources Wikipedia doesn't cite.
-- Script pattern: `scripts/rewrite_postN.php` → run via `docker exec crimewiki-app-1 php /var/www/html/scripts/rewrite_postN.php`
+- Script pattern: `scripts/rewrite_postN.php` → run via `docker compose exec app-fpm php /var/www/html/scripts/rewrite_postN.php`
 
 ## Project Overview
 
@@ -51,9 +51,9 @@ This repository contains a PHP CMS/wiki app plus a small VM ops bundle for a low
 ## Architecture
 
 - Public traffic hits host Nginx on ports `80/443`.
-- Nginx proxies the site to the Docker app on `127.0.0.1:8080`.
+- Host Nginx proxies the site to the repository-owned Docker web container on `127.0.0.1:8080`; that container serves static files and forwards PHP to `app-fpm`.
 - Nginx proxies `/hooks/deploy` to the local webhook listener on `127.0.0.1:9000`.
-- Docker Compose runs three services: `app`, `db`, and `phpmyadmin`.
+- Docker Compose runs `web`, `app-fpm`, and `db` by default. `phpmyadmin` exists only under the explicit `tools` profile.
 
 ## Runtime Config
 
@@ -65,13 +65,13 @@ This repository contains a PHP CMS/wiki app plus a small VM ops bundle for a low
 ## Deploy Flow
 
 - Webhook runs `/usr/local/bin/deploy.sh`.
-- Deploy ensures Nginx is running, switches to maintenance mode, does best-effort `git pull --ff-only`, syncs templates into `/etc` and `/usr/local/bin`, refreshes webhook template/service files, self-updates `deploy.sh` if needed, enables/starts `webhook` and `crimewiki-app`, then switches back live.
+- Deploy ensures Nginx is running, switches to maintenance mode, does best-effort `git pull --ff-only`, syncs templates into `/etc` and `/usr/local/bin`, refreshes webhook template/service files, explicitly rebuilds the FPM image, removes retired Compose orphans, restarts `crimewiki-app`, then switches back live.
 - Deploy logs go to `/var/log/deploy.log`.
 
 ## Boot Recovery
 
 - `crimewiki-app.service` runs `/usr/local/bin/crimewiki-start.sh` on boot.
-- `crimewiki-start.sh` does best-effort `git pull --ff-only origin main` and then `docker compose up -d`.
+- `crimewiki-start.sh` does best-effort `git pull --ff-only origin main` and then runs the repository-owned Nginx+FPM stack with `docker compose up -d --build --remove-orphans`.
 - Boot/start logs go to `/var/log/crimewiki-start.log`.
 - `webhook.service` is enabled during VM bootstrap and should auto-start on reboot.
 

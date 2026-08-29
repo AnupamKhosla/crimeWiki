@@ -149,41 +149,6 @@ require_once('include/index_code.php');
       </div>
     </section>
 
-    <section class="month">
-      <div class="container">
-        <h2 class="month-heading text-center text-pm h3 font-weight-normal">Crime of the Month</h2>
-        <h3 class="post-title text-center h5"> <?php echo $title; ?> </h3>
-        <div class="embed-responsive embed-responsive-16by9 youtube">
-          <iframe loading="lazy" class="embed-responsive-item" src=" <?php echo $video_link; ?> " allowfullscreen></iframe>
-        </div>
-
-        <div class="row post-content">
-          <div class="col-xl-8 col-lg-7 post-intro">
-            <div class="wrapper2">
-              <?php echo $introduction; ?>
-            </div>
-            <div class="d-flex justify-content-center mt-auto">
-              <a href="<?php echo $blog_month_href; ?>" type="button" class="btn btn-pm m-auto2 mt-1 d-inline-flex align-items-center">See Details</a>
-            </div>
-            
-          </div>
-          <div class="col-xl-4 col-lg-5 wrapper">
-            <div class="post-sources panel d-flex flex-column">
-              <div class="panel-title text-center">
-                <h4 class="m-0">Sources</h4>
-              </div>
-              <div class="panel-content flex-grow-1">
-                <?php echo $sources; ?>
-              </div>
-              <span class="publish-date"> Published on <?php echo date( 'd/m/Y H:i:s', htmlspecialchars($publish_date) )?></span>
-            </div>
-           
-          </div>
-        </div>
-        
-      </div>
-    </section>
-
    <?php require_once("include/footer.php"); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.js"></script>

@@ -1,18 +1,33 @@
 version: "3.8"
 
+# Active repository runtime: host Nginx -> web Nginx -> app-fpm -> db.
+# The root Apache Dockerfile and docker/apache-* files are historical reference
+# only; no Apache service is defined here. phpMyAdmin is an opt-in tools profile.
 services:
-  app:
-    build: .
+  app-fpm:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile.fpm
     restart: unless-stopped
     environment:
       PROXY_SECRET_TOKEN: ${PROXY_SECRET_TOKEN:-}
-    ports:
-      - "8080:80"
+    expose:
+      - "9000"
     volumes:
       - .:/var/www/html
     depends_on:
       - db
-      - phpmyadmin
+
+  web:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:80"
+    volumes:
+      - .:/var/www/html:ro
+      - ./docker/nginx/local-fpm.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app-fpm
 
   db:
     image: mysql:9.6
@@ -29,6 +44,8 @@ services:
       - ./u586058589_crimewiki_db2.sql:/docker-entrypoint-initdb.d/seed.sql:ro
 
   phpmyadmin:
+    profiles:
+      - tools
     image: phpmyadmin:latest
     restart: unless-stopped
     environment:

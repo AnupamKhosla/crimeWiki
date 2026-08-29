@@ -65,8 +65,9 @@ Go to yourdomain and the website will work now.
 - Visit `/login.php` to finish setup.
 
 **Docker (local or VM)**
-- Build and start containers: `docker compose up -d`
+- Build and start the repository-owned Nginx+PHP-FPM stack: `docker compose up -d --build app-fpm && docker compose up -d --force-recreate --no-deps web`
 - Visit `http://localhost/login.php` (or your VM IP) to run setup.
+- phpMyAdmin is not part of the default stack. Start it only when needed with `docker compose --profile tools up -d phpmyadmin`.
 - For DB import, uncomment the seed line in `docker-compose.yml` and start with an empty DB volume.
 
 **Reverse proxy + HTTPS + webhook deploy (VPS/VM)**
@@ -78,7 +79,7 @@ Go to yourdomain and the website will work now.
 - Prereqs:
   - DNS A record for `crimewiki.site` (and `www`) pointing to the VM
   - Port 80/443 open in firewall
-  - Docker app moved to host port 8080 (already set in `docker-compose.yml`)
+  - Docker web container bound privately to host port 8080 (already set in `docker-compose.yml`)
 
 **Recommended VPS/VM workflow**
 1. Clone this repo onto the VM at the path you want to keep using long-term.

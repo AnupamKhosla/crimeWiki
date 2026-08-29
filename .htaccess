@@ -1,3 +1,6 @@
+# Historical Apache compatibility reference. The default Docker/VM runtime is
+# repository-owned Nginx plus PHP-FPM; keep these rules for legacy installs and
+# route/security comparison only.
 # Apache Server Configs v4.0.0 | MIT License
 # https://github.com/h5bp/server-configs-apache
 

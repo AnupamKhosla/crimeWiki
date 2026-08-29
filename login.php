@@ -47,6 +47,12 @@ require_once("include/setup.php");
               <?php echo $page_title ?>
             </h2>
 
+            <?php if ($login_error !== ""): ?>
+              <div class="login-error alert alert-danger text-center" role="alert">
+                <?php echo htmlspecialchars($login_error, ENT_QUOTES, "UTF-8"); ?>
+              </div>
+            <?php endif; ?>
+
             <!-- Setup database form -->
             <form method="post" class="<?php echo $db_form_vis ?>" 
               action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?> >

@@ -130,49 +130,7 @@ if(!!$result && $result->num_rows) {
 
 
 
-//crime of the month  
-$result = $conn->query( "SELECT content, wikilink FROM `posts` WHERE title='\$blog_month_post';" );
-if(!!$result && $result->num_rows) {
-	$row = $result->fetch_assoc();
-	$month_id = (int)$row["content"];
-	$video_link = $row["wikilink"];
-	$stmt = $conn->prepare("SELECT datetime, title, titlerepeat, content FROM `posts` WHERE id=?");
-	$stmt->bind_param("i", $month_id);
-	$stmt->execute();
-	$result = $stmt->get_result();
-	if(!!$result && $result->num_rows) {
-		$res_arr = $result->fetch_assoc();
-		$publish_date = $res_arr["datetime"];
-		if($res_arr["titlerepeat"] != NULL) {
-			$titlerepeat = "/".$res_arr["titlerepeat"];
-		}
-		else {
-			$titlerepeat = "";			
-		}
-		$title = $res_arr["title"];	
-		$blog_month_href = "/post/" . $title . $titlerepeat;
-		libxml_use_internal_errors(true); // important
-			$content = new DOMDocument();
-			$content->loadHTML('<!DOCTYPE html><meta charset="UTF-8">' . $res_arr["content"]);		
-			$sources = $content->saveHTML( ($content->getElementsByTagName('sources')[0]) );
-			$sources = substr($sources, 9, -10);
-			$content_tag = $content->getElementsByTagName('content')[0];
-
-			$introduction = "";			
-			$p = $content_tag->getElementsByTagName('p')[0];
-			$introduction .= $content->saveHTML($p);
-			while(isset($p->nextSibling) && $p->nextSibling->nodeName != "hr") {						
-				$p = $p->nextSibling;
-				$introduction .= $content->saveHTML($p);				
-			}			 
-	}
-
-	
-}
-//crime of month finishes
-
-
-
-
+// The former Crime of the Month query and DOM parse were removed. The
+// homepage no longer reads or renders that feature.
 
 ?>

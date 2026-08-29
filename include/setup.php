@@ -5,6 +5,7 @@ $db_form_vis = "";
 $rg_form_vis = "d-none";
 $lg_form_vis = "d-none";
 $page_title = "Setup database";
+$login_error = "";
 
 if(SETUP) { //if db already setup
   $db_form_vis = "d-none";
@@ -50,11 +51,11 @@ if(SETUP) { //if db already setup
           exit();
         }
         else {                
-          echo "Incorrect Username and/or password";
+          $login_error = "Incorrect Username and/or password";
         }
       }
       else {
-        echo "All fields must be filled";
+        $login_error = "All fields must be filled";
       }
     }
     else if($logged_in !== false) { //show login page

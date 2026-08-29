@@ -148,7 +148,8 @@ if [ -n "$COMPOSE_CMD" ] && [ -f "$REPO_DIR/docker-compose.yml" ]; then
     . /etc/secrets/secrets.env
     set +a
   fi
-  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d
+  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d --build --remove-orphans
+  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" stop phpmyadmin >/dev/null 2>&1 || true
 fi
 
 cat <<EOF

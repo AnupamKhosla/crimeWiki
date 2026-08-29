@@ -1,3 +1,7 @@
+# Historical Apache image. The repository-owned docker-compose.yml no longer
+# selects this Dockerfile; production and the default local stack use
+# docker/php/Dockerfile.fpm behind the repository-owned Nginx config. Keep this
+# file and the Apache snippets as a reference for the former VPS runtime.
 FROM php:8.5-apache
 
 RUN apt-get update \
