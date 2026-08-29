@@ -84,7 +84,6 @@ compose_up() {
   # Nginx process resolves the new app-fpm container IP after a rebuild.
   $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d --build --remove-orphans app-fpm
   $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d --force-recreate --no-deps web
-  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" stop phpmyadmin >/dev/null 2>&1 || true
 }
 
 ensure_nginx_running() {

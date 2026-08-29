@@ -60,9 +60,6 @@ compose_up() {
   # during a rebuild, while Nginx otherwise keeps its old DNS-resolved address.
   $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d --build --remove-orphans app-fpm
   $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d --force-recreate --no-deps web
-  # phpMyAdmin is an explicit tools profile and must not remain running from
-  # an older default-stack deployment.
-  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" stop phpmyadmin >/dev/null 2>&1 || true
 }
 
 case "$ACTION" in
