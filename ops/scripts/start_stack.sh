@@ -12,7 +12,9 @@ fi
 
 if [ -f /etc/crimewiki.env ]; then
   # shellcheck disable=SC1091
+  set -a
   . /etc/crimewiki.env
+  set +a
 else
   echo "ERROR: /etc/crimewiki.env not found." >&2
   exit 1
@@ -54,12 +56,11 @@ fi
 cd "$REPO_DIR"
 
 compose_up() {
-  # Build FPM and remove containers for services retired from the repository-
-  # owned Compose file. This retires the old Apache app container after the
-  # cutover. Recreate only web afterward: Docker may assign app-fpm a new IP
-  # during a rebuild, while Nginx otherwise keeps its old DNS-resolved address.
-  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d --build --remove-orphans app-fpm
-  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d --force-recreate --no-deps web
+  # Build FPM, start the explicitly required phpMyAdmin service, and remove
+  # containers for services retired from the repository-owned Compose file.
+  # Production host Nginx talks directly to FPM on loopback 9070; the `web`
+  # service is local-development-only and is therefore not started here.
+  $COMPOSE_CMD --profile tools -f "$REPO_DIR/docker-compose.yml" up -d --build --remove-orphans app-fpm phpmyadmin
 }
 
 case "$ACTION" in

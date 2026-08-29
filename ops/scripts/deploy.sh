@@ -21,7 +21,9 @@ set -euo pipefail
 # Load VM environment (domain + repo path)
 if [ -f /etc/crimewiki.env ]; then
   # shellcheck disable=SC1091
+  set -a
   . /etc/crimewiki.env
+  set +a
 else
   echo "ERROR: /etc/crimewiki.env not found. Copy ops/env/crimewiki.env to /etc/crimewiki.env." >&2
   exit 1
@@ -79,11 +81,10 @@ compose_cmd() {
 COMPOSE_CMD="$(compose_cmd)"
 
 compose_up() {
-  # The repository owns the runtime. Build FPM and reconcile retired Compose
-  # services (such as the former Apache app), then recreate only web so its
-  # Nginx process resolves the new app-fpm container IP after a rebuild.
-  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d --build --remove-orphans app-fpm
-  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d --force-recreate --no-deps web
+  # The repository owns the runtime. Build FPM, start the explicit phpMyAdmin
+  # service, and remove retired Compose services. Production host Nginx sends
+  # PHP directly to loopback port 9070; the `web` service is local-only.
+  $COMPOSE_CMD --profile tools -f "$REPO_DIR/docker-compose.yml" up -d --build --remove-orphans app-fpm phpmyadmin
 }
 
 ensure_nginx_running() {
@@ -154,6 +155,7 @@ cp -f "$REPO_DIR/ops/env/crimewiki.env" /etc/crimewiki.env
 sed \
   -e "s#__DOMAIN__#${DOMAIN}#g" \
   -e "s#__DOMAIN_WWW__#${DOMAIN_WWW}#g" \
+  -e "s#__REPO_DIR__#${REPO_DIR}#g" \
   "$REPO_DIR/ops/nginx/crimewiki.conf" \
   > /etc/nginx/sites-available/crimewiki.conf
 sed \
@@ -162,6 +164,11 @@ sed \
   "$REPO_DIR/ops/nginx/crimewiki_maintenance.conf" \
   > /etc/nginx/sites-available/crimewiki_maintenance.conf
 cp -f "$REPO_DIR/ops/maintenance/index.html" /var/www/maintenance/index.html
+
+# Validate the newly rendered normal and maintenance templates before any
+# service reload. The maintenance site remains active if this fails.
+nginx -t
+
 cp -f "$REPO_DIR/ops/webhook/hooks.yml" /etc/webhook/hooks.yml.template
 cp -f "$REPO_DIR/ops/systemd/webhook.service" /etc/systemd/system/webhook.service
 cp -f "$REPO_DIR/ops/systemd/crimewiki-app.service" /etc/systemd/system/crimewiki-app.service

@@ -65,9 +65,10 @@ Go to yourdomain and the website will work now.
 - Visit `/login.php` to finish setup.
 
 **Docker (local or VM)**
-- Build and start the repository-owned Nginx+PHP-FPM stack: `docker compose up -d --build app-fpm && docker compose up -d --force-recreate --no-deps web`
-- Visit `http://localhost/login.php` (or your VM IP) to run setup.
-- phpMyAdmin is not part of the default stack. On the VM, start it only when needed with `docker compose --profile tools up -d phpmyadmin`; it binds to VM loopback port `8082`, so use `gcloud compute ssh crimewiki --zone=us-east1-c -- -L 8082:127.0.0.1:8082` and open `http://127.0.0.1:8082/` locally. Stop it after use with `docker compose --profile tools stop phpmyadmin`.
+- Local Docker-only development uses the optional web profile: `docker compose --profile local up -d --build app-fpm web`.
+- On the VM, host Nginx serves static files and sends PHP directly to `app-fpm`; do not start the local `web` profile there.
+- Visit `http://localhost/login.php` for local setup. The VM remains available at `https://crimewiki.site/`.
+- The VM lifecycle starts phpMyAdmin through its tools profile and host Nginx preserves `https://crimewiki.site/phpmyadmin/`. The container binds only to VM loopback `8082`; to use it privately, tunnel with `gcloud compute ssh crimewiki --zone=us-east1-c -- -L 8082:127.0.0.1:8082` and open `http://127.0.0.1:8082/` locally.
 - For DB import, uncomment the seed line in `docker-compose.yml` and start with an empty DB volume.
 
 **Reverse proxy + HTTPS + webhook deploy (VPS/VM)**
@@ -79,7 +80,7 @@ Go to yourdomain and the website will work now.
 - Prereqs:
   - DNS A record for `crimewiki.site` (and `www`) pointing to the VM
   - Port 80/443 open in firewall
-  - Docker web container bound privately to host port 8080 (already set in `docker-compose.yml`)
+  - Docker PHP-FPM bound privately to host port 9070 (already set in `docker-compose.yml`)
 
 **Recommended VPS/VM workflow**
 1. Clone this repo onto the VM at the path you want to keep using long-term.

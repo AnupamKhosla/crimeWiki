@@ -7,7 +7,7 @@
 # re-issuing them unless you force it. It also installs the deploy script into
 # /usr/local/bin so the webhook can run it, and creates the maintenance page.
 # The goal is a reliable, low-RAM setup that keeps public traffic on HTTPS while
-# forwarding app traffic to localhost:8080, and allows safe deploys even on
+# forwarding app traffic to the private FPM listener, and allows safe deploys even on
 # constrained machines. Use this script when first setting up a new VM or when
 # you want to reapply the proxy configuration after changes.
 #
@@ -22,6 +22,8 @@ DOMAIN="$1"
 EMAIL="$2"
 REPO_DIR="$3"
 DOMAIN_WWW="www.${DOMAIN}"
+PMA_ABSOLUTE_URI="https://${DOMAIN}/phpmyadmin/"
+export DOMAIN REPO_DIR PMA_ABSOLUTE_URI
 
 FORCE_CERT="${FORCE_CERT:-0}"
 NONINTERACTIVE="${NONINTERACTIVE:-0}"
@@ -91,6 +93,7 @@ fi
 sed \
   -e "s/__DOMAIN__/${DOMAIN}/g" \
   -e "s/__DOMAIN_WWW__/${DOMAIN_WWW}/g" \
+  -e "s#__REPO_DIR__#${REPO_DIR}#g" \
   "$REPO_DIR/ops/nginx/crimewiki.conf" \
   > /etc/nginx/sites-available/crimewiki.conf
 
@@ -148,8 +151,7 @@ if [ -n "$COMPOSE_CMD" ] && [ -f "$REPO_DIR/docker-compose.yml" ]; then
     . /etc/secrets/secrets.env
     set +a
   fi
-  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" up -d --build --remove-orphans
-  $COMPOSE_CMD -f "$REPO_DIR/docker-compose.yml" stop phpmyadmin >/dev/null 2>&1 || true
+  $COMPOSE_CMD --profile tools -f "$REPO_DIR/docker-compose.yml" up -d --build --remove-orphans app-fpm phpmyadmin
 fi
 
 cat <<EOF

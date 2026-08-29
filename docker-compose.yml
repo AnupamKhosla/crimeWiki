@@ -1,8 +1,10 @@
 version: "3.8"
 
-# Active repository runtime: host Nginx -> web Nginx -> app-fpm -> db.
+# Active VPS runtime: host Nginx -> app-fpm -> db. The optional local web
+# profile preserves a convenient Docker-only development entry point.
 # The root Apache Dockerfile and docker/apache-* files are historical reference
-# only; no Apache service is defined here. phpMyAdmin is an opt-in tools profile.
+# only; no Apache service is defined here. phpMyAdmin is started explicitly by
+# the VPS lifecycle helper and remains bound to loopback port 8082.
 services:
   app-fpm:
     build:
@@ -14,6 +16,8 @@ services:
       # DB_HOST=host.docker.internal in the VM-only .env file.
       DB_HOST: ${DB_HOST:-db}
       PROXY_SECRET_TOKEN: ${PROXY_SECRET_TOKEN:-}
+    ports:
+      - "127.0.0.1:9070:9000"
     expose:
       - "9000"
     volumes:
@@ -24,6 +28,8 @@ services:
       - db
 
   web:
+    profiles:
+      - local
     image: nginx:stable-alpine
     restart: unless-stopped
     ports:
@@ -55,7 +61,7 @@ services:
     restart: unless-stopped
     environment:
       PMA_HOST: db
-      PMA_ABSOLUTE_URI: http://localhost:8082/
+      PMA_ABSOLUTE_URI: ${PMA_ABSOLUTE_URI:-http://localhost/phpmyadmin/}
     depends_on:
       - db
     ports:

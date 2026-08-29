@@ -241,3 +241,14 @@ Repeat 20 homepage requests at concurrency 1, 5, and 10. Record status, TTFB, to
 ## Related plan
 
 See docs/LUNA_IMPLEMENTATION_PLAN.md for the staged FPM cutover, database alternatives, rewrite queue, stream handling, backup, and rollback requirements.
+
+## Public follow-up load tests before direct host-Nginx cutover
+
+These tests were run from the development machine against the live public URL on 2026-08-30, after the earlier FPM cutover but before removing the Docker `web` proxy. They are client-side measurements; no new VPS SSH/server-log capture was performed.
+
+| Test | Result | Timing |
+| --- | --- | --- |
+| 50 concurrent advanced-search requests | 50/50 HTTP 200; no client errors | Average TTFB 7.293s, average total 7.352s, maximum total 12.776s |
+| 200 concurrent advanced-search requests | 112/200 HTTP 200; 88 client-side 30-second timeouts with no response bytes | Successful responses averaged 16.520s TTFB and 16.574s total; maximum successful total 29.705s |
+
+The 200-request result confirms that public edge/origin concurrency is still unsafe at this level, even though the bounded direct-origin 50-request FPM test passed earlier. Repeat the same client test after the direct host-Nginx cutover, and pair it with the owner-run VPS monitor for RAM, swap, CPU, Docker RSS, and Nginx/PHP-FPM logs.

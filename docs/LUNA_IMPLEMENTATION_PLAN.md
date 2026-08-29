@@ -2,9 +2,9 @@
 
 **Prepared:** 2026-08-29
 **Audience:** Luna (implementation agent) and the project owner
-**Status:** Point 1 and the local Point 2 FPM proof are implemented and tested. The repository default runtime is Nginx+PHP-FPM, and commit `dab2b75` has now been deployed to production by the existing webhook. The native database migration remains pending an owner-run backup and compatibility cutover.
+**Status:** Point 1 and the FPM cutover are implemented and tested. The repository now targets host Nginx directly to PHP-FPM, with the Docker web proxy retained only for local development; the native database migration remains pending an owner-run backup and compatibility cutover.
 
-**Progress:** Point 1 removed the Crime-of-the-Month homepage query, DOM parse, rendered section, and feature-only styles/templates. Point 2’s PHP 8.5-FPM + Nginx stack is now the repository default and is live on VM port `8080`; the old Apache Dockerfile/config remains only as documented historical reference and is not selected by Compose. Production validation passed for normal routes and both 50-request bursts. Native MariaDB is the next separate migration.
+**Progress:** Point 1 removed the Crime-of-the-Month homepage query, DOM parse, rendered section, and feature-only styles/templates. Point 2’s PHP 8.5-FPM + host-Nginx stack is the repository target; the old Apache Dockerfile/config remains only as documented historical reference, and the Docker web proxy is local-only. Production validation passed for normal routes and both 50-request bursts. Native MariaDB is the next separate migration.
 
 **Performance baseline:** [PERFORMANCE_BASELINE_2026-08-30.md](./PERFORMANCE_BASELINE_2026-08-30.md) records the pre-cutover VPS, origin, Cloudflare, memory, storage, and concurrency measurements. Repeat those same tests after each runtime change.
 
@@ -25,7 +25,7 @@ Runtime optimization is now live through Nginx+FPM and remains independent of th
 
 | Area | Current state | Why it matters |
 | --- | --- | --- |
-| Public PHP runtime | **Live VPS and repository:** `docker/php/Dockerfile.fpm` behind the repository-owned `web` Nginx container on `127.0.0.1:8080`. The old Apache image/config is historical only. | Apache has been removed from the running Compose project; the next runtime work is query tuning and, separately, native database migration. |
+| Public PHP runtime | **Repository target:** host Nginx serves static files and passes PHP to `docker/php/Dockerfile.fpm` on loopback `127.0.0.1:9070`; the repository-owned `web` Nginx is local-only. The old Apache image/config is historical only. | Apache and the redundant Docker web proxy are removed from the intended VPS request path; native database migration remains separate. |
 | Database | Docker Compose runs `mysql:9.6`; the live `posts` table has 1,121 rows, is about 92.66 MB, and has 128 MB InnoDB buffer pool / 50 max connections. | Docker and MySQL remain memory consumers on the 1 GB VM; the live data snapshot must be used for tuning. |
 | Rewrite UI | `rewrite.php` selects ten rows and starts each stream two seconds apart. | Ten requests can be concurrently in flight for minutes. |
 | Current provider | `rewrite_api.php` calls Neuralwatt Chat Completions with `deepseek-v4-flash`. | The stream parser now buffers complete SSE events and releases the PHP session lock; those fixes should be retained. |
@@ -324,7 +324,7 @@ The repository proves this current architecture; it is not a guess:
                     → Docker MySQL
 ```
 
-Before the cutover, host Nginx had no site `root`, no static-file location, and no FastCGI directive. Its normal `location /` proxied everything to the Apache app on port 8080. The current internal `web` Nginx now serves the audited static allowlist and forwards PHP to `app-fpm` on the Docker network.
+Before the FPM cutover, host Nginx had no site `root`, no static-file location, and no FastCGI directive. Its normal `location /` proxied everything to the Apache app on port 8080. The current target host Nginx serves the audited static allowlist and forwards PHP directly to `app-fpm` on loopback port 9070; the internal `web` Nginx remains only for local profile testing.
 
 The historical Docker app was built from `php:8.5-apache`, with Apache prefork and mod_php. The current app is built from `php:8.5-fpm`, uses a 128 MB PHP request memory limit, two ondemand workers, and a 64 MB OPcache. `rewrite_api.php` overrides the normal 30-second PHP execution limit, so each long stream still occupies an FPM worker until it completes. Session locking has been fixed with `session_write_close()`, but that does not release the worker itself.
 
@@ -338,25 +338,25 @@ The root `.htaccess` is significant and must be treated as a route/security spec
 
 The project root currently holds a git-ignored local database dump of about 87.6 MB. Apache's `.htaccess` blocks `.sql` files today. Any Nginx static offload or Nginx/FPM cutover must explicitly deny SQL dumps, `include/`, `.env`, `.git`, `tmp/`, `scripts/`, configuration files, and hidden files before it serves even one file directly.
 
-Finally, `ops/scripts/start_stack.sh` and `ops/scripts/deploy.sh` contain a compatibility helper that prefers `docker-compose` and falls back to `docker compose`; the live VM therefore works with its installed legacy binary. They now build FPM with `--remove-orphans`, force-recreate only the internal `web` Nginx after FPM reconciliation (Docker can change the FPM container IP), and deployment restarts the Compose systemd unit so an already-active oneshot cannot skip reconciliation. This explicitly applies Dockerfile/PHP/OPcache changes and retires services removed from the repository-owned Compose file without needlessly recreating MySQL. The owner must still verify the loaded image/config after deployment.
+Finally, `ops/scripts/start_stack.sh` and `ops/scripts/deploy.sh` contain a compatibility helper that prefers `docker-compose` and falls back to `docker compose`; the live VM therefore works with its installed legacy binary. They now build FPM with `--remove-orphans`, start the explicit phpMyAdmin service for the preserved public route, remove the local-only `web` proxy from the VPS project, and validate rendered Nginx before reload. Deployment restarts the Compose systemd unit so an already-active oneshot cannot skip reconciliation. This explicitly applies Dockerfile/PHP/OPcache changes without needlessly recreating MySQL. The owner must still verify the loaded image/config after deployment.
 
 The live VM still has host PHP-FPM, but it is irrelevant to public traffic: the active site uses Docker `app-fpm`. Do not tune the host FPM pool unless we deliberately choose the later no-Docker PHP migration. The deployed FPM user can read the application tree and connect to Docker MySQL without exposing port 9000.
 
 ### Local Point 2 proof completed on 2026-08-29
 
-The repository now contains the default FPM runtime. `docker-compose.yml` builds `app-fpm` from `docker/php/Dockerfile.fpm` and puts the repository-owned `web` Nginx container on loopback port `8080`; the old Apache `app` service and the `fpm-test` profile are gone. The new image is `php:8.5-fpm`; the official image already supplies DOM/Lexbor, cURL, mbstring, and OPcache, so only `mysqli` is compiled. The pool is `ondemand` with `pm.max_children = 2`, a 10-second idle timeout, and worker recycling after 300 requests. OPcache is enabled at 64 MB with timestamp validation during development.
+The repository now contains the default FPM runtime. `docker-compose.yml` builds `app-fpm` from `docker/php/Dockerfile.fpm` and exposes its FPM listener privately on loopback port `9070`; the repository-owned `web` Nginx is a `local` profile only, while phpMyAdmin is a `tools` profile reached through host Nginx at `/phpmyadmin/`. The old Apache `app` service and the `fpm-test` profile are gone. The new image is `php:8.5-fpm`; the official image already supplies DOM/Lexbor, cURL, mbstring, and OPcache, so only `mysqli` is compiled. The pool is `ondemand` with `pm.max_children = 2`, a 10-second idle timeout, and worker recycling after 300 requests. OPcache is enabled at 64 MB with timestamp validation during development.
 
 The local Nginx route was corrected to avoid a serious source-exposure failure: extensionless routes now internally enter the PHP handler instead of serving `login.php`, `search.php`, or `rewrite.php` as text. It also denies repository paths (`include/`, `scripts/`, `tmp/`, `docker/`, `ops/`, `docs/`), dotfiles, Docker/config/SQL files, and hides `X-Powered-By`. It includes explicit MIME handling, gzip for ordinary text, conservative one-hour static caching, and an exact unbuffered 1,800-second FastCGI location for `rewrite_api.php`.
 
 The route matrix passed through both stacks: homepage, extensionless and direct login, ID and title/repeat post URLs, all sitemap forms, search, unauthenticated rewrite redirect, and 404. Protected-file probes returned 403. Deterministic response hashes for a post, sitemap, and CSS file matched Apache exactly. Twenty local requests showed FPM slightly ahead on ordinary routes (homepage average 7.4 ms versus Apache 8.5 ms; CSS 1.0 ms versus 1.5 ms); ten-way concurrent homepage requests had no failures and similar throughput. Idle local container memory was about 65 MiB for Apache versus about 11 MiB for FPM plus 9 MiB for Nginx. These are development-host measurements, not VPS promises; the production decision still requires the same test on the e2-micro.
 
-The FPM proof has now been deployed and validated in production: host Nginx points at loopback `8080`, the internal `web` container forwards PHP to `app-fpm`, port `9000` remains reserved for the webhook, MySQL remains unchanged, and the old Apache container was removed as an orphan during Compose reconciliation. Rollback is a Git-based redeploy of the last accepted revision; no Apache container is kept running. Do not route long-lived AI streams through the two normal workers without an isolated pool or queue worker.
+The FPM proof has now been deployed and validated in production: host Nginx previously pointed at loopback `8080` through the internal `web` container, while the direct host-Nginx/FPM target uses loopback `9070`; port `9000` remains reserved for the webhook, MySQL remains unchanged, and the old Apache container was removed as an orphan during Compose reconciliation. The preserved public phpMyAdmin route uses loopback `8082`. Rollback is a Git-based redeploy of the last accepted revision; no Apache container is kept running. Do not route long-lived AI streams through the two normal workers without an isolated pool or queue worker.
 
 ### Immediate low-risk changes after baseline measurement
 
-1. Keep host Nginx serving TLS and the internal `web` Nginx serving the audited static allowlist. Do not add a Node service.
+1. Keep host Nginx serving TLS, the audited static allowlist, PHP-FPM, and the `/phpmyadmin/` gateway directly. Do not add a Node service or a second production Nginx.
 2. The internal Nginx **extension allowlist** is now deployed for CSS, JS, fonts, images, and manifests. Continue testing it when adding assets; carry over required CORS headers from `.htaccess`, use conservative immutable caching only for fingerprinted/versioned assets, and keep PHP/unknown paths behind FPM.
-3. phpMyAdmin is now behind the explicit `tools` Compose profile and is not a default runtime dependency. The old Apache proxy configuration is retained only as historical reference and is no longer active in Compose.
+3. phpMyAdmin remains a `tools` Compose profile, but the VPS lifecycle helper explicitly starts it for the preserved `/phpmyadmin/` route; its container port is loopback-only at `8082`. The old Apache proxy configuration is retained only as historical reference and is no longer active in Compose.
 4. Treat `homepage_rank` as a not-yet-deployed migration. After a verified backup, add the column and the category/rank index in staging, compare `EXPLAIN` and timing, then apply it live only as an owner-approved schema change. It removes the random count/offset fallback but will not fix the larger full-content parse by itself.
 5. The repeated homepage parsing of post 1,137’s 523,897-byte content has been removed. Keep source content authoritative in `posts.content`; if the future layout needs extracted fragments, store them with explicit validation and invalidation rather than restoring request-time DOM work.
 6. Add an Nginx/static asset cache policy after route/security testing. The current edge sees CSS/JS/images as `DYNAMIC`; use versioned URLs or safe revalidation rather than caching admin/PHP responses. Fix or remove the broken `/icon.png` reference.
@@ -382,10 +382,10 @@ Use a measured memory budget rather than folklore. On the 1 GB host, collect bas
 The current intermediate target is:
 
 ```text
-Cloudflare (if enabled) → host Nginx → Docker PHP-FPM app (loopback only) → existing Docker MySQL
+Cloudflare (if enabled) → host Nginx → Docker PHP-FPM app (loopback 9070) → existing Docker MySQL
 ```
 
-This removed the Docker Apache/mod_php application process while retaining Docker MySQL and the Docker engine as the measured intermediate step. It avoided an unplanned Debian PHP package-source change and kept the tested PHP 8.5 branch. A later native-FPM move can remove the app container; native MariaDB is a separate project, only if its compatibility and memory measurements pass. Neither is the immediate answer to measured homepage cost: current PHP/DOM work and uncached static paths should be addressed separately.
+This removes both the Docker Apache/mod_php process and the redundant production Docker Nginx while retaining Docker PHP-FPM, MySQL, and the Docker engine as the measured intermediate step. It avoids an unplanned Debian PHP package-source change and keeps the tested PHP 8.5 branch. A later native-FPM move can remove the app container; native MariaDB is a separate project, only if its compatibility and memory measurements pass. Neither is the immediate answer to measured homepage cost: current PHP/DOM work and uncached static paths should be addressed separately.
 
 The ultimate no-Docker architecture is `Cloudflare → Nginx → native PHP 8.5-FPM → native database`. Reach it in three independent migrations: first remove Apache while keeping the tested FPM and MySQL containers; then move PHP-FPM native only if the package/maintenance plan is sound; finally perform a logical dump/restore to the selected native database and compare row counts, schemas, checksums, queries, memory, and rollback. Removing Docker and changing runtime/database engines in one maintenance window makes a failure difficult to localize.
 
@@ -401,7 +401,7 @@ For the FPM configuration, begin conservatively after measuring real worker RSS:
 
 ### Streaming chain: what is already correct and what must be verified
 
-For the current FPM route, the repository does the necessary things: PHP disables output buffering, `/rewrite_api.php` sets `X-Accel-Buffering: no` and 15-second padded heartbeat comments, the internal Nginx uses `fastcgi_buffering off`, and host/internal Nginx use 1800-second read/send timeouts. Nginx's read timeout is between received bytes, not an overall 30-minute stopwatch, so the heartbeat is relevant and should remain.
+For the current FPM route, the repository does the necessary things: PHP disables output buffering, `/rewrite_api.php` sets `X-Accel-Buffering: no` and 15-second padded heartbeat comments, host Nginx uses `fastcgi_buffering off`, and host Nginx uses 1800-second read/send timeouts. Nginx's read timeout is between received bytes, not an overall 30-minute stopwatch, so the heartbeat is relevant and should remain.
 
 What was not proven by the pre-cutover baseline was the rendered live chain: Cloudflare (if active) → host Nginx → application → PHP → Neuralwatt → back through all proxies. The owner should still run an authenticated one-post stream test against the current FPM path while observing Nginx access/error logs and app logs, recording: immediate `researching` event, time to first heartbeat, time to first token, all status codes, stream end, and whether the browser sees every token. The exact FPM location is unbuffered with the same inactivity timeout; the durable worker remains the safer batch path.
 
@@ -453,7 +453,7 @@ The owner-approved FPM operation completed through the webhook. These steps rema
        sudo docker-compose exec -T app-fpm php-fpm -t
        sudo ss -ltnp
 
-   The running containers must be `db`, `app-fpm`, and `web`; legacy Compose may still list the profile-only phpMyAdmin service in `config --services`, but phpMyAdmin must be exited/stopped unless the owner explicitly started it for a tunnel session, and no `app` Apache container may remain. Host port `8080` is the only application listener and webhook port `9000` remains separate; optional phpMyAdmin uses loopback port `8082` only.
+   The running containers must be `db` and `app-fpm`; the `web` Nginx container is local-only and must not remain on the VPS, while phpMyAdmin runs through its tools profile on loopback port `8082`. No `app` Apache container may remain. FPM uses loopback port `9070` and webhook port `9000` remains separate.
 5. Verify loopback routes through `http://127.0.0.1:8080/` and the public HTTPS routes, then run the exact baseline timing, memory, worker, disk, and swap tests. Check the app log for FPM startup and Nginx errors before disabling maintenance.
 6. If acceptance fails, switch the checkout to the last accepted Git revision and run the same maintenance/deploy path. This is the documented rollback; no Apache container is kept alongside FPM.
 
@@ -482,7 +482,7 @@ The owner-approved FPM operation completed through the webhook. These steps rema
 - `rewrite_api.php` — retain as a strictly limited manual preview endpoint or retire after the queue UI is accepted.
 - `include/` — add small provider/research/validation classes; do not scatter API parsing across page files.
 - `scripts/` — explicit migrations, worker, staging export/import validation, and content-only publisher.
-- `docker/php/`, `docker-compose.yml`, `docker/nginx/`, `ops/nginx/`, `ops/scripts/`, and `ops/systemd/` — repository-owned runtime/configuration for the FPM performance phase. The root `Dockerfile` and `docker/apache-*` files remain historical Apache references and are not selected by Compose.
+- `docker/php/`, `docker-compose.yml`, `docker/nginx/`, `ops/nginx/`, `ops/scripts/`, and `ops/systemd/` — repository-owned runtime/configuration for the FPM performance phase. `docker/nginx/` is local-development-only; the root `Dockerfile` and `docker/apache-*` files remain historical Apache references and are not selected by Compose.
 - `docs/` — operations runbook, migration report template, and owner-run command checklist.
 
 ## References consulted

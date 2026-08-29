@@ -51,9 +51,10 @@ This repository contains a PHP CMS/wiki app plus a small VM ops bundle for a low
 ## Architecture
 
 - Public traffic hits host Nginx on ports `80/443`.
-- Host Nginx proxies the site to the repository-owned Docker web container on `127.0.0.1:8080`; that container serves static files and forwards PHP to `app-fpm`.
+- Host Nginx serves audited static files and passes PHP directly to Docker `app-fpm` on `127.0.0.1:9070`; the Docker `web` Nginx exists only under the `local` profile.
+- Host Nginx proxies `/phpmyadmin/` to the loopback-only phpMyAdmin container on `127.0.0.1:8082`.
 - Nginx proxies `/hooks/deploy` to the local webhook listener on `127.0.0.1:9000`.
-- Docker Compose runs `web`, `app-fpm`, and `db` by default. `phpmyadmin` exists only under the explicit `tools` profile.
+- Docker Compose runs `app-fpm` and `db` for the VM; `web` is local-only and `phpmyadmin` is an explicit tools profile started by the VM lifecycle helper.
 
 ## Runtime Config
 
