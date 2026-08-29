@@ -55,9 +55,11 @@ services:
     restart: unless-stopped
     environment:
       PMA_HOST: db
-      PMA_ABSOLUTE_URI: http://localhost/phpmyadmin/
+      PMA_ABSOLUTE_URI: http://localhost:8082/
     depends_on:
       - db
+    ports:
+      - "127.0.0.1:8082:80"
 
 volumes:
   db_data:

@@ -67,7 +67,7 @@ Go to yourdomain and the website will work now.
 **Docker (local or VM)**
 - Build and start the repository-owned Nginx+PHP-FPM stack: `docker compose up -d --build app-fpm && docker compose up -d --force-recreate --no-deps web`
 - Visit `http://localhost/login.php` (or your VM IP) to run setup.
-- phpMyAdmin is not part of the default stack. Start it only when needed with `docker compose --profile tools up -d phpmyadmin`.
+- phpMyAdmin is not part of the default stack. On the VM, start it only when needed with `docker compose --profile tools up -d phpmyadmin`; it binds to VM loopback port `8082`, so use `gcloud compute ssh crimewiki --zone=us-east1-c -- -L 8082:127.0.0.1:8082` and open `http://127.0.0.1:8082/` locally. Stop it after use with `docker compose --profile tools stop phpmyadmin`.
 - For DB import, uncomment the seed line in `docker-compose.yml` and start with an empty DB volume.
 
 **Reverse proxy + HTTPS + webhook deploy (VPS/VM)**
