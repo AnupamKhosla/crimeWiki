@@ -25,10 +25,9 @@ require_once("include/post_code.php");
     <link rel="icon" type="image/png" href="/assets/img/logo_single.svg">
     <!-- Place favicon.ico in the root directory -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.css" >
-    <link rel="stylesheet" href="/assets/css/selectric.css">
     <!-- Add the slick-theme.css if you want default styling -->    
 
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <?php require __DIR__ . '/include/inline_css.php'; ?>
     <meta name="theme-color" content="#E92222">
   </head>
 
