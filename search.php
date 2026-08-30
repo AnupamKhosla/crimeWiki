@@ -1,4 +1,7 @@
 <?php 
+if($_SERVER['REQUEST_METHOD'] === 'GET') {
+	header('Cache-Control: public, max-age=60, s-maxage=60, stale-while-revalidate=30');
+}
 require_once('include/config.php');
 require_once('include/functions.php');
 require_once('include/search_code.php')
