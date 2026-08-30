@@ -3,46 +3,110 @@
 $posts = "";
 
 if($_SERVER['REQUEST_METHOD'] === 'GET') {
-
-	$page = !empty($_GET["page"]) ? $_GET["page"]-1 : 0;	
-	$page_30 = 30*$page;
-	$title = empty($_GET["title"]) ? "%" : "%".$_GET["title"]."%";
-	$category = empty($_GET["category"]) ? "%" : $_GET["category"];
-	$filter = empty($_GET["filter"]) ? "datetime" : $_GET["filter"];
+	$page_number = (int)($_GET["page"] ?? 1);
+	$page_number = max(1, $page_number);
+	$page = $page_number - 1;
+	$page_30 = 30 * $page;
+	$search_term = trim((string)($_GET["title"] ?? ""));
+	$category_term = trim((string)($_GET["category"] ?? ""));
+	$filter = (string)($_GET["filter"] ?? "datetime");
+	$allowed_filters = ["datetime", "alphabetically", "popular", "country"];
+	if(!in_array($filter, $allowed_filters, true)) {
+		$filter = "datetime";
+	}
 	$conn = make_db_connection();
 
 	if(isset($_GET["advance"]) && $_GET["advance"]=="on" ) {
 		$advance_checked = true;
 		$pagination = "<div class='text-center font-weight-500'>Nothing Found!</div>";
-		$sql_string = "OR content LIKE ?";		
 	}
 	else {
 		$advance_checked = false;
 		$pagination = "<div class='text-center font-weight-500'>Nothing Found!, did you try Advance Search?</div>";
-		$sql_string = "OR ?=title"; 
-		//this condition is never true
 	}
 
-	if($filter == "datetime") {
-		$stmt = $conn->prepare("SELECT datetime, title, image, titlerepeat, content FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND (title LIKE ? $sql_string) AND categoryname LIKE ? ORDER BY datetime DESC LIMIT ?, 30");		
+	$conditions = [
+		"NOT title='\$blog_month_post'",
+		"NOT title='\$blog_about_text'"
+	];
+	$param_types = "";
+	$params = [];
+
+	if($search_term !== "") {
+		$title_like = "%" . $search_term . "%";
+		if($advance_checked) {
+			$conditions[] = "(title LIKE ? OR content LIKE ?)";
+			$param_types .= "ss";
+			$params[] = $title_like;
+			$params[] = $title_like;
+		}
+		else {
+			$conditions[] = "title LIKE ?";
+			$param_types .= "s";
+			$params[] = $title_like;
+		}
 	}
-	else if($filter == "alphabetically") {
-		$stmt = $conn->prepare("SELECT datetime, title, image, titlerepeat, content FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND (title LIKE ? $sql_string) AND categoryname LIKE ? ORDER BY title LIMIT ?, 30");		
+	if($category_term !== "") {
+		$conditions[] = "categoryname = ?";
+		$param_types .= "s";
+		$params[] = $category_term;
 	}
-	else if($filter == "popular") {
-		$stmt = $conn->prepare("SELECT datetime, title, image, titlerepeat, content FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND (title LIKE ? $sql_string) AND categoryname LIKE ? ORDER BY CHAR_LENGTH(content) DESC LIMIT ?, 30");		
+	else {
+		// The old categoryname LIKE '%' predicate excluded NULL categories.
+		$conditions[] = "categoryname IS NOT NULL";
 	}
-	else if($filter == "country") {
-		$stmt = $conn->prepare("SELECT datetime, title, image, titlerepeat, content FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND (title LIKE ? $sql_string) AND categoryname LIKE ? ORDER BY ISNULL(country), country, title LIMIT ?, 30");
-		//if $page	
-	}
-	$stmt->bind_param("sssi", $title, $title, $category, $page_30);
+
+	$where_sql = implode(" AND ", $conditions);
+	$excerpt_sql = "CASE
+		WHEN LOCATE('<content', p.content) > 0 THEN CONCAT(
+			SUBSTRING_INDEX(
+				SUBSTRING_INDEX(SUBSTRING(p.content, LOCATE('<content', p.content)), '<hr', 1),
+				'</content>', 1
+			),
+			'</content>'
+		)
+		ELSE p.content
+	END AS content_excerpt";
+	$inner_order_sql = match($filter) {
+		"alphabetically" => "ORDER BY title",
+		"popular" => "ORDER BY content_length DESC",
+		"country" => "ORDER BY ISNULL(country), country, title",
+		default => "ORDER BY datetime DESC"
+	};
+	$outer_order_sql = match($filter) {
+		"alphabetically" => "ORDER BY matched.title",
+		"popular" => "ORDER BY matched.content_length DESC",
+		"country" => "ORDER BY ISNULL(matched.country), matched.country, matched.title",
+		default => "ORDER BY matched.datetime DESC"
+	};
+	$inner_sort_column = $filter === "popular"
+		? ", CHAR_LENGTH(content) AS content_length"
+		: "";
+	$inner_select = "id, datetime, title, image, titlerepeat, country$inner_sort_column, COUNT(*) OVER() AS total_count";
+	$result_sql = "SELECT matched.datetime, matched.title, matched.image, matched.titlerepeat, $excerpt_sql, matched.total_count
+		FROM (
+			SELECT $inner_select
+			FROM `posts`
+			WHERE $where_sql
+			$inner_order_sql
+			LIMIT ?, 30
+		) AS matched
+		JOIN `posts` AS p ON p.id = matched.id
+		$outer_order_sql";
+
+	$result_params = $params;
+	$result_types = $param_types . "i";
+	$result_params[] = $page_30;
+	$stmt = $conn->prepare($result_sql);
+	bind_dynamic_params($stmt, $result_types, $result_params);
 	$result = $stmt->execute();		
 	if( $result != false && ($result = $stmt->get_result()) && ($result->num_rows > 0) ) { //query was successful
 		libxml_use_internal_errors(true); //important
 		$tmp = new DOMDocument();
+		$total_rows = 0;
 		
-		while($row = $result->fetch_assoc()) { //first iteration only to nemove NULL table valuesand set $count				
+		while($row = $result->fetch_assoc()) { //first iteration only to nemove NULL table valuesand set $count
+			$total_rows = (int)$row['total_count'];
 			$row_raw_name = (string)$row['title'];
 			$row_name = htmlspecialchars($row_raw_name, ENT_QUOTES, 'UTF-8');
 			if(strlen($row_name) > 200) {
@@ -51,11 +115,19 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 				//important to allow links like {Alphonse%20D'Arco} that contains single quote
 			} 
 			
-			$tmp->loadHTML('<!DOCTYPE html><meta charset="UTF-8">' . $row['content']);
-			$content = $tmp->getElementsByTagName("content")[0];
+			$tmp->loadHTML('<!DOCTYPE html><meta charset="UTF-8">' . $row['content_excerpt']);
+			$content_nodes = $tmp->getElementsByTagName("content");
+			if($content_nodes->length === 0) {
+				continue;
+			}
+			$content = $content_nodes->item(0);
 			
 			$introduction = "";			
-			$p = $content->getElementsByTagName('p')[0];
+			$paragraphs = $content->getElementsByTagName('p');
+			if($paragraphs->length === 0) {
+				continue;
+			}
+			$p = $paragraphs->item(0);
 			$introduction .= $tmp->saveHTML($p);
 			while(isset($p->nextSibling) && $p->nextSibling->nodeName != "hr") {						
 				$p = $p->nextSibling;
@@ -94,19 +166,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 								</div>";
 		}
 
-
-
-
-		//get total rows without LIMIT for pagination  
-		$stmt = $conn->prepare("SELECT COUNT(*) FROM `posts` WHERE NOT title='\$blog_month_post' AND NOT title='\$blog_about_text' AND (title LIKE ? $sql_string) AND categoryname LIKE ? ");
-		$stmt->bind_param("sss", $title, $title, $category);
-		$result = $stmt->execute();
-		if($result != false && $res = $stmt->get_result()) { //query was successful		
-			$page_count = ceil($res->fetch_row()[0] / 30);
-		}
-		else {
-			die("Could not fetch results from cateory table" . $conn->error);
-		}
+		$page_count = (int)ceil($total_rows / 30);
 
 		$url = $_SERVER["REQUEST_URI"];
 		$query_str = parse_url($url, PHP_URL_QUERY);

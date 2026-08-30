@@ -1,6 +1,11 @@
 <?php 
 
 function make_db_connection(){
+	static $conn = NULL;
+	if($conn instanceof mysqli) {
+		return $conn;
+	}
+
 	$conn = new mysqli(DB_HOST, DB_USER_NAME, DB_PASSWORD, DB_NAME);
 	$conn->set_charset('utf8mb4'); // very important
 	return $conn;
@@ -26,41 +31,69 @@ function validation_status() {
 }
 
 function category_select($category = NULL) {
-	global $conn;
 	$list = "";
-	$result = $conn->query("SELECT name FROM `categories`");
-	if($result != false) {		
-		while($row = $result->fetch_assoc()) {			
-			$row_name = htmlspecialchars($row['name']);
-			if($row_name == $category) {
-				$list .= "<option selected >$row_name</option>";
-			}
-			else {
-				$list .= "<option>$row_name</option>";
-			}				
-		}				
-	}
-	else {
-		die("Can't fetch names from categories tabele" . $conn->error);
+	foreach(get_category_names() as $category_name) {
+		$row_name = htmlspecialchars($category_name, ENT_QUOTES, 'UTF-8');
+		if($row_name == $category) {
+			$list .= "<option selected >$row_name</option>";
+		}
+		else {
+			$list .= "<option>$row_name</option>";
+		}
 	}
 	return $list;
 }
 
 function category_filter_options($selected = NULL) {
-	global $conn;
 	$list = "";
-	$result = $conn->query("SELECT name FROM `categories` ORDER BY name");
-	if($result != false) {
-		while($row = $result->fetch_assoc()) {
-			$row_name = htmlspecialchars($row['name']);
-			$is_selected = ($row['name'] === $selected) ? " selected" : "";
-			$list .= "<option value=\"$row_name\"$is_selected>$row_name</option>";
-		}
-	}
-	else {
-		die("Can't fetch names from categories table" . $conn->error);
+	foreach(get_category_names(false, true) as $category_name) {
+		$row_name = htmlspecialchars($category_name, ENT_QUOTES, 'UTF-8');
+		$is_selected = ($category_name === $selected) ? " selected" : "";
+		$list .= "<option value=\"$row_name\"$is_selected>$row_name</option>";
 	}
 	return $list;
+}
+
+function get_category_names(bool $exclude_blog = false, bool $sort = false): array {
+	static $category_names = NULL;
+
+	if($category_names === NULL) {
+		$conn = make_db_connection();
+		$result = $conn->query("SELECT name FROM `categories`");
+		if($result === false) {
+			die("Can't fetch names from categories table" . $conn->error);
+		}
+
+		$category_names = [];
+		while($row = $result->fetch_assoc()) {
+			$category_names[] = (string)$row['name'];
+		}
+	}
+
+	$names = $category_names;
+	if($exclude_blog) {
+		$names = array_values(array_filter($names, static function(string $name): bool {
+			return $name !== 'Blog';
+		}));
+	}
+	if($sort) {
+		sort($names, SORT_STRING);
+	}
+
+	return $names;
+}
+
+function bind_dynamic_params(mysqli_stmt $stmt, string $types, array &$params): void {
+	if($types === '') {
+		return;
+	}
+
+	$bind = [$types];
+	foreach($params as $key => &$value) {
+		$bind[] = &$value;
+	}
+	$stmt->bind_param(...$bind);
+	unset($value);
 }
 
 function isAbsolute($url) {

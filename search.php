@@ -80,7 +80,7 @@ require_once('include/search_code.php')
                 <div class="col-sm-6 offset-sm-3 col-md-3 offset-md-2 col-lg-5 offset-lg-0 pl-lg-0 mt-3 mt-md-0">
                   <select  class="w-100" name="category">                    
                     <option selected value="" >Category</option>
-                        <?php echo category_select($_GET["category"]); ?>
+                        <?php echo category_select($_GET["category"] ?? NULL); ?>
                   </select>
                 </div>    
                 <div class="col-sm-6 offset-sm-3 col-md-3 offset-md-0 col-lg-5 pl-lg-0 mt-3 mt-md-0">

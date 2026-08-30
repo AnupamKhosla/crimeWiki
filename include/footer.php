@@ -10,11 +10,8 @@
 
           <?php 
           $nav_col = "";
-          $conn = make_db_connection();
-          $result = $conn->query("SELECT name FROM `categories` WHERE name!='Blog' ");
-          if($result != false) {    
-            while($row = $result->fetch_assoc()) {      
-              $cat_name = htmlspecialchars($row['name']);  
+          foreach(get_category_names(true) as $category_name) {
+              $cat_name = htmlspecialchars($category_name, ENT_QUOTES, 'UTF-8');
               $nav_col .= "<div class='col-lg-2 col-sm-6'>
                             <h4 class='font-weight-normal h5 list-heading'>$cat_name</h4>
                             <ul class='list-unstyled category-links'>
@@ -24,7 +21,6 @@
                               <li><a href='/search?category=$cat_name&filter=latest'>Recent $cat_name</a></li>                              
                             </ul>
                           </div>";
-            }
           }
           echo "$nav_col";
           ?>

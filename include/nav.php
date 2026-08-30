@@ -30,11 +30,8 @@
                         <a class='nav-link' href=//" .  $_SERVER['SERVER_NAME'] . ">Home <span class='sr-only'>(current)</span></a>
                       </li>";                 
         
-        $conn = make_db_connection();
-        $result = $conn->query("SELECT name FROM `categories`");
-        if($result != false) {    
-          while($row = $result->fetch_assoc()) {      
-            $row_name = htmlspecialchars($row['name']);  
+        foreach(get_category_names() as $category_name) {
+            $row_name = htmlspecialchars($category_name, ENT_QUOTES, 'UTF-8');
             $nav_active = "";
             if($category_page == $row_name) {
               $nav_active = "active";
@@ -44,8 +41,7 @@
                               $row_name
                             </a>                
                           </li>";                           
-          }       
-        }              
+        }
         echo $nav_items;
       ?>                    
     </ul>    
