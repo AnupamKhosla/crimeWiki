@@ -101,8 +101,6 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 	bind_dynamic_params($stmt, $result_types, $result_params);
 	$result = $stmt->execute();		
 	if( $result != false && ($result = $stmt->get_result()) && ($result->num_rows > 0) ) { //query was successful
-		libxml_use_internal_errors(true); //important
-		$tmp = new DOMDocument();
 		$total_rows = 0;
 		
 		while($row = $result->fetch_assoc()) { //first iteration only to nemove NULL table valuesand set $count
@@ -115,29 +113,29 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 				//important to allow links like {Alphonse%20D'Arco} that contains single quote
 			} 
 			
-			$tmp->loadHTML('<!DOCTYPE html><meta charset="UTF-8">' . $row['content_excerpt']);
-			$content_nodes = $tmp->getElementsByTagName("content");
-			if($content_nodes->length === 0) {
+			// The SQL result is already limited to the first content block. Avoid
+			// parsing 30 full HTML documents just to find the first paragraph.
+			$excerpt = (string)$row['content_excerpt'];
+			$paragraph_start = stripos($excerpt, '<p');
+			if($paragraph_start === false) {
 				continue;
 			}
-			$content = $content_nodes->item(0);
-			
-			$introduction = "";			
-			$paragraphs = $content->getElementsByTagName('p');
-			if($paragraphs->length === 0) {
-				continue;
-			}
-			$p = $paragraphs->item(0);
-			$introduction .= $tmp->saveHTML($p);
-			while(isset($p->nextSibling) && $p->nextSibling->nodeName != "hr") {						
-				$p = $p->nextSibling;
-				if(strlen($introduction) > 1700) {
-					$introduction = $introduction . "...";
-					break;
+			$introduction = substr($excerpt, $paragraph_start);
+			$end_position = NULL;
+			foreach([stripos($introduction, '<hr'), stripos($introduction, '</content>')] as $position) {
+				if($position !== false && ($end_position === NULL || $position < $end_position)) {
+					$end_position = $position;
 				}
-				else {
-					$introduction .= $tmp->saveHTML($p);
-				}									
+			}
+			if($end_position !== NULL) {
+				$introduction = substr($introduction, 0, $end_position);
+			}
+			if(strlen($introduction) > 1700) {
+				$cut_position = strrpos(substr($introduction, 0, 1700), '</p>');
+				if($cut_position !== false) {
+					$introduction = substr($introduction, 0, $cut_position + 4);
+				}
+				$introduction .= "...";
 			}					
 			$datetime = date( 'd/m/Y H:i:s', htmlspecialchars($row["datetime"]) );
 			$row_image = image_path(htmlspecialchars($row["image"]));
