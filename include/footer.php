@@ -34,7 +34,7 @@
               <li><a href="#">About The crimWiki</a></li>
               <li><a href="#">Contact Page</a></li>
               <li><a href="#">Privacy policy</a></li>
-              <li><a href="/sitemap/sitemap-index.xml">Sitemap</a></li>
+              <li><a href="/sitemap.xml">Sitemap</a></li>
               <li><a class="text-nowrap mail-link" href="mailto: info@crimewiki.com"> <img class="mail-icon" src="/assets/icons/mail.svg" alt="mail icon"> info@crimewiki.com</a></li>
             </ul>
           </div>

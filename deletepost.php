@@ -18,7 +18,7 @@ require_once("include/deletepost_code.php");
     <meta property="og:type" content="">
     <meta property="og:url" content="">
     <meta property="og:image" content="">
-    <link rel="manifest" href="site.webmanifest">
+    <link rel="manifest" href="/assets/site.webmanifest">
 
     <link rel="icon" type="image/png" href="assets/img/logo_single.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.1/css/bootstrap.css" integrity="sha512-Ty5JVU2Gi9x9IdqyHN0ykhPakXQuXgGY5ZzmhgZJapf3CpmQgbuhGxmI4tsc8YaXM+kibfrZ+CNX4fur14XNRg==" crossorigin="anonymous" referrerpolicy="no-referrer" />  

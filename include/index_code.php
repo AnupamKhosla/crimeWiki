@@ -92,7 +92,8 @@ $slides = "";
 				shuffle($sliderRows);
 			}
 			foreach($sliderRows as $row) {
-				$title = htmlspecialchars($row['title']);			
+				$rawTitle = (string)$row['title'];
+				$title = htmlspecialchars($rawTitle, ENT_QUOTES, 'UTF-8');
 				$rawImage = trim((string)($row['image'] ?? ""));
 				$image = htmlspecialchars(image_path($rawImage));
 				$imageAttrs = "";
@@ -101,13 +102,14 @@ $slides = "";
 					$imageClasses .= " is-default-image";
 					$imageAttrs = "data-default-src=\"" . htmlspecialchars(default_image_path(), ENT_QUOTES, 'UTF-8') . "\"";
 				}
-				$titleRepeat = htmlspecialchars($row['titlerepeat'] ?? "");	
+				$titleRepeat = $row['titlerepeat'];
+				$postHref = htmlspecialchars(post_path($rawTitle, $titleRepeat), ENT_QUOTES, 'UTF-8');
 				$slides .= <<<EOT
 											<div class="slide">
 								        <div class="card">
 								          <img data-lazy="$image" $imageAttrs class="$imageClasses" alt="profile pic" src="$sliderPlaceholderSrc">
 								          <div class="card-body">                
-								            <a href="post/$title/$titleRepeat" class="">$title</a>
+								            <a href="$postHref" class="">$title</a>
 								          </div>
 								        </div>
 								      </div>

@@ -1,0 +1,24 @@
+{
+  "name": "CrimeWiki",
+  "short_name": "CrimeWiki",
+  "description": "Crime stories, criminal cases, and crime history.",
+  "icons": [
+    {
+      "src": "/assets/img/logo_gun.png",
+      "type": "image/png",
+      "sizes": "317x317",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/img/logo_single.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ],
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#E92222"
+}

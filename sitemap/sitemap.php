@@ -1,43 +1,35 @@
-<?php 
-header('Content-Type: text/plain; charset=utf-8');
+<?php
+header('Content-Type: application/xml; charset=UTF-8');
+header('Cache-Control: public, max-age=900');
 require_once('../include/config.php');
 require_once('../include/functions.php');
 
-$scheme = 'http';
-if (
-  (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ||
-  (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-) {
-  $scheme = 'https';
-}
-
-if(isset($_GET["page"])) {
-	$page = ($_GET["page"]-1)*50;
-}
-else {
-	$page = 0;
-}
+$page_number = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, [
+	'options' => ['min_range' => 1]
+]);
+$page_number = $page_number ?: 1;
+$offset = ($page_number - 1) * 50;
 
 $links = "";
 $conn = make_db_connection();
-$stmt = $conn->prepare("SELECT title, titlerepeat FROM posts WHERE NOT id=1 AND NOT id=2 LIMIT ?, 50;");
-$stmt->bind_param("i", $page);
+$stmt = $conn->prepare("SELECT title, titlerepeat FROM posts WHERE id NOT IN (1, 2) ORDER BY id LIMIT ?, 50;");
+$stmt->bind_param("i", $offset);
 $result = $stmt->execute();
 if( $result && ($result = $stmt->get_result()) ) {
 	while($row = $result->fetch_assoc()) {		
-		$title_repeat = "";
-		if($row["titlerepeat"] != NULL) {
-			$title_repeat = "/".$row["titlerepeat"];
-		}
-		$links .= "{$scheme}://{$_SERVER['SERVER_NAME']}/post/" . $row["title"] . $title_repeat . "\n";
+		$loc = htmlspecialchars(crimewiki_url(post_path($row['title'], $row['titlerepeat'])), ENT_XML1, 'UTF-8');
+		$links .= "  <url><loc>{$loc}</loc></url>\n";
 	}	
 }
 else {
-	die("Wrong page number");
+	http_response_code(500);
+	exit;
 }
 
-
+echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+echo "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n";
 echo $links;
+echo "</urlset>\n";
 
 
 ?>

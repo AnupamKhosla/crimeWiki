@@ -12,7 +12,7 @@
   <meta property="og:url" content="">
   <meta property="og:image" content="">
 
-  <link rel="manifest" href="site.webmanifest">
+  <link rel="manifest" href="/assets/site.webmanifest">
   <link rel="apple-touch-icon" href="icon.png">
   <!-- Place favicon.ico in the root directory -->
 

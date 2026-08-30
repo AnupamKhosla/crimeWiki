@@ -27,29 +27,40 @@ try {
 }
 
 require_once('include/index_code.php');
+$page_title = 'CrimeWiki | World Crime Stories and Cases';
+$page_description = 'CrimeWiki publishes researched stories about crime, criminal cases, and the people and events behind them.';
+$canonical_url = crimewiki_url('/');
+$og_image_url = crimewiki_url('/assets/img/logo_gun.png');
 ?>
 <!doctype html>
-  <html class="no-js homepage" lang="">
+  <html class="no-js homepage" lang="en">
 
   <head>
     <meta charset="utf-8">
-    <title>crimeWiki | Wikipedea of crime</title>
-    <meta name="description" content="A Wikipedea of world-wide crime stories">
+    <title><?php echo htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8'); ?></title>
+    <meta name="description" content="<?php echo htmlspecialchars($page_description, ENT_QUOTES, 'UTF-8'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="canonical" href="<?php echo htmlspecialchars($canonical_url, ENT_QUOTES, 'UTF-8'); ?>">
 
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="../assets/img/logo_gun.png">
+    <meta property="og:title" content="<?php echo htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8'); ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<?php echo htmlspecialchars($canonical_url, ENT_QUOTES, 'UTF-8'); ?>">
+    <meta property="og:description" content="<?php echo htmlspecialchars($page_description, ENT_QUOTES, 'UTF-8'); ?>">
+    <meta property="og:site_name" content="CrimeWiki">
+    <meta property="og:image" content="<?php echo htmlspecialchars($og_image_url, ENT_QUOTES, 'UTF-8'); ?>">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="<?php echo htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8'); ?>">
+    <meta name="twitter:description" content="<?php echo htmlspecialchars($page_description, ENT_QUOTES, 'UTF-8'); ?>">
+    <meta name="twitter:image" content="<?php echo htmlspecialchars($og_image_url, ENT_QUOTES, 'UTF-8'); ?>">
 
-    <link rel="manifest" href="site.webmanifest">
-    <link rel="icon" type="image/x-icon" href="logo_single.svg">
-    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="manifest" href="/assets/site.webmanifest">
+    <link rel="icon" type="image/svg+xml" href="/assets/img/logo_single.svg">
+    <link rel="apple-touch-icon" href="/assets/img/logo_gun.png">
     <!-- Place favicon.ico in the root directory -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.css" >
-    <!-- Add the slick-theme.css if you want default styling -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
-    <!-- Add the slick-theme.css if you want default styling -->
+	    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.css" >
+	    <!-- Add the slick-theme.css if you want default styling -->
+	    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+	    <!-- Add the slick-theme.css if you want default styling -->
 	    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
 
 	    <?php require __DIR__ . '/include/inline_css.php'; ?>
@@ -78,11 +89,11 @@ require_once('include/index_code.php');
       <div class="container">
         
         <?php require_once("include/nav.php") ?>
-        <h1 class="main-title h3 font-weight-light w-100 text-center mt-2">A Wikipedea of world-wide crime</h1>
+        <h1 class="main-title h3 font-weight-light w-100 text-center mt-2">World Crime Stories and Cases</h1>
 	        <form action="" class="filters" method="GET">  
           <div class="row custom-container m-auto">
             <div class="col-lg-5 col-md-12 d-flex">
-              <h1 class="main-title h3 font-weight-light w-100 text-center text-lg-left">A Wikipedea of world-wide crime</h1>
+              <h1 class="main-title h3 font-weight-light w-100 text-center text-lg-left">World Crime Stories and Cases</h1>
             </div>
             <div class="col-sm-6 col-xs-12 offset-sm-3 d-md-none">
               <button type="button" class="go sort btn text-white d-flex align-items-center justify-content-center w-100">

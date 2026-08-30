@@ -267,6 +267,7 @@ htaccess rewrites being used:
     Options -MultiViews
     RewriteEngine On
     RewriteRule ^sitemap/sitemap-index.xml sitemap/sitemap-index.php    [QSA,B]
+    RewriteRule ^sitemap/sitemap(\d+).xml sitemap/sitemap.php?page=$1   [QSA,B]
     RewriteRule ^sitemap/sitemap(\d+).txt sitemap/sitemap.php?page=$1   [QSA,B]
     RewriteRule ^post/(\d+$) post.php?id=$1                             [QSA,B]
     RewriteRule ^post/([^/]+)/(\d+) post.php?title=$1&repeat=$2         [QSA,B]

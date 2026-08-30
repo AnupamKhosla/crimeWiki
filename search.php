@@ -4,22 +4,32 @@ require_once('include/functions.php');
 require_once('include/search_code.php')
 ?>
 <!doctype html>
-  <html class="no-js searchpage" lang="">
+  <?php
+  $page_title = 'Search Crime Stories | CrimeWiki';
+  $page_description = 'Search CrimeWiki for researched stories about crime, criminal cases, and crime history.';
+  $canonical_url = crimewiki_url('/search');
+  $og_image_url = crimewiki_url('/assets/img/logo_gun.png');
+  ?>
+  <html class="no-js searchpage" lang="en">
 
   <head>
     <meta charset="utf-8">
-    <title>Search Page | crimeWiki</title>
-    <meta name="description" content="A Wikipedea of world-wide crime">
+    <title><?php echo htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8'); ?></title>
+    <meta name="description" content="<?php echo htmlspecialchars($page_description, ENT_QUOTES, 'UTF-8'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="<?php echo htmlspecialchars($canonical_url, ENT_QUOTES, 'UTF-8'); ?>">
 
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="../assets/img/logo_gun.png">
+    <meta property="og:title" content="<?php echo htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8'); ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<?php echo htmlspecialchars($canonical_url, ENT_QUOTES, 'UTF-8'); ?>">
+    <meta property="og:description" content="<?php echo htmlspecialchars($page_description, ENT_QUOTES, 'UTF-8'); ?>">
+    <meta property="og:site_name" content="CrimeWiki">
+    <meta property="og:image" content="<?php echo htmlspecialchars($og_image_url, ENT_QUOTES, 'UTF-8'); ?>">
 
-    <link rel="manifest" href="site.webmanifest">
-    <link rel="icon" type="image/x-icon" href="logo_single.svg">
-    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="manifest" href="/assets/site.webmanifest">
+    <link rel="icon" type="image/svg+xml" href="/assets/img/logo_single.svg">
+    <link rel="apple-touch-icon" href="/assets/img/logo_gun.png">
     <!-- Place favicon.ico in the root directory -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.css" >
     <!-- Add the slick-theme.css if you want default styling -->

@@ -43,7 +43,8 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 		$tmp = new DOMDocument();
 		
 		while($row = $result->fetch_assoc()) { //first iteration only to nemove NULL table valuesand set $count				
-			$row_name = htmlspecialchars($row['title']);			
+			$row_raw_name = (string)$row['title'];
+			$row_name = htmlspecialchars($row_raw_name, ENT_QUOTES, 'UTF-8');
 			if(strlen($row_name) > 200) {
 				$row_name = substr($row_name, 0, 200) . "...";
 				
@@ -69,6 +70,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 			$datetime = date( 'd/m/Y H:i:s', htmlspecialchars($row["datetime"]) );
 			$row_image = image_path(htmlspecialchars($row["image"]));
 			$row_repeat = htmlspecialchars($row['titlerepeat'] ?? "");
+			$row_href = htmlspecialchars(post_path($row_raw_name, $row['titlerepeat']), ENT_QUOTES, 'UTF-8');
 			if(!empty($row_repeat)) {
 				$row_repeat = "/" . $row_repeat;
 			}
@@ -86,7 +88,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 										</div>																		          
 										$introduction            
 										<div class='d-flex justify-content-center mt-auto pt-3'>
-											<a href='post/" . rawurlencode($row_name) . "$row_repeat' class='btn btn-pm d-inline-flex align-items-center'>See Details</a>
+											<a href='$row_href' class='btn btn-pm d-inline-flex align-items-center'>See Details</a>
 										</div>	
 									</div> 
 								</div>";

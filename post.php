@@ -3,26 +3,39 @@ require_once("include/sessions.php");
 require_once('include/config.php');
 require_once('include/functions.php');
 require_once("include/post_code.php");
+$page_title = $title . ' | CrimeWiki';
+$page_description = seo_description($content2, 'Research and background on ' . $title . '.');
+$canonical_url = crimewiki_url(post_path($raw_title, $canonical_repeat));
+$og_image_url = image_path($image);
+if(!isAbsolute($og_image_url)) {
+  $og_image_url = crimewiki_url($og_image_url);
+}
 ?>
 
 <!doctype html>
-  <html class="no-js" lang="">
+  <html class="no-js" lang="en">
   <head>
     <meta charset="utf-8">
-    <title> <?php echo ($title); ?> | crimeWiki
-    </title>
+    <title><?php echo htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8'); ?></title>
     
-    <meta name="description" content=" <?php echo $title; ?> ">
+    <meta name="description" content="<?php echo htmlspecialchars($page_description, ENT_QUOTES, 'UTF-8'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="canonical" href="<?php echo htmlspecialchars($canonical_url, ENT_QUOTES, 'UTF-8'); ?>">
 
-    <meta property="og:title" content="<?php echo ($title); ?> | crimeWiki">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="<?php echo image_path($image) ?>">
+    <meta property="og:title" content="<?php echo htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8'); ?>">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="<?php echo htmlspecialchars($canonical_url, ENT_QUOTES, 'UTF-8'); ?>">
+    <meta property="og:description" content="<?php echo htmlspecialchars($page_description, ENT_QUOTES, 'UTF-8'); ?>">
+    <meta property="og:site_name" content="CrimeWiki">
+    <meta property="og:image" content="<?php echo htmlspecialchars($og_image_url, ENT_QUOTES, 'UTF-8'); ?>">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="<?php echo htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8'); ?>">
+    <meta name="twitter:description" content="<?php echo htmlspecialchars($page_description, ENT_QUOTES, 'UTF-8'); ?>">
+    <meta name="twitter:image" content="<?php echo htmlspecialchars($og_image_url, ENT_QUOTES, 'UTF-8'); ?>">
 
-    <link rel="manifest" href="site.webmanifest">
-    <link rel="apple-touch-icon" href="/logo_single.svg">
-    <link rel="icon" type="image/png" href="/assets/img/logo_single.svg">
+    <link rel="manifest" href="/assets/site.webmanifest">
+    <link rel="apple-touch-icon" href="/assets/img/logo_gun.png">
+    <link rel="icon" type="image/svg+xml" href="/assets/img/logo_single.svg">
     <!-- Place favicon.ico in the root directory -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.css" >
     <!-- Add the slick-theme.css if you want default styling -->    

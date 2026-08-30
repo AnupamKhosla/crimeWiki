@@ -115,5 +115,29 @@ function image_fallback_attr() {
 	return "data-default-src=\"{$default}\" onerror=\"this.onerror=null;this.classList.add('is-default-image');this.style.background='#d8dce2';this.src='{$default}';\"";
 }
 
+function crimewiki_url(string $path = '/'): string {
+	return 'https://crimewiki.site/' . ltrim($path, '/');
+}
+
+function post_path(string $title, $repeat = NULL): string {
+	$path = '/post/' . rawurlencode($title);
+	if($repeat !== NULL && $repeat !== '') {
+		$path .= '/' . rawurlencode((string)$repeat);
+	}
+	return $path;
+}
+
+function seo_description(string $html, string $fallback = ''): string {
+	$text = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+	$text = preg_replace('/\s+/u', ' ', trim($text));
+	if($text === '') {
+		$text = $fallback;
+	}
+	if(function_exists('mb_strlen') && mb_strlen($text, 'UTF-8') > 155) {
+		$text = rtrim(mb_substr($text, 0, 152, 'UTF-8')) . '...';
+	}
+	return $text;
+}
+
 
 ?>

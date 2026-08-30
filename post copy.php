@@ -20,7 +20,7 @@ require_once("include/post_code.php");
     <meta property="og:url" content="">
     <meta property="og:image" content="<?php echo image_path($image) ?>">
 
-    <link rel="manifest" href="site.webmanifest">
+    <link rel="manifest" href="/assets/site.webmanifest">
     <link rel="apple-touch-icon" href="/logo_single.svg">
     <link rel="icon" type="image/png" href="/assets/img/logo_single.svg">
     <!-- Place favicon.ico in the root directory -->
