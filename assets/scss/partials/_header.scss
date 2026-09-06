@@ -88,11 +88,14 @@
 		}
 		.homepage-carousel {
 			position: relative;
-			display: block;
+			display: flex;
+			align-items: center;
+			gap: 15px;
 		}
 		.carousel-viewport {
-			width: 100%;
+			min-width: 0;
 			overflow: hidden;
+			flex: 1 1 auto;
 		}
 		.carousel-track {
 			display: flex;
@@ -109,9 +112,7 @@
 			height: 256px;	
 		}
 		.carousel-arrow {
-			position: absolute;
-			top: 50%;
-			transform: translateY(-50%);
+			position: relative;
 			z-index: 1;
 			width: 45px;
 			height: 45px;
@@ -127,12 +128,6 @@
 			color: var(--theme-pm-dark);
 			font-size: 1.25rem;
 		}		
-		.carousel-prev {
-			left: -22.5px;
-		}
-		.carousel-next {
-			right: -22.5px;
-		}
 		.carousel-arrow:disabled {
 			cursor: default;
 			opacity: .45;
@@ -269,6 +264,9 @@
 				height: 264px; 
 			}
 			.carousel-arrow {
+				position: absolute;
+				top: 50%;
+				transform: translateY(-50%);
 				width: 35px;
 				height: 35px;
 				flex-basis: 35px;

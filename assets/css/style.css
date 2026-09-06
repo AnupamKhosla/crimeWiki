@@ -434,12 +434,15 @@ ul ul {
 
 .hero .slider .homepage-carousel {
   position: relative;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .hero .slider .carousel-viewport {
-  width: 100%;
+  min-width: 0;
   overflow: hidden;
+  flex: 1 1 auto;
 }
 
 .hero .slider .carousel-track {
@@ -460,9 +463,7 @@ ul ul {
 }
 
 .hero .slider .carousel-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  position: relative;
   z-index: 1;
   width: 45px;
   height: 45px;
@@ -477,14 +478,6 @@ ul ul {
   align-items: center;
   color: var(--theme-pm-dark);
   font-size: 1.25rem;
-}
-
-.hero .slider .carousel-prev {
-  left: -22.5px;
-}
-
-.hero .slider .carousel-next {
-  right: -22.5px;
 }
 
 .hero .slider .carousel-arrow:disabled {
@@ -613,6 +606,9 @@ ul ul {
     height: 264px;
   }
   .hero .slider .carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     width: 35px;
     height: 35px;
     flex-basis: 35px;
@@ -1221,9 +1217,9 @@ footer .copyright .owner {
 
 
 /* CrimeWiki critical select fallback */
-.filters select { appearance: none; -webkit-appearance: none; width: 100%; height: 38px; min-height: 38px; padding: 0 38px 0 10px; border: 0; border-radius: 50px; background-color: rgba(44,44,44,0.3); background-image: url("../icons/dropdown.svg"); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px auto; color: #fff; font-size: 0.875rem; line-height: 38px; text-align: center; text-align-last: center; }
+.filters select { appearance: none; -webkit-appearance: none; width: 100%; height: 38px; min-height: 38px; box-sizing: border-box; padding: 0 38px; border: 0; border-radius: 50px; background-color: rgba(44,44,44,0.3); background-image: url("../icons/dropdown.svg"); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px auto; color: #fff; font-size: 0.875rem; line-height: 38px; text-align: center; text-align-last: center; }
 .filters select:focus { outline: none; box-shadow: 0 0 0 0.2rem var(--theme-pm-x-light); }
-.filters select option { background: #fff; color: #222; }
+.filters select option { background: #fff; color: #222; text-align: center; }
 .filters .selectric-wrapper { height: 38px; min-height: 38px; }
 .filters .selectric { height: 38px; min-height: 38px; }
 .post .post-pic { opacity: 0; transition: opacity .3s ease; }
