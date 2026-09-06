@@ -192,12 +192,23 @@ ul ul {
 		background-color: var(--white-bg);
 		border-color: var(--white-bg);
 	}
-	.post-pic {				
+	.post-pic {
 		object-fit: cover;
 		object-position: center top;
 		border-radius: 5px;
 		background: #d8dce2 url('https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/ajax-loader.gif') center center no-repeat;
+		opacity: 0;
+		transition: opacity .3s ease;
 	}
+	.post-pic.image-ready,
+	.post-pic.is-default-image {
+		opacity: 1;
+	}
+}
+
+html.no-js .slider .post-pic,
+html.no-js .post .post-pic {
+	opacity: 1;
 }
 
 .post .post-pic {
@@ -281,6 +292,8 @@ ul ul {
 	color: #fff;
 	font-size: 0.875rem;
 	line-height: 38px;
+	text-align: center;
+	text-align-last: center;
 }
 
 .filters select:focus {

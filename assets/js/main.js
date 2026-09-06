@@ -62,11 +62,24 @@ $(document).ready(function(){
       $img.css("background", isDefaultImage ? "#d8dce2" : "transparent");
     }
 
+    function markImageReady(img) {
+      var $img = $(img);
+      var lazySrc = img.getAttribute("data-lazy");
+      var currentSrc = img.currentSrc || img.src || "";
+
+      // Slick starts lazy images with a 1x1 data placeholder. Wait for the
+      // real image before fading it into view.
+      if (!lazySrc || currentSrc.indexOf("data:image") !== 0) {
+        $img.addClass("image-ready");
+      }
+    }
+
     $(".slider .post-pic, .post .post-pic").on("load error", function(){      
       if($(this).hasClass("slick-lazyload-error")) {
         $(this).addClass("is-default-image");
       }
 
+      markImageReady(this);
       syncImagePlaceholder(this);
     });
 
@@ -83,6 +96,7 @@ $(document).ready(function(){
 
       if(targetImage) {
         $(targetImage).addClass("is-default-image");
+        $(targetImage).addClass("image-ready");
         targetImage.style.background = "#d8dce2";
         syncImagePlaceholder(targetImage);
       }
@@ -92,6 +106,9 @@ $(document).ready(function(){
       var defaultSrc = this.getAttribute("data-default-src") || "";
       if(defaultSrc && (this.currentSrc || this.src || "").indexOf(defaultSrc) !== -1) {
         $(this).addClass("is-default-image");
+      }
+      if (!this.getAttribute("data-lazy") && this.complete && this.naturalWidth > 0) {
+        $(this).addClass("image-ready");
       }
       if (this.complete || this.complete === undefined){ this.src = this.src; } //needed for potential cached images
     });
