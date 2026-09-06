@@ -184,7 +184,10 @@ ul ul {
 .slider .card-body, .post .card-body {
   position: absolute;
   bottom: 0;
-  width: 100%;
+  left: 0;
+  right: 0;
+  width: auto;
+  box-sizing: border-box;
   background-color: rgba(0, 0, 0, 0.75);
   height: 45px;
   display: flex;
