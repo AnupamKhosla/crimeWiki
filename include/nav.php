@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark align-items-start">
   <a class="navbar-brand" href="//<?php echo $_SERVER["SERVER_NAME"]; ?> ">
-    <img src="/assets/img/logo_single.svg" class="logo img-fluid" alt="Company Logo">
+    <img src="/assets/img/logo_single.svg" width="1280" height="694" class="logo img-fluid" alt="Company Logo">
   </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><path stroke="rgba(255, 255, 255, 1)" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"/></svg>

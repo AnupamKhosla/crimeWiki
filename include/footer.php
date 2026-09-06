@@ -3,7 +3,7 @@
         <div class="row row-offset">
           <div class="col-lg-3 order-1 order-lg-0 custom-offset">
             <a class="d-block logo-link" href="//<?php echo $_SERVER["SERVER_NAME"]?> ">
-              <img src="/assets/img/logo_single.svg" class="logo img-fluid" alt="Company Logo">
+              <img src="/assets/img/logo_single.svg" width="1280" height="694" class="logo img-fluid" alt="Company Logo">
             </a>
             <h1 class="font-weight-normal logo-text text-center">The CrimeWiki</h1>
           </div>

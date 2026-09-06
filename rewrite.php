@@ -32,16 +32,16 @@ if (!empty($_POST["ajax_save"])) {
 }
 
 $batch = [];
-$result = $conn->query("SELECT id, title, cleansed FROM posts WHERE cleansed = 0 AND id > 2 AND wikilink IS NOT NULL AND wikilink <> '' ORDER BY id LIMIT 10");
+$result = $conn->query("SELECT id, title, cleansed FROM posts WHERE id > 2 AND COALESCE(cleansed, 0) = 0 ORDER BY id LIMIT 10");
 if ($result) {
     while ($row = $result->fetch_assoc()) {
         $batch[] = $row;
     }
 }
 
-$total_stmt = $conn->query("SELECT COUNT(*) as total FROM posts");
+$total_stmt = $conn->query("SELECT COUNT(*) as total FROM posts WHERE id > 2");
 $total = $total_stmt->fetch_assoc()["total"];
-$cleansed_stmt = $conn->query("SELECT COUNT(*) as done FROM posts WHERE cleansed = 1");
+$cleansed_stmt = $conn->query("SELECT COUNT(*) as done FROM posts WHERE id > 2 AND cleansed = 1");
 $done = $cleansed_stmt->fetch_assoc()["done"];
 
 $has_key = !empty($_SESSION["qwen_api_key"]);

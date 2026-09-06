@@ -7,7 +7,7 @@
 <nav class="col-lg-2 sidebar p-0 navbar d-block navbar-expand-lg">
   <div class="logo-grand-parent d-flex justify-content-between justify-content-lg-center w-auto">
     <a class="logo-container navbar-brand" href="/dashboard.php">
-      <img class="img-fluid logo" src="assets/img/logo_single.svg" alt="logo">
+      <img class="img-fluid logo" src="assets/img/logo_single.svg" width="1280" height="694" alt="logo">
     </a>
      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><path stroke="rgba(255, 255, 255, 1)" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"/></svg>

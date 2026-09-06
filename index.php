@@ -144,11 +144,11 @@ $og_image_url = crimewiki_url('/assets/img/logo_gun.png');
       <div class="container">
         <div class="row align-items-center">
           <div class="col-lg-3 offset-lg-1">
-            <img class="logo-double img-fluid d-none d-lg-block m-auto" src="../assets/img/logo_gun.png" alt="Logo double gun">
+            <img class="logo-double img-fluid d-none d-lg-block m-auto" src="../assets/img/logo_gun.png" width="317" height="317" alt="Logo double gun">
           </div>
           <div class="col-lg-7 about-text pl-lg-5">
             <h1 class="logo-text text-center font-weight-normal">The CrimeWiki</h1>
-            <img class="logo-double img-fluid d-block d-lg-none m-auto" src="../assets/img/logo_gun.png" alt="Logo double gun">            
+            <img class="logo-double img-fluid d-block d-lg-none m-auto" src="../assets/img/logo_gun.png" width="317" height="317" alt="Logo double gun">
             <?php echo $blog_about_text; ?>             
             <div class="d-flex justify-content-center mt-auto">
               <a href="https://github.com/AnupamKhosla/crimeWiki" type="button" class="btn btn-pm d-inline-flex align-items-center cta mx-auto">Github Repo</a>       
