@@ -71,7 +71,7 @@ $og_image_url = crimewiki_url('/assets/img/logo_gun.png');
 	          if (!track || !slides.length || !previous || !next) return;
 
 	          function visibleCount() {
-	            var width = root.getBoundingClientRect().width;
+	            var width = window.innerWidth || document.documentElement.clientWidth;
             if (width < 576) return 1;
             if (width < 992) return 2;
             if (width < 1200) return 3;

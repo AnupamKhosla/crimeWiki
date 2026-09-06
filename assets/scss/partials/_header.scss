@@ -88,14 +88,11 @@
 		}
 		.homepage-carousel {
 			position: relative;
-			display: flex;
-			align-items: center;
-			gap: 15px;
+			display: block;
 		}
 		.carousel-viewport {
-			min-width: 0;
+			width: 100%;
 			overflow: hidden;
-			flex: 1 1 auto;
 		}
 		.carousel-track {
 			display: flex;
@@ -112,7 +109,9 @@
 			height: 256px;	
 		}
 		.carousel-arrow {
-			position: relative;
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
 			z-index: 1;
 			width: 45px;
 			height: 45px;
@@ -128,6 +127,24 @@
 			color: var(--theme-pm-dark);
 			font-size: 1.25rem;
 		}		
+		.carousel-arrow::before {
+			content: url("../icons/next.svg");
+			line-height: normal;
+			font-size: 0;
+			transition: opacity .3s ease;
+		}
+		.carousel-arrow span {
+			display: none;
+		}
+		.carousel-prev {
+			left: -68px;
+		}
+		.carousel-next {
+			right: -68px;
+		}
+		.carousel-prev::before {
+			transform: scaleX(-1);
+		}
 		.carousel-arrow:disabled {
 			cursor: default;
 			opacity: .45;
@@ -264,19 +281,19 @@
 				height: 264px; 
 			}
 			.carousel-arrow {
-				position: absolute;
-				top: 50%;
-				transform: translateY(-50%);
 				width: 35px;
 				height: 35px;
 				flex-basis: 35px;
 				border: 3px solid var(--theme-pm-x-dark); 
 			}
 			.carousel-prev {
-				left: -17.5px;
+				left: -43px;
 			}
 			.carousel-next {
-				right: -17.5px;
+				right: -43px;
+			}
+			.carousel-arrow::before {
+				content: url("../icons/next_mobile.svg");
 			}
 		}
 	}
@@ -325,6 +342,12 @@
 			}
 			.post-pic {
 				height: calc(133.333333vw - 93.333333px); 
+			}
+			.carousel-prev {
+				left: -7.5px;
+			}
+			.carousel-next {
+				right: -7.5px;
 			}
 		}
 	}
