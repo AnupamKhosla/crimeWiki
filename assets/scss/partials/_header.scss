@@ -84,83 +84,57 @@
 			margin-top: 30px;			
 			margin-bottom: 60px;
 		}
-		.slick {
-			margin: 0 -7.5px;
-			opacity: 0;
-			visibility: hidden;
-			transition: opacity .3s ease, visibility 0s linear .3s;
+		.homepage-carousel {
+			position: relative;
+			display: flex;
+			align-items: center;
+			gap: 15px;
 		}
-		.slick.slick-initialized {
-			opacity: 1;
-			visibility: visible;
-			transition-delay: 0s;
+		.carousel-viewport {
+			min-width: 0;
+			overflow: hidden;
+			flex: 1 1 auto;
+		}
+		.carousel-track {
+			display: flex;
+			width: 100%;
+			transform: translate3d(0, 0, 0);
+			transition: transform .3s ease;
 		}
 		.slide {
-			width: 217px;
-			float: left;
+			width: 20%;
+			min-width: 20%;
+			padding: 0 7.5px;
 		}
 		.post-pic {
 			height: 256px;	
 		}
-		.slide:not(.slick-slide):nth-child(n+6) {
-			display: none;
-		}
-
-		.slick-slide {
-			opacity: .3;
-			transition: opacity .3s ease-in-out;
-		}
-		.slick-slide .card {
-			margin: 0 7.5px;
-		}
-		.slick-current {
-			opacity: 1;
-			transition: opacity .3s ease-in-out;
-		}
-		.slick-active{
-			opacity: 1;
-			transition: opacity .3s ease-in-out;
-		}
-		
-		.slick-arrow {
+		.carousel-arrow {
+			position: relative;
+			z-index: 1;
 			width: 45px;
 			height: 45px;
+			flex: 0 0 45px;
+			padding: 0;
+			border: 0;
 			border-radius: 5px;
 			background-color: var(--white-bg-dark);
 			transition: background-color .3s ease;
 			display: flex;
 			justify-content: center;
 			align-items: center;
+			color: var(--theme-pm-dark);
+			font-size: 1.25rem;
 		}		
-		.slick-arrow:before {
-			content: url("../icons/next.svg");
-			line-height: normal;
-			font-size: 0;
-			font-family: unset;
-			margin-left: 2px;
-			transition: opacity .3s ease;
+		.carousel-arrow:disabled {
+			cursor: default;
+			opacity: .45;
 		}
-		.slick-next {
-			right: -68px;
+		.carousel-arrow:not(:disabled):hover,
+		.carousel-arrow:not(:disabled):focus {
+			background-color: white;
 		}
-		.slick-prev {
-			left: -68px;
-		}
-		.slick-prev:before {
-			display: block;
-			transform: scaleX(-1);
-			margin-left: -1px;
-		}
-		.slick-arrow:not(.slick-disabled):hover,
-		.slick-arrow:not(.slick-disabled):focus {
-			background-color: white; 
-		}
-	}	
-}
-
-html.no-js .hero .slider .slick {
-	opacity: 1;
-	visibility: visible;
+	}
 }
 
 .searchpage {
@@ -211,11 +185,8 @@ html.no-js .hero .slider .slick {
 	.hero {
 		.slider{
 			.slide {
-				width: 233.75px;
-
-			}
-			.slide:not(.slick-slide):nth-child(n+5) {
-				display: none;
+				width: 25%;
+				min-width: 25%;
 			}
 			.post-pic {
 				height: 279px;
@@ -231,11 +202,8 @@ html.no-js .hero .slider .slick {
 		}
 		.slider{
 			.slide {
-				width: 261.5px; 
-
-			}
-			.slide:not(.slick-slide):nth-child(n+4) {
-				display: none;
+				width: 33.333333%;
+				min-width: 33.333333%;
 			}
 			.post-pic {
 				height: 316px;
@@ -267,11 +235,8 @@ html.no-js .hero .slider .slick {
         /*Using rems to match bootstrap marin on h1*/
       }
       .slide {
-      	width: 292.5px;
-
-      }
-      .slide:not(.slick-slide):nth-child(n+3) {
-      	display: none;
+		width: 50%;
+		min-width: 50%;
       }
       .post-pic {
       	height: 357px;
@@ -290,23 +255,17 @@ html.no-js .hero .slider .slick {
 				margin-left: auto;
 			}
 			.slide {
-				width: 222.5px;
-
+				width: 50%;
+				min-width: 50%;
 			}      
 			.post-pic {
 				height: 264px; 
 			}
-			.slick-arrow {
+			.carousel-arrow {
 				width: 35px;
 				height: 35px;
-				right: -43px;
+				flex-basis: 35px;
 				border: 3px solid var(--theme-pm-x-dark); 
-			}
-			.slick-prev {
-				left: -43px;
-			}
-			.slick-arrow:before {
-				content: url("../icons/next_mobile.svg");
 			}
 		}
 	}
@@ -350,20 +309,11 @@ html.no-js .hero .slider .slick {
 				margin-bottom: 30px;       
 			}
 			.slide {
-				width: calc(100vw - 45px);
-			}
-			.slide:not(.slick-slide):nth-child(n+2) {
-				display: none;
+				width: 100%;
+				min-width: 100%;
 			}
 			.post-pic {
 				height: calc(133.333333vw - 93.333333px); 
-			}
-			.slick-arrow {
-				right: -7.5px;
-			}
-			.slick-prev {
-				left: -7.5px;
-				z-index: 1;
 			}
 		}
 	}
@@ -376,10 +326,8 @@ html.no-js .hero .slider .slick {
 				width: 280px;
 			}
 			.slide {
-				width: 360px;
-			}
-			.slide:not(.slick-slide):nth-child(n+5) {
-				display: none;
+				width: 100%;
+				min-width: 100%;
 			}
 			.post-pic {
 				height: 317px;

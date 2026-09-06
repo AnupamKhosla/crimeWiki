@@ -58,12 +58,60 @@ $og_image_url = crimewiki_url('/assets/img/logo_gun.png');
     <link rel="apple-touch-icon" href="/assets/img/logo_gun.png">
     <!-- Place favicon.ico in the root directory -->
 	    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.css" >
-	    <!-- Add the slick-theme.css if you want default styling -->
-	    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
-	    <!-- Add the slick-theme.css if you want default styling -->
-	    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
-
 	    <?php require __DIR__ . '/include/inline_css.php'; ?>
+	    <script>
+	      (function () {
+	        function initCarousel(root) {
+	          var track = root.querySelector('[data-carousel-track]');
+	          var slides = Array.prototype.slice.call(root.querySelectorAll('[data-carousel-slide]'));
+	          var previous = root.querySelector('[data-carousel-prev]');
+	          var next = root.querySelector('[data-carousel-next]');
+	          var page = 0;
+
+	          if (!track || !slides.length || !previous || !next) return;
+
+	          function visibleCount() {
+	            var width = root.getBoundingClientRect().width;
+            if (width < 576) return 1;
+            if (width < 992) return 2;
+            if (width < 1200) return 3;
+            if (width < 1400) return 4;
+            return 5;
+          }
+
+	          function render() {
+            var count = visibleCount();
+            var pages = Math.max(1, Math.ceil(slides.length / count));
+            page = Math.min(page, pages - 1);
+            track.style.transform = 'translate3d(' + (-page * 100) + '%, 0, 0)';
+            previous.disabled = page === 0;
+            next.disabled = page === pages - 1;
+            previous.setAttribute('aria-disabled', previous.disabled ? 'true' : 'false');
+            next.setAttribute('aria-disabled', next.disabled ? 'true' : 'false');
+            slides.forEach(function (slide, index) {
+              var active = index >= page * count && index < (page + 1) * count;
+              slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+              slide.querySelectorAll('a').forEach(function (link) {
+                link.tabIndex = active ? 0 : -1;
+              });
+            });
+          }
+
+          previous.addEventListener('click', function () { if (page > 0) { page--; render(); } });
+          next.addEventListener('click', function () { if (page < Math.ceil(slides.length / visibleCount()) - 1) { page++; render(); } });
+          window.addEventListener('resize', render, { passive: true });
+          root.classList.add('carousel-enhanced');
+          render();
+        }
+
+        function boot() {
+          document.querySelectorAll('[data-carousel]').forEach(initCarousel);
+        }
+
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+        else boot();
+      }());
+    </script>
 	    <meta name="theme-color" content="#E92222">
     
     <!-- Global site tag (gtag.js) - Google Ads: 10871239283 -->
@@ -89,7 +137,6 @@ $og_image_url = crimewiki_url('/assets/img/logo_gun.png');
       <div class="container">
         
         <?php require_once("include/nav.php") ?>
-        <h1 class="main-title h3 font-weight-light w-100 text-center mt-2">World Crime Stories and Cases</h1>
 	        <form action="" class="filters" method="GET">  
           <div class="row custom-container m-auto">
             <div class="col-lg-5 col-md-12 d-flex">
@@ -131,9 +178,19 @@ $og_image_url = crimewiki_url('/assets/img/logo_gun.png');
         </form>
         <div class="slider row ">
           <div class="col-md-10 offset-md-1">
-            <div class="slick">                       
+            <div class="homepage-carousel" data-carousel aria-label="Featured crime stories">
+              <button type="button" class="carousel-arrow carousel-prev" data-carousel-prev aria-label="Previous stories" disabled>
+                <span aria-hidden="true">&#10094;</span>
+              </button>
+              <div class="carousel-viewport">
+                <div class="carousel-track" data-carousel-track>
               <?php echo $slides; ?>
-            </div>        
+                </div>
+              </div>
+              <button type="button" class="carousel-arrow carousel-next" data-carousel-next aria-label="Next stories">
+                <span aria-hidden="true">&#10095;</span>
+              </button>
+            </div>
           </div>
         </div>
         
@@ -164,8 +221,7 @@ $og_image_url = crimewiki_url('/assets/img/logo_gun.png');
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.js"></script>
     <script src="../assets/js/jquery.selectric.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-    <script src="../assets/js/main.js?v=b30893e"></script>
+    <script src="../assets/js/main.js?v=native-carousel-20260906"></script>
 
     <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
     <script>

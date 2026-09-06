@@ -1,7 +1,5 @@
 <?php 
 $conn = make_db_connection();
-$sliderPlaceholderSrc = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3Crect width='1' height='1' fill='%23d8dce2'/%3E%3C/svg%3E";
-
 //slider section
 $selectedCategory = trim((string)($_GET["category"] ?? "Criminals"));
 $selectedFilter = trim((string)($_GET["filter"] ?? ""));
@@ -96,18 +94,17 @@ $slides = "";
 				$title = htmlspecialchars($rawTitle, ENT_QUOTES, 'UTF-8');
 				$rawImage = trim((string)($row['image'] ?? ""));
 				$image = htmlspecialchars(image_path($rawImage));
-				$imageAttrs = "";
+				$imageAttrs = image_fallback_attr();
 				$imageClasses = "card-img-top post-pic";
 				if($rawImage === "" || $image === htmlspecialchars(default_image_path(), ENT_QUOTES, 'UTF-8')) {
 					$imageClasses .= " is-default-image";
-					$imageAttrs = "data-default-src=\"" . htmlspecialchars(default_image_path(), ENT_QUOTES, 'UTF-8') . "\"";
 				}
 				$titleRepeat = $row['titlerepeat'];
 				$postHref = htmlspecialchars(post_path($rawTitle, $titleRepeat), ENT_QUOTES, 'UTF-8');
 				$slides .= <<<EOT
-											<div class="slide">
+										<div class="slide carousel-slide" data-carousel-slide>
 								        <div class="card">
-								          <img data-lazy="$image" $imageAttrs class="$imageClasses" alt="profile pic" src="$sliderPlaceholderSrc">
+								          <img $imageAttrs class="$imageClasses" alt="profile pic" src="$image" loading="lazy" decoding="async">
 								          <div class="card-body">                
 								            <a href="$postHref" class="">$title</a>
 								          </div>

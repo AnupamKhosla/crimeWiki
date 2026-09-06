@@ -42,7 +42,7 @@ require_once("include/dashboard_code.php");
               <div class="card text-white bg-success">
                 <div class="card-header"> Database response </div>    
                   <div class="card-body">   
-                    <?php echo $_SESSION["Response"]["about_text"] . "&#10;" . $_SESSION["Response"]["month_post"]; ?>
+                    <?php echo ($_SESSION["Response"]["about_text"] ?? '') . "&#10;" . ($_SESSION["Response"]["month_post"] ?? '') . ($_SESSION["Response"]["repair_links"] ?? ''); ?>
                   </div>
                 </div>
                 <hr>              
@@ -87,6 +87,15 @@ require_once("include/dashboard_code.php");
                 </div>
               </div>
             </form> 
+            <section class="card border-warning my-4">
+              <div class="card-body">
+                <h2 class="h6 text-pm">Repair rewrite links</h2>
+                <p class="mb-3">Adds the approved research links to five pending posts. This changes only their <code>wikilink</code> fields; titles and content stay unchanged.</p>
+                <form method="post" action="<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES, 'UTF-8'); ?>">
+                  <button type="submit" name="identifier" value="repair_rewrite_links" class="btn btn-pm" onclick="return confirm('Repair only the five approved wikilink fields?');">Repair five rewrite links</button>
+                </form>
+              </div>
+            </section>
             <div class="modal fade" id="modal_sure" tabindex="-1" aria-labelledby="sure_heading" aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
@@ -134,7 +143,7 @@ require_once("include/dashboard_code.php");
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js" integrity="sha512-n/4gHW3atM3QqRcbCn6ewmpxcLAHGaDjpEBu4xZd47N0W2oQ+6q7oc3PXstrJYXcbNU1OHdQ1T7pAP+gi5Yu8g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.1/js/bootstrap.bundle.js" integrity="sha512-pn67a0tE9Gl7wyvnZRE8MvKmVDtXYtc/gMaVqNrg5JdlbxSQTI5oXR+Px45Kwloegn/JSPJnY4fR39ml20pI6w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="assets/js/main.js?v=b30893e"></script>
+    <script src="assets/js/main.js?v=native-carousel-20260906"></script>
     <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
     <script>
       window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;

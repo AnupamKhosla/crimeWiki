@@ -1,12 +1,52 @@
 <?php 
 if(!isset($_SESSION["Response"])) {
-	$_SESSION["Response"] = array("month_post" => '', "about_text" => '', "display" => "d-none");
+	$_SESSION["Response"] = array("month_post" => '', "about_text" => '', "repair_links" => '', "display" => "d-none");
 }
 function reset_response() {	
 	$_SESSION["Response"] = NULL;	
 }
 
 $conn = make_db_connection();	
+if(isset($_POST["identifier"]) && $_POST["identifier"] == "repair_rewrite_links") {
+	$repairRows = array(
+		6 => array("1965 Highway 101 sniper attack", "en.wikipedia.org/wiki/1965_Highway_101_sniper_attack"),
+		7 => array("2001 Greyhound bus attack", "en.wikipedia.org/wiki/2001_Greyhound_bus_attack"),
+		8 => array("2008 Skagit County shootings", "en.wikipedia.org/wiki/2008_Skagit_County_shootings"),
+		9 => array("2009 Collier Township shooting", "en.wikipedia.org/wiki/2009_Collier_Township_shooting"),
+		1104 => array("Lawrence Bishnoi", "en.wikipedia.org/wiki/Lawrence_Bishnoi")
+	);
+
+	try {
+		$conn->begin_transaction();
+		$verify = $conn->prepare("SELECT id FROM posts WHERE id=? AND title=? LIMIT 1");
+		$stmt = $conn->prepare("UPDATE posts SET wikilink=? WHERE id=? AND title=?");
+		$updated = array();
+		foreach($repairRows as $postId => $repairRow) {
+			$verify->bind_param("is", $postId, $repairRow[0]);
+			$verify->execute();
+			if($verify->get_result()->num_rows !== 1) {
+				throw new RuntimeException("Approved post {$postId} was not found with its expected title");
+			}
+			$stmt->bind_param("sis", $repairRow[1], $postId, $repairRow[0]);
+			$stmt->execute();
+			if($stmt->affected_rows !== 1 && $stmt->affected_rows !== 0) {
+				throw new RuntimeException("Unexpected update result for post {$postId}");
+			}
+			$updated[] = htmlspecialchars($repairRow[0], ENT_QUOTES, 'UTF-8');
+		}
+		$conn->commit();
+		$_SESSION["Response"]["display"] = "";
+		$_SESSION["Response"]["repair_links"] = "<p>Rewrite links repaired for " . count($updated) . " approved posts. Content and titles were not changed.</p>";
+	}
+	catch(Throwable $error) {
+		$conn->rollback();
+		$_SESSION["Response"]["display"] = "";
+		$_SESSION["Response"]["repair_links"] = "<p>Rewrite link repair failed. No changes were committed.</p>";
+	}
+	header("Location: {$_SERVER['REQUEST_URI']}", true, 303);
+	exit();
+}
+
 if(isset($_POST["identifier"]) && $_POST["identifier"] == "dashboard_form") { 	
 	if( isset($_POST["check_about_text"]) && $_POST["check_about_text"]=="on" ) { //insert db for about text
 		$about_text = str_replace( array("\r\n", "\n", "\t", "\r"), '', trim($_POST["about"]) );
