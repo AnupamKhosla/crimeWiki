@@ -2,11 +2,6 @@
 // live-marker: webhook-fix-2026-03-22
 $(document).ready(function(){
 
-  //select form plugin
-  if($("html").hasClass("homepage") || $("html").hasClass("searchpage")) {
-    $("select").selectric();
-  }
-
   //Keep image placeholders stable while native images load.
   !function(){
     function syncImagePlaceholder(img) {

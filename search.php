@@ -51,7 +51,7 @@ require_once('include/search_code.php')
         
         <?php require_once("include/nav.php") ?>
         <h1 class="main-title h3 font-weight-light w-100 text-center mt-2">A Wikipedea of world-wide crime</h1>
-        <form action="" class="filters mb-md-3" method="GET">  
+        <form action="/search" class="filters mb-md-3" method="GET">
           <div class="row custom-container m-auto">
             <div class="col-lg-5 col-md-12 d-flex">
               <div class="input-group mb-3">
@@ -121,7 +121,6 @@ require_once('include/search_code.php')
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.js"></script>
-    <script src="../assets/js/jquery.selectric.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <script src="../assets/js/main.js?v=native-carousel-20260906"></script>
 

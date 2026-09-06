@@ -421,8 +421,10 @@ ul ul {
 }
 
 .hero .filters .arrow-right {
+  display: block;
   width: 15px;
-  height: auto;
+  height: 15px;
+  flex: 0 0 15px;
 }
 
 .hero .slider {
@@ -432,15 +434,12 @@ ul ul {
 
 .hero .slider .homepage-carousel {
   position: relative;
-  display: flex;
-  align-items: center;
-  gap: 15px;
+  display: block;
 }
 
 .hero .slider .carousel-viewport {
-  min-width: 0;
+  width: 100%;
   overflow: hidden;
-  flex: 1 1 auto;
 }
 
 .hero .slider .carousel-track {
@@ -461,7 +460,9 @@ ul ul {
 }
 
 .hero .slider .carousel-arrow {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 1;
   width: 45px;
   height: 45px;
@@ -476,6 +477,14 @@ ul ul {
   align-items: center;
   color: var(--theme-pm-dark);
   font-size: 1.25rem;
+}
+
+.hero .slider .carousel-prev {
+  left: -22.5px;
+}
+
+.hero .slider .carousel-next {
+  right: -22.5px;
 }
 
 .hero .slider .carousel-arrow:disabled {
@@ -608,6 +617,12 @@ ul ul {
     height: 35px;
     flex-basis: 35px;
     border: 3px solid var(--theme-pm-x-dark);
+  }
+  .hero .slider .carousel-prev {
+    left: -17.5px;
+  }
+  .hero .slider .carousel-next {
+    right: -17.5px;
   }
   .searchpage .filters {
     margin-bottom: 30px;

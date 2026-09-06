@@ -137,7 +137,7 @@ $og_image_url = crimewiki_url('/assets/img/logo_gun.png');
       <div class="container">
         
         <?php require_once("include/nav.php") ?>
-	        <form action="" class="filters" method="GET">  
+	        <form action="/search" class="filters" method="GET">
           <div class="row custom-container m-auto">
             <div class="col-lg-5 col-md-12 d-flex">
               <h1 class="main-title h3 font-weight-light w-100 text-center text-lg-left">World Crime Stories and Cases</h1>
@@ -167,7 +167,7 @@ $og_image_url = crimewiki_url('/assets/img/logo_gun.png');
 	                  </select>
 	                </div>
                 <div class="col-sm-6 offset-sm-3 offset-md-0 col-lg-2 col-md-2 pl-lg-0 mt-3 mt-md-0">
-                  <button class="go btn text-white d-flex align-items-center justify-content-center w-100">
+                  <button type="submit" class="go btn text-white d-flex align-items-center justify-content-center w-100">
                     Go 
                     <img class="ml-2 arrow-right" src="../assets/icons/arrow_right.svg" alt="arrow right icon">
                   </button>
@@ -220,7 +220,6 @@ $og_image_url = crimewiki_url('/assets/img/logo_gun.png');
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.js"></script>
-    <script src="../assets/js/jquery.selectric.js"></script>
     <script src="../assets/js/main.js?v=native-carousel-20260906"></script>
 
     <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
