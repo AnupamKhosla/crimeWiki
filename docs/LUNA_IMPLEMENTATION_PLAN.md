@@ -196,10 +196,10 @@ Required checks:
 
 1. The five wrappers occur once, in the required order.
 2. `intro-data` has exactly five `<tr><th>…</th><td>…</td></tr>` rows.
-3. `details` has 6–12 bare table rows; `sources` has 3–6 valid `https?` links; `related` is empty.
+3. `details` has 6–12 bare table rows; `sources` has every relevant, actually used valid `https?` link, with no artificial minimum or maximum; `related` is empty.
 4. `content` begins with an `Introduction` `<h2>` and has 4–8 sections separated by `<hr>`.
 5. Strip/reject executable or layout-breaking markup: `script`, `style`, `iframe`, forms, SVG, event attributes, unsafe URL schemes, images, inline CSS, and Wikipedia-only reference/UI classes listed in `include/qwen_contract.txt`.
-6. Reject Wikipedia URLs in generated content and source list, except where the internal, non-public audit metadata identifies the topic locator.
+6. Reject Wikipedia URLs in generated content. Permit a clearly labelled Wikipedia link in the displayed source list only when no better usable source can be verified; never use it to justify copied wording or as an inline content link.
 7. Require every displayed source URL to parse as HTTP(S), have a sensible host, and be distinct. A failed network check should produce `needs_review`, never silently invent a source.
 8. Compare generated visible text with the pre-rewrite post text locally. Reject unusually long exact runs and high similarity; do not send the old content back to the model. Keep the threshold configurable and record the score rather than claiming a mathematical guarantee of originality.
 9. Validate required facts and source titles by a human sample before bulk publication. Models can invent plausible-looking citations.

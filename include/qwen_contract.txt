@@ -30,7 +30,7 @@ Return ONLY the five blocks below, in this order, well-formed and properly neste
 <sources>
 <ul class="list">
 <li><a href="FULL_URL">Source title — Publication or Author, Year</a></li>
-... (3-6 REAL, verifiable sources from your research. NOT Wikipedia. Prefer primary sources and reputable outlets.)
+... (List every REAL, verifiable source you actually used and that helps readers verify the subject. There is no fixed minimum or maximum: use one source when that is genuinely all that can be verified, and use many when the evidence warrants it. Prefer primary sources and reputable outlets. Wikipedia may appear here only as a clearly labelled fallback when no better usable source is available; do not use it as an inline content link and do not add filler links.)
 </ul>
 </sources>
 
