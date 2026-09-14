@@ -463,7 +463,7 @@ paragraphs, five sections, or short articles.
 | --- | --- |
 | `<intro-data>` | Exactly five direct `tr` rows, one `th` and one `td` per row |
 | `<details>` | Six to twelve factual `tr` rows; renderer supplies the surrounding table structure |
-| `<sources>` | `ul.list`, every relevant, actually used real HTTPS source link; no artificial minimum or maximum. Wikipedia is a clearly labelled fallback only when no better usable source can be verified. |
+| `<sources>` | `ul.list`, every relevant, actually used real HTTPS source link; no artificial minimum or maximum. Research independently first, then use original Wikipedia-reference links as leads. Wikipedia itself is the sole clearly labelled fallback only when no usable non-Wikipedia source remains. |
 | `<related>` | Empty until internal links are reviewed |
 | `<content>` | Starts with `h2` Introduction; substantial topic-specific sections separated by `hr` |
 

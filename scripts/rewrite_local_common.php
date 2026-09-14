@@ -108,6 +108,8 @@ function validate_rewrite_content(string $content): void
     $sources = element_by_tag($document, 'sources');
     $sourceLinks = $sources->getElementsByTagName('a');
     $seenSources = [];
+    $hasWikipediaSource = false;
+    $hasNonWikipediaSource = false;
     foreach ($sourceLinks as $link) {
         $href = trim($link->getAttribute('href'));
         if (!preg_match('#^https://[^\s"<>]+$#i', $href)) {
@@ -118,6 +120,15 @@ function validate_rewrite_content(string $content): void
             rewrite_fail('sources contain a duplicate URL');
         }
         $seenSources[$normalized] = true;
+        if (is_wikipedia_url($href)) {
+            $hasWikipediaSource = true;
+        } else {
+            $hasNonWikipediaSource = true;
+        }
+    }
+
+    if ($hasWikipediaSource && $hasNonWikipediaSource) {
+        rewrite_fail('Wikipedia may be a source only when it is the sole displayed source type');
     }
 
     foreach ($document->getElementsByTagName('a') as $link) {
