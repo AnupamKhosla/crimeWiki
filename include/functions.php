@@ -152,8 +152,62 @@ function crimewiki_url(string $path = '/'): string {
 	return 'https://crimewiki.site/' . ltrim($path, '/');
 }
 
+// Characters dropped from slugs, so "O'Keefe" becomes "okeefe" rather than "o-keefe".
+function post_slug_apostrophes(): array {
+	return array("'", "\u{2019}", "\u{2018}", "\u{02BC}", "`", "\u{00B4}");
+}
+
+// URL form of a post title: lower case, words joined by hyphens, accents kept.
+// "Killing of Charlie Kirk" -> "killing-of-charlie-kirk".
+function post_slug(string $title): string {
+	$slug = function_exists('mb_strtolower') ? mb_strtolower($title, 'UTF-8') : strtolower($title);
+	$slug = str_replace(post_slug_apostrophes(), '', $slug);
+	$slug = preg_replace('/[^\p{L}\p{M}\p{N}]+/u', '-', $slug);
+	return trim((string)$slug, '-');
+}
+
+// Posts have no slug column, so LIKE only narrows the candidates and the
+// exact slug is compared in PHP. Returns the lowest matching id, or NULL.
+function find_post_id_by_slug(mysqli $conn, string $slug, $repeat = NULL): ?int {
+	if($slug === '') {
+		return NULL;
+	}
+	$stripped = 'title';
+	foreach(post_slug_apostrophes() as $mark) {
+		$stripped = "REPLACE($stripped, '" . $conn->real_escape_string($mark) . "', '')";
+	}
+	$pattern = '%' . str_replace('-', '%', $slug) . '%';
+	$stmt = $conn->prepare("SELECT id, title FROM `posts` WHERE $stripped LIKE ? AND titlerepeat <=> ? ORDER BY id");
+	$stmt->bind_param("si", $pattern, $repeat);
+	if(!$stmt->execute()) {
+		return NULL;
+	}
+	$result = $stmt->get_result();
+	while($row = $result->fetch_assoc()) {
+		if(post_slug((string)$row['title']) === $slug) {
+			return (int)$row['id'];
+		}
+	}
+	return NULL;
+}
+
+// A real 404 for missing posts, instead of an empty page with status 200.
+function render_post_not_found(): void {
+	http_response_code(404);
+	header('Content-Type: text/html; charset=UTF-8');
+	echo '<!doctype html><html lang="en"><head><meta charset="utf-8">'
+		. '<meta name="viewport" content="width=device-width, initial-scale=1">'
+		. '<meta name="robots" content="noindex"><title>Page not found | CrimeWiki</title>'
+		. '<style>body{font-family:Arial,sans-serif;background:#111;color:#eee;text-align:center;padding:15vh 16px}'
+		. 'a{color:#E92222}</style></head><body><h1>Page not found</h1>'
+		. '<p>There is no article at this address.</p>'
+		. '<p><a href="/">Go to the home page</a> or <a href="/search.php">search the articles</a>.</p>'
+		. '</body></html>';
+	exit;
+}
+
 function post_path(string $title, $repeat = NULL): string {
-	$path = '/post/' . rawurlencode($title);
+	$path = '/post/' . rawurlencode(post_slug($title));
 	if($repeat !== NULL && $repeat !== '') {
 		$path .= '/' . rawurlencode((string)$repeat);
 	}
@@ -161,13 +215,21 @@ function post_path(string $title, $repeat = NULL): string {
 }
 
 function seo_description(string $html, string $fallback = ''): string {
-	$text = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+	// Headings are left out, so the description starts with the first
+	// paragraph rather than the word "Introduction".
+	$html = preg_replace('#<h[1-6]\b[^>]*>.*?</h[1-6]>#is', ' ', $html);
+	$text = html_entity_decode(strip_tags((string)$html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
 	$text = preg_replace('/\s+/u', ' ', trim($text));
 	if($text === '') {
 		$text = $fallback;
 	}
 	if(function_exists('mb_strlen') && mb_strlen($text, 'UTF-8') > 155) {
-		$text = rtrim(mb_substr($text, 0, 152, 'UTF-8')) . '...';
+		$cut = mb_substr($text, 0, 152, 'UTF-8');
+		$space = mb_strrpos($cut, ' ', 0, 'UTF-8');
+		if($space !== false && $space > 100) {
+			$cut = mb_substr($cut, 0, $space, 'UTF-8');
+		}
+		$text = rtrim($cut, " ,;:-") . '...';
 	}
 	return $text;
 }

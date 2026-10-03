@@ -15,18 +15,23 @@ if(!isset($_SESSION["Validation"])) {
 	$_SESSION["Validation"] = array( "txt" => "", "class" => "d-none", "status" => "" );
 }
 
-if( !empty($_GET["id"]) || !empty($_GET["title"]) ) {
-	if( !empty($_GET["id"]) ) {
-		$post_id = $_GET["id"];	
-		$stmt = $conn->prepare("SELECT datetime, title, titlerepeat, creatorname, categoryname, image, content FROM `posts` WHERE id=?");
-		$stmt->bind_param("i", $post_id);
-	}
-	else {
-		$post_title = $_GET["title"];		
-		$title_repeat = !empty($_GET["repeat"]) ? $_GET["repeat"] : NULL;		
-		$stmt = $conn->prepare("SELECT datetime, title, titlerepeat, creatorname, categoryname, image, content FROM `posts` WHERE title=? AND titlerepeat<=>?");
-		$stmt->bind_param("si", $post_title, $title_repeat);
-	}
+// Find the post id: /post/123 gives it directly; /post/<anything> is turned
+// into a slug, so old URLs ("Rex%20Heuermann") still find their post.
+$post_id = NULL;
+if( !empty($_GET["id"]) ) {
+	$post_id = (int)$_GET["id"];
+}
+else if( isset($_GET["title"]) && $_GET["title"] !== "" ) {
+	$title_repeat = !empty($_GET["repeat"]) ? (int)$_GET["repeat"] : NULL;
+	$post_id = find_post_id_by_slug($conn, post_slug((string)$_GET["title"]), $title_repeat);
+}
+if( !$post_id ) {
+	render_post_not_found();
+}
+
+if( $post_id ) {
+	$stmt = $conn->prepare("SELECT datetime, title, titlerepeat, creatorname, categoryname, image, content FROM `posts` WHERE id=?");
+	$stmt->bind_param("i", $post_id);
 	$creator = "Anupam";	
 	$result = $stmt->execute();	
 	$get_result = $stmt->get_result();	
@@ -34,6 +39,15 @@ if( !empty($_GET["id"]) || !empty($_GET["title"]) ) {
 		if( $row = $get_result->fetch_assoc() ) { 
 			$raw_title = (string)$row['title'];
 			$canonical_repeat = $row['titlerepeat'];
+
+			// One address per post: anything other than the hyphen URL gets a
+			// permanent redirect to it.
+			$canonical_path = post_path($raw_title, $canonical_repeat);
+			$request_path = rawurldecode((string)parse_url($_SERVER["REQUEST_URI"] ?? "", PHP_URL_PATH));
+			if($request_path !== rawurldecode($canonical_path)) {
+				header("Location: " . $canonical_path, true, 301);
+				exit;
+			}
 			$title = htmlspecialchars($raw_title, ENT_QUOTES, 'UTF-8');
 			$creator = htmlspecialchars($row['creatorname']);
 			$datetime = htmlspecialchars($row['datetime']);
@@ -72,12 +86,8 @@ if( !empty($_GET["id"]) || !empty($_GET["title"]) ) {
 		}
 	}
 	else {
-		die("Could not fetch results from the database. Probably wrong post-id or title" . $conn->error);
+		render_post_not_found();
 	}
-}
-else {
-	echo "Post id or title must be non empty";
-	die();
 }
 
 
