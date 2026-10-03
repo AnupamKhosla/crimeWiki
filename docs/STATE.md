@@ -1,40 +1,37 @@
 # CrimeWiki session state
 
-Last updated: 4 October 2026, 00:30, Claude Code session (Fable 5.1).
+Last updated: 4 October 2026, 00:47, Claude Code session (Fable 5.1).
 Rewrite this file at the end of every session. Stable facts go in `docs/ROADMAP.md`.
 
-## Do this next (owner, 4 October: "do those articles properly")
+## Do this next
 
-- Give topics 12 to 17 (live posts 1165, 1171-1175) the independent check they
-  never had: every sentence against the saved pages, plus what Wikipedia's page
-  covers and ours lacks. One audit file each, `tmp/new-posts/research/<task_id>/audit.md`
-  (`tmp/new-posts/PLAN.md` step 9). Not started. Wait for the owner's "go".
-- Wikipedia text and the pages it cites are already saved as leads for every
-  topic that has a page (`wiki-NN.txt`, `wiki-leads.txt`). Topics 3, 4, 5 and 16 have none.
-- Then build an update mode for `tmp/new-posts/publish.py` (backup, dry run,
-  content-only UPDATE by id, hash check). Corrections go live only on a go-ahead.
-- After that: topic 18 (Ghislaine Maxwell) onward, in batches of 5. Ask about
-  the check agents BEFORE writing a batch.
+- **10 new posts, asked for by the owner on 4 October: topics 18 to 27** (Maxwell,
+  Kohberger, Louvre heist, Bondi Beach, Combs trial, Pelicot, Letby, Southport,
+  Butler shooting, New Orleans attack). Not started. First get two answers: who
+  does the independent check (check agents, another model, or nobody), and
+  whether to publish at once or show the owner first. Then `tmp/new-posts/PLAN.md`.
+- **Legacy posts: 837 of 1,092 still carry Wikipedia's wording**
+  (`docs/WIKIPEDIA_OVERLAP.md`, worst first; data in `tmp/legacy-wiki-audit/`).
+  The owner decides the rewrite order and whether failing posts are hidden from
+  search (noindex, no sitemap entry) until rewritten. `docs/ROADMAP.md` step 13.
+- Live new posts with no independent check: topics 1 to 4 and 12 to 17. They need
+  audit files, then an update mode for `tmp/new-posts/publish.py` (it only inserts).
 
-## Done on 3 and 4 October
+## Done on 4 October
 
-- Live: 1,138 posts, max id 1175. New posts: 1143, 1147-1149, 1157-1163, 1165,
-  1171-1175. Independent check done for topics 5 to 11 only.
-- Post URLs deployed (commit eb8213f): hyphen slugs, 301s, real 404s.
-- Topics 12 to 17 were published by the Opus session with only its own re-read.
-- Owner's Wikipedia rule is in `AGENTS.md`: read it, use its sources, never cite
-  it, never look like it. "Never Wikipedia" was an agent's wording, now removed.
-- Docs revised (`docs/ROADMAP.md` section 9 lists every change). Tools:
-  `fetchmany.py` saves a Wikipedia article as a LEAD; `check_new.py` has a clone
-  test (`WIKI` flags). All 17 live posts pass it: 0 copied runs, at most 1 shared
-  heading, under 1% shared wording. Pre-edit copies: `tmp/session-reread/before/`.
+- Live: 1,138 posts, max id 1175. New posts: 1143, 1147-1149, 1157-1163, 1165, 1171-1175.
+- Two pushes, both deployed: commit 9dbdfa5 (`AGENTS.md` and four docs), then
+  the commit after it, which added `docs/WIKIPEDIA_OVERLAP.md` on the owner's
+  instruction. The repository is PUBLIC. All docs are committed.
+- Rules in `AGENTS.md`: the owner's Wikipedia rule, the independent check, honest
+  reporting. Tools: `fetchmany.py` saves Wikipedia as a LEAD; `check_new.py` has a
+  clone test. All 17 new posts pass it (no identical runs, under 1% shared wording).
+- Open security items moved out of the public roadmap to `tmp/SECURITY_TODO.md`.
 
 ## Waiting on the owner (`docs/ROADMAP.md` section 6)
 
-- Check agents: a standing yes for every batch, or asked per batch?
-- Topics 1 to 4: the same check as 12 to 17?
+- The two answers for the 10 posts, and the legacy decisions above.
+- Check agents as a standing yes? The same check for topics 1 to 4?
 - Two Wikipedia-hosted icons in the post stylesheet: fix and deploy?
-- The GitHub repository is PUBLIC. Open security items stay in `tmp/SECURITY_TODO.md`
-  (ignored by git). Git also ignores `tmp/new-posts/`: tools, research and articles
-  exist only on this Mac. Never commit `index.php` (`?bare=1`) or `.DS_Store`.
-- A publish go-ahead covers one session; a new session needs a new one.
+- A publish go-ahead covers one session. Git ignores `tmp/new-posts/` (tools,
+  research and articles are only on this Mac). Never commit `index.php` or `.DS_Store`.

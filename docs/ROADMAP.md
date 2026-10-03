@@ -44,8 +44,13 @@ sessions. The rules that go with these goals are in `AGENTS.md`.
 
 ## 2. Where things stand (checked 4 October 2026)
 
-**The legacy rewrite is live.** This was goal 1 in `AGENTS.md`, and it is
-essentially done.
+**The legacy rewrite is live, but most of it is still Wikipedia's wording.**
+Measured on 4 October 2026 (`docs/WIKIPEDIA_OVERLAP.md`): of 1,092 legacy
+posts compared with the Wikipedia page of the same title, 837 fail the clone
+test. 821 contain runs of 12 or more words identical to Wikipedia, and 379
+share a quarter or more of their wording with it. 255 pass. The audits of
+3 October checked length, filler and Wikipedia links, not wording, so the
+earlier statement here that the rewrite was "essentially done" was wrong.
 
 - The release `tmp/releases/crimewiki-content-20260906-115650` holds
   rewritten content for 1,116 of the 1,121 live posts.
@@ -116,10 +121,11 @@ Since that check: commit `eb8213f` (post URLs) was deployed on 3 October, and
 
 ## 3. Track A: content
 
-**Order of work now (owner, 3 and 4 October 2026):** first step 11, the live
-posts that never had an independent check. Then step 7, new posts on current
-topics in batches of 5. The short legacy posts (step 4) wait. Each step needs
-the owner's go-ahead.
+**Order of work now (owner, 3 and 4 October 2026):** new posts on current
+topics come first. On 4 October the owner asked for 10 more (topics 18 to 27,
+step 7). Step 13 (legacy posts that are still Wikipedia's wording) and
+step 11 (live new posts that never had an independent check) follow, in the
+order the owner chooses. Each step needs the owner's go-ahead.
 
 1. **Finish the last legacy posts.** Rewrite posts 6 and 7 with sources,
    and check posts 1 and 2 and the one unchanged post. Not started.
@@ -194,6 +200,16 @@ the owner's go-ahead.
       images from Wikipedia's servers (`assets/css/inline.min.css`: a PDF icon
       from `upload.wikimedia.org` and a magnify icon from `en.wikipedia.org`).
       Remove the two rules or host the icons locally.
+13. **Replace Wikipedia's wording in the legacy posts. Not started. This is
+    the largest AdSense risk on the site.** 837 of 1,092 legacy posts fail the
+    clone test; `docs/WIKIPEDIA_OVERLAP.md` lists them, worst first. Two parts,
+    both for the owner to decide:
+    - Rewrite them from opened sources, worst first, with the new-post loop
+      and an update mode for `publish.py`. Step 4's list ranks by length; this
+      one ranks by copied wording, which matters more.
+    - Until a post is rewritten, keep it out of search results: a `noindex`
+      tag and no sitemap entry for the failing ids. Then an AdSense review
+      sees only original pages. This is a small code change and needs a deploy.
 
 ## 4. Track B: infrastructure
 
@@ -266,13 +282,16 @@ The MVC restructure stays deferred until the content pipeline is steady.
 
 ## 6. Decisions waiting on the owner
 
+0. **Legacy posts that are still Wikipedia's wording** (track A, step 13):
+   the rewrite order, and whether to hide the failing posts from search until
+   they are rewritten.
 1. **Check agents:** a standing yes for the independent check on every
-   batch, or asked batch by batch? They spend plan allowance.
+   batch, or asked batch by batch? They spend plan allowance. The 10 posts the
+   owner asked for on 4 October wait on this answer.
 2. **Topics 1 to 4:** give them the same independent check as 12 to 17?
-3. **Git:** `docs/ROADMAP.md`, `docs/STATE.md`, `docs/CONTENT_SCALE_PLAN.md`
-   and `docs/REWRITE_LIST.md` are not committed, and git ignores
-   `tmp/new-posts/`. Commit the docs, and move the tools into the repository?
-   A commit does not deploy; a push does.
+3. **Git:** the docs are committed (4 October). Git still ignores
+   `tmp/new-posts/`, so the tools, the research folders and the articles exist
+   only on the owner's Mac. Move the tools into the repository? It is public.
 4. **The two Wikipedia-hosted icons** in the post stylesheet (track A,
    step 12): fix and deploy?
 5. Native **MySQL or MariaDB** for step B2.
@@ -302,6 +321,7 @@ Decided, listed so that nobody reopens them:
 | `tmp/new-posts/PLAN.md` | Runbook for new posts: the loop, the checks, publishing | Current, revised 4 October. Not in git. |
 | `tmp/longform/BRIEF.md` | Article format and voice (its sections 2 and 3) | Current for format. Its queue steps belong to the paused rewrite queue. Not in git. |
 | `docs/REWRITE_LIST.md` | The short legacy posts that need lengthening | From the 3 October snapshot; work paused |
+| `docs/WIKIPEDIA_OVERLAP.md` | Every legacy post compared with Wikipedia; the failing ones, worst first | Current, measured 4 October |
 | `docs/CONTENT_SCALE_PLAN.md` | Day-2 audit, the Sonnet pilot's measurements, scale limits, database sizing | A record. Its goals and its sections 5 and 6 are superseded by this roadmap. |
 | `AGENTS.md` | Rules for agents | Current, revised 4 October |
 | `README.md` | Install and operations guide | Mostly current |
@@ -348,3 +368,7 @@ rule.
   and both workflow prompts no longer say "never Wikipedia".
 - Tools: `fetchmany.py` saves Wikipedia as a lead, and `check_new.py` gained
   the clone test (track A, step 12).
+- Later the same day: the five open security items moved from track C to
+  `tmp/SECURITY_TODO.md`, because the repository is public. The legacy posts
+  were compared with Wikipedia for the first time (`docs/WIKIPEDIA_OVERLAP.md`),
+  which corrected section 2 and added track A step 13.

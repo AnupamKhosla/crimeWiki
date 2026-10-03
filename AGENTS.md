@@ -54,10 +54,12 @@ Rules for any AI agent working on this project.
 **Grow CrimeWiki with 100% original, well-researched, long-form articles.**
 
 Status, checked 4 October 2026: the port of the Wikipedia-scraped posts is
-done and live. The 6 September content release rewrote 1,116 of the 1,121
-posts. Only posts 1, 2, 6 and 7 and one unchanged post remain. Since 3 October,
-17 new posts on current cases are live as well. The work now is new articles,
-toward 5,000, then 10,000, with 100,000 or more as the long-term direction.
+NOT done. The 6 September content release changed 1,116 of the 1,121 legacy
+posts, but a comparison on 4 October found that 837 of 1,092 still carry
+Wikipedia's wording (`docs/WIKIPEDIA_OVERLAP.md`). Since 3 October, 17 new
+posts on current cases are live, and those are original. The work is new
+articles, toward 5,000, then 10,000, with 100,000 or more as the long-term
+direction, and replacing the copied legacy text.
 The order of work is in `docs/ROADMAP.md`. The runbook for new posts is
 `tmp/new-posts/PLAN.md`. `docs/CONTENT_SCALE_PLAN.md` is the record of the
 earlier audits and pilots.
@@ -69,6 +71,7 @@ earlier audits and pilots.
   - A fact goes into an article only when a page you opened supports it. Wikipedia's own text is never that support, and Wikipedia is never cited or linked.
   - The page must not look like Wikipedia's: our own structure and section headings, our own emphasis, our own sentences. Not a paraphrase. `tmp/new-posts/check_new.py` tests this against the saved Wikipedia page (its flags start with `WIKI`).
   - Never write "never Wikipedia" into a runbook, prompt or tool. That was an agent's wording, stricter than the owner's rule.
+  - Measure it, never assume it. Checks of length, filler and links do not show copied wording. On 3 October the legacy rewrite was reported as "essentially done" on those checks; the clone test then showed most of it was still Wikipedia's text.
 - Articles are written in a narrative crime-journalism voice.
 - **Length standard (owner, 3 October 2026): aim for 1,200 to 2,000 words; 1,000 words of real content is the floor for publishing.** Length must come from sourced facts. A topic that cannot support it is blocked or held for more research, never padded.
 - **Never give a writer a word minimum without the padding gate.** The day-2 package met a 1,200-word minimum with 71% template filler and was unusable. Every batch must pass the content-kit validator and the padding audit before it is published.
