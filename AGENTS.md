@@ -2,6 +2,13 @@
 
 Rules for any AI agent working on this project.
 
+## Start Here
+
+1. Read `docs/ROADMAP.md`. It holds the goals, the current state, the order of work, and a map of every other document.
+2. Read `docs/STATE.md`. It holds what the last session did, what is in progress, and what the owner still has to decide.
+3. For new posts, follow the runbook `tmp/new-posts/PLAN.md`. It is a procedure written by an agent; the rules in this file outrank it.
+4. Before ending a session, update `docs/STATE.md` (see "Session State Tracking" below).
+
 ## Response Length (Semi-Caveman Mode)
 
 - Every output response: 100-200 words. Occasionally 200+ if a teaching moment truly needs it. No exceptions for routine replies.
@@ -13,7 +20,17 @@ Rules for any AI agent working on this project.
 - Teach the *why*, not just the *what*. One concept per response max.
 - **Never do something without asking or telling the owner first.** No surprise installs, deletes, renames, refactors, or file additions — even if they seem helpful. Ask, then act only after approval.
 - When a command might fail or have side effects, say so before running it.
-- **Do NOT run commands on the production VPS** (no SSH / `gcloud compute ssh`). The owner handles all server-side actions and deploys. Make local repo edits and hand over commands. Note: `git push` triggers the webhook deploy on the VPS, so do not push unless explicitly told.
+- **Do not start subagents, workers or workflows without the owner's explicit yes.** They spend the owner's plan allowance. Decided 3 October 2026, after a Sonnet worker pilot used 20% of a session. A yes covers the run it was given for, not later ones. Where a rule in this file needs an agent (the independent check, under "Main Goal"), ask for the yes before the work starts, not after.
+- **Do NOT run commands on the production VPS without permission** (no SSH / `gcloud compute ssh`). The owner handles all server-side actions and deploys. Make local repo edits and hand over commands. Note: `git push` triggers the webhook deploy on the VPS, so do not push unless explicitly told. You can override this restriction with explicit approval from the user. Permission so far has been given per session, and only for read-only checks and for `tmp/new-posts/publish.py` after a publish go-ahead.
+
+## Honest Reporting (added 4 October 2026, after a session went wrong)
+
+- **Say who did it.** Write "I excluded Wikipedia from my searches", not "every search blocked Wikipedia". Never word your own choice as something that happened to you.
+- **Label a guess as a guess.** If you have not checked it (how the plan meters usage, what the server does, what a page says), say so. Do not state it as fact.
+- **When two rules pull against each other, stop and ask before you act.** Do not pick one quietly and report afterwards. On 3 and 4 October six posts went live without the required independent check, because "no agents without a yes" was obeyed in silence when one question would have settled it.
+- **The owner's words outrank anything an agent wrote.** The runbooks and briefs under `tmp/` were written by agent sessions. If one is stricter or looser than this file or than what the owner said, the owner's rule wins: fix the runbook and tell the owner. Quote the owner's rule; do not harden it. An agent once wrote "Never Wikipedia" into a runbook. That was never the owner's rule, and a later session enforced it.
+- **Read a timed or conditional instruction exactly.** "Stop at 9:39" does not mean "stop now". If an instruction can be read two ways and acting on the wrong one loses work, ask in one line.
+- **Report what was skipped as plainly as what was done,** before the owner has to ask.
 
 ## Model quirks
 
@@ -34,15 +51,49 @@ Rules for any AI agent working on this project.
 
 ## Main Goal (Priority #1)
 
-**Port ALL existing Wikipedia-scraped posts to 100% original AI-written content.**
+**Grow CrimeWiki with 100% original, well-researched, long-form articles.**
 
-- The AI agent (in opencode sessions) reads each post from the DB, researches the topic fresh via websearch, then rewrites the entire page in a narrative crime-journalism voice.
-- Content must be completely different from Wikipedia — different structure, different emphasis, different sources, different vocabulary. Not a paraphrase. A rewrite from scratch using the same facts.
-- Why: This is a charity project that will eventually run Google AdSense to cover server/domain costs. If Google detects plagiarism or Wikipedia reuse, AdSense is denied and the charity dies.
-- The same XML structure is preserved so CSS/frontend never breaks: `<intro-data>` (5 rows), `<details>` (tbody table), `<sources>` (ul.list), `<related>` (ol.list), `<content>` (h2 sections separated by hr).
-- Wikipedia links in content are replaced with internal CrimeWiki links. Sources are replaced with fresh ones (court records, newspapers, books, films).
-- Each post gets a "researched on [date]" feel with sources Wikipedia doesn't cite.
-- Script pattern: `scripts/rewrite_postN.php` → run via `docker compose exec app-fpm php /var/www/html/scripts/rewrite_postN.php`
+Status, checked 4 October 2026: the port of the Wikipedia-scraped posts is
+done and live. The 6 September content release rewrote 1,116 of the 1,121
+posts. Only posts 1, 2, 6 and 7 and one unchanged post remain. Since 3 October,
+17 new posts on current cases are live as well. The work now is new articles,
+toward 5,000, then 10,000, with 100,000 or more as the long-term direction.
+The order of work is in `docs/ROADMAP.md`. The runbook for new posts is
+`tmp/new-posts/PLAN.md`. `docs/CONTENT_SCALE_PLAN.md` is the record of the
+earlier audits and pilots.
+
+- Why: This is a charity project that will eventually run Google AdSense to cover server/domain costs. If Google detects plagiarism, Wikipedia reuse, or padded filler, AdSense is denied and the charity dies.
+- **Priority now (owner, 3 October 2026): articles on what people are searching for today**, meaning current crime events and people in the news, so the site gains search traction. Lengthening the old short posts (`docs/REWRITE_LIST.md`) comes after.
+- **Wikipedia rule (owner, 4 October 2026): "You can visit Wikipedia and even use the same sources there. The main point is our page shouldn't look like a wiki clone but our own original research."** In practice:
+  - Research independently first. Then read the Wikipedia article and its reference list, to find original sources and to see whether a major event is missing. Open those original pages yourself; they may be cited.
+  - A fact goes into an article only when a page you opened supports it. Wikipedia's own text is never that support, and Wikipedia is never cited or linked.
+  - The page must not look like Wikipedia's: our own structure and section headings, our own emphasis, our own sentences. Not a paraphrase. `tmp/new-posts/check_new.py` tests this against the saved Wikipedia page (its flags start with `WIKI`).
+  - Never write "never Wikipedia" into a runbook, prompt or tool. That was an agent's wording, stricter than the owner's rule.
+- Articles are written in a narrative crime-journalism voice.
+- **Length standard (owner, 3 October 2026): aim for 1,200 to 2,000 words; 1,000 words of real content is the floor for publishing.** Length must come from sourced facts. A topic that cannot support it is blocked or held for more research, never padded.
+- **Never give a writer a word minimum without the padding gate.** The day-2 package met a 1,200-word minimum with 71% template filler and was unusable. Every batch must pass the content-kit validator and the padding audit before it is published.
+- Articles never mention CrimeWiki, the article itself, or the research process.
+- The same XML structure is preserved so CSS/frontend never breaks: `<intro-data>` (5 rows), `<details>` (6 to 12 rows), `<sources>` (ul.list), `<related>` (left empty until internal links are reviewed), `<content>` (h2 sections and paragraphs separated by hr, starting with `Introduction`, as many as the subject requires). The contract is `tools/crimewiki-content-kit/contracts/five-block-contract.md`.
+- Sources are real pages the writer opened (court records, official reports, newspapers, books). No Wikipedia links anywhere in a post.
+- **Independent check before publishing (required).** The automatic checker cannot see a sentence that claims more than its source says. On 3 October a separate check stage found 6 to 22 such over-claims per article after the checker had passed them. So every batch is checked, sentence by sentence against the saved pages, by a reader other than its writer: a separate agent, or a different model in a fresh session. The writer re-reading its own draft does not count. The check leaves an audit file for each article, and its fixes are applied before the batch is published. A separate agent needs the owner's yes, so ask for it before writing the batch. If the answer is no, say before publishing that the batch has only its writer's re-read, and publish only if the owner accepts that.
+- Writing route: the main Claude Code session researches and writes each article, following `tmp/new-posts/PLAN.md`. Agents and workflows run only on the owner's yes for that run. History: the owner stopped the Sonnet worker pilot on 3 October, then ran two workflow trials the same evening for topics 5 to 11. Those scripts are `tmp/new-posts/new_posts_workflow.js` and `tmp/new-posts/one_post_parallel_workflow.js`.
+- Publishing (owner decisions, 3 October 2026): there is no local database, and the live database is the source of truth. New posts are inserted into it by `tmp/new-posts/publish.py` (backup first, dry run, one transaction, hash check, live-page check), in batches of 5. **Nothing goes live without the owner's go-ahead, and a go-ahead covers that session only.** A full database replacement needs explicit owner approval.
+- Images (later goal): every post should get a proper image, and posts about a person should show that person, with usable rights and a credit. Not started; see `docs/ROADMAP.md`.
+- Earlier pipelines are historical: the Luna/Codex batch scripts (`scripts/run_luna_*.sh`), the Neuralwatt batch scripts, and the pilot `scripts/rewrite_postN.php` files. The owner has prohibited further Neuralwatt use. Do not create new per-post PHP scripts. The day-1 and day-2 rewrite queue (`tmp/rewrite-queue/`, `tmp/longform/`) is paused; `tmp/longform/BRIEF.md` is still the reference for article format and voice.
+
+**Live reliability goal (Priority #2 after the local rewrite path is reliable)**
+
+- Remove Docker from the database layer as a separate, measured migration to
+  native MariaDB or another owner-approved database target. Keep backups and a
+  rollback path until the live data and application queries are verified.
+- Add a PM2-like automatic recovery layer using systemd/service supervision
+  and health checks for Nginx, PHP-FPM, and MariaDB. A crash or failed health
+  check should restart the affected service without creating restart loops or
+  hiding persistent configuration/database errors.
+- Do not run these production migrations or restarts from an agent session;
+  prepare and test repository files locally, then hand commands to the owner.
+- The order of these steps, their gates, and the facts from the 3 October 2026
+  server check are in `docs/ROADMAP.md` track B.
 
 ## Project Overview
 
@@ -55,6 +106,7 @@ This repository contains a PHP CMS/wiki app plus a small VM ops bundle for a low
 - Host Nginx proxies `/phpmyadmin/` to the loopback-only phpMyAdmin container on `127.0.0.1:8082`.
 - Nginx proxies `/hooks/deploy` to the local webhook listener on `127.0.0.1:9000`.
 - Docker Compose runs `app-fpm` and `db` for the VM; `web` is local-only and `phpmyadmin` is an explicit tools profile started by the VM lifecycle helper.
+- The database is MySQL 9.6 in the Docker `db` container (`crimewiki_db_1` on the VM), with its data in the `crimewiki_db_data` volume. Port 3306 is not published to the host. No native database is installed on the VM.
 
 ## Runtime Config
 
@@ -97,41 +149,39 @@ This repository contains a PHP CMS/wiki app plus a small VM ops bundle for a low
 
 ## Session State Tracking
 
-At the START of every session, run:
-```
-supermemory search "crimeWiki project state" (scope: project)
-```
-This retrieves what the previous session accomplished and what is pending.
+Session state lives in the repository, in `docs/STATE.md`, so that any agent on
+any tool can find it.
 
-At the END of every session (or when significant progress is made), run:
-```
-supermemory add (scope: project, type: project-config)
-```
-With a concise summary covering:
+At the START of every session: read `docs/ROADMAP.md`, then `docs/STATE.md`.
+
+At the END of every session (or when significant progress is made), rewrite
+`docs/STATE.md` with a concise summary covering:
 - What was completed this session
 - What is currently in-progress (with file paths)
 - What is pending / next steps
 - Any blockers or decisions the human needs to make
 
-Keep each memory entry under 30 lines. Use bullet points. Include file paths.
-If a memory becomes stale (work completed), use `supermemory forget` to remove it before adding the updated one.
+Keep it under 40 lines. Use bullet points. Include file paths. Replace stale
+entries instead of appending, so it never grows into a log. Stable facts (a
+rule, a goal, a finished migration) belong in `docs/ROADMAP.md` or this file.
 
-### Current Project State
-
-_Live project state (DB counts, what was done this session, open bugs, next steps) lives in **supermemory**, NOT here — this file is for stable rules only. Run the `supermemory search "crimeWiki project state"` above at the start of every session to load it._
+`supermemory` is optional. Its CLI was not installed on the owner's machine as
+of 3 October 2026. If a `supermemory` tool is available in your session, you
+may also mirror the summary there (`supermemory add`, scope: project), but
+`docs/STATE.md` is the source of truth.
 
 ## Tech Debt & Future Refactoring (Deferred)
 
 Recorded 2026-07-29. **Do NOT start this work until the rewrite pipeline is fully functional and reliable.** Functionality is priority #1; restructuring is deliberately deferred.
 
-- **Naming**: flat root files have awkward, non-conventional names — most notably `rewrite_api.php` (the streaming Qwen endpoint). Rename these to something clear and conventional during the restructure.
+- **Naming**: flat root files have awkward, non-conventional names — most notably `rewrite_api.php` (the streaming rewrite endpoint; despite the old "Qwen" name it calls Neuralwatt, which the owner has since prohibited). Rename these to something clear and conventional during the restructure.
 - **Structure**: the app is currently flat PHP files in the repo root (`index.php`, `post.php`, `rewrite.php`, `rewrite_api.php`, `login.php`, `include/*`). Long-term it should move to a proper MVC / framework layout (e.g., Laravel-style: routes → controllers → models → views) with a clean `public/` web root.
 - **Hard constraints on any restructure**: preserve the five-tag XML contract and its rendering (`post.php`/`post_code.php`, validated by `check_xml()` in `include/addpost_code.php`); keep the SSE streaming behaviour; keep the webhook deploy flow working (`ops/scripts/deploy.sh` + Nginx template render). The CSS/frontend must not break.
 - **Sequencing**: stabilise the rewrite pipeline (streaming works reliably, posts rewritten, AdSense-safe) → then do the refactor as one focused effort, not piecemeal.
 
 ## Working Tree Notes
 
-- `index.php` currently has an intentional local content change restoring the homepage heading text.
+- `index.php` currently has an intentional local, uncommitted change: a `?bare=1` mode that hides parts of the homepage for local testing.
 - `.DS_Store` may appear in the working tree and should not be committed.
 - The homepage category filter includes `Blog`, but the footer category lists intentionally exclude `Blog`.
-- Use `proxy.php?url=...` for live proxy requests. The path-style `/proxy/<urlencoded-url>` route is currently unreliable on production because encoded slashes may be rejected before Apache rewrite reaches PHP.
+- Use `proxy.php?url=...` for live proxy requests. The path-style `/proxy/<urlencoded-url>` route is currently unreliable on production because encoded slashes may be rejected before the rewrite reaches PHP.
