@@ -8,7 +8,7 @@ build   collects rewrites that check_new.py marks ok, that have an independent c
 dry     runs the updates on the LIVE database inside a transaction and rolls it back.
 apply   backs up the posts table on the VPS, saves each post's old text locally
         (rollback.sql), updates, commits, compares hashes, records updated.jsonl.
-        Needs a clean dry run first.
+        No dry run needed (owner, 7 October 2026: update live, then a quick check).
 verify  opens each updated post on the live site and checks that the new text renders."""
 import sys,os,re,json,glob,time,hashlib,subprocess,urllib.parse
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__))); from common import *
@@ -72,7 +72,6 @@ echo "MODE $MODE DONE"
 def run(mode):
     d=latest(); man=[json.loads(l) for l in open(f'{d}/manifest.jsonl',encoding='utf-8')]
     if mode=='apply':
-        if not os.path.exists(f'{d}/dry.ok'): sys.exit('run a clean dry run first: update_live.py dry')
         if os.path.exists(f'{d}/apply.out'): sys.exit('this update was already applied')
     r=subprocess.run(SSH+[f'bash -s -- {mode}'],stdin=open(f'{d}/update.sh','rb'),capture_output=True,text=True)
     out=r.stdout; open(f'{d}/{mode}.out','w',encoding='utf-8').write(out+'\n--- stderr\n'+r.stderr)
