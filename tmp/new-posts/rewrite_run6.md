@@ -1,0 +1,15 @@
+Run notes for this retry batch (owner approved, 7 October 2026: "finish the task"; 16 topics: 118, 124, 158, 161, 163, 165, 167, 169, 174, 179, 180, 181, 184, 185, 186, 188). Follow tmp/new-posts/rewrite_prompt.md, with these changes:
+- Why a retry: each topic was blocked or failed earlier today for lack of pages. The earlier writer's reason is in blocked/retried-20261007/cw-topic-8001NN.json (or the note below). Pages it saved are still in your research folder: run read.py first and reuse what is there.
+- Search: the WebSearch tool's budget for this session is used up (200/200). Do not call WebSearch. search.py's engines are currently blocking this machine; you may try it at most twice.
+- Routes that work without search:
+  1. wiki-leads.txt now also lists Wikipedia's archived copies of dead cited pages (web.archive.org/web/...) and archive.org books. Open them with fetchmany; an archived copy may be cited.
+  2. Wikipedia in other languages cites different pages. Find the subject's other-language titles with: curl -s -A 'CrimeWikiResearch/1.0' "https://en.wikipedia.org/w/api.php?action=query&titles=<Title>&prop=langlinks&lllimit=50&format=json&redirects=1". Fetch the page in the subject's home language (it, de, fr, he, ar, nl...) with fetchmany as a lead; its cited pages are added to wiki-leads.txt. Pages in other languages may be cited; mark any quote you translate as your translation.
+  3. For a dead or 403 page, try https://web.archive.org/web/<original url> (latest copy) or ask https://archive.org/wayback/available?url=<url>.
+  4. Books: https://archive.org/advancedsearch.php?q=<words>&fl[]=identifier&fl[]=title&rows=20&output=json, then the text at https://archive.org/stream/<identifier>/<identifier>_djvu.txt. Grep it by keyword; never read a book whole.
+- Fetching: up to 4 fetchmany calls of at most 10 URLs each, plus Wikipedia lead fetches.
+- Subject first: confirm the pages are about the subject the title names (same person, group or event, dates and place). A namesake is a different subject.
+- Topic 118 "Domenico Libri": the earlier article was about the WRONG man (Guglielmo Libri, the 19th-century book thief). Your subject is Domenico Libri, the 'Ndrangheta boss from Reggio Calabria (1934-2006). Ignore any saved page about Guglielmo Libri; write a new article from scratch.
+- Topic 124 "Massacre Canyon": the article exists but has only 2 usable sources and fails check_new (needs 5). Find at least 3 more (Nebraska and Kansas state historical societies, Pawnee and Sioux histories, archive.org books) and rewrite it with them.
+- Wikipedia mirrors (wikimili, grokipedia, bharatpedia, wikiwand, dbpedia, alchetron, everybodywiki and the like) are Wikipedia: never fetch or cite them.
+- Keep the exact title. The 1,000-word floor of real, sourced content still holds; never pad. If you still cannot reach it, block again with the reason and what you tried.
+- About 15 other writers are working on other topics at the same time; touch only your own topic's files.
