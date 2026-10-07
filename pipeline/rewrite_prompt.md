@@ -10,6 +10,8 @@ The site must pass Google AdSense review to pay for its hosting. That review rej
 
 Owner's rule, 7 October 2026: "writers are supposed to use as many websearches as needed and try to get info from as many reputable sources as possible." Search and fetch as much as the case needs. To keep cost down, read each page once and do not read long files whole.
 
+Use the WebSearch tool first. If WebSearch refuses or reports a limit, switch for the rest of the topic to `python3 pipeline/search.py "<query>" 12` (Brave, then DuckDuckGo, then Bing; prints URLs). Write search.py queries like a search box: names, places, years, "court", "inquiry", "sentenced".
+
 ## Read first, once
 
 1. `pipeline/PLAN.md`: the sections "Rules that keep it honest" and both "Lessons" sections. Skim the rest. Where this prompt and PLAN.md differ, this prompt wins for this run.
