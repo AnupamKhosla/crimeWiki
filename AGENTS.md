@@ -6,7 +6,7 @@ Rules for any AI agent working on this project.
 
 1. Read `docs/ROADMAP.md`. It holds the goals, the current state, the order of work, and a map of every other document.
 2. Read `docs/STATE.md`. It holds what the last session did, what is in progress, and what the owner still has to decide.
-3. For new posts, follow the runbook `tmp/new-posts/PLAN.md`. It is a procedure written by an agent; the rules in this file outrank it.
+3. For new posts, follow the runbook `pipeline/PLAN.md`. It is a procedure written by an agent; the rules in this file outrank it.
 4. Before ending a session, update `docs/STATE.md` (see "Session State Tracking" below).
 
 ## Response Length (Semi-Caveman Mode)
@@ -21,7 +21,7 @@ Rules for any AI agent working on this project.
 - **Never do something without asking or telling the owner first.** No surprise installs, deletes, renames, refactors, or file additions — even if they seem helpful. Ask, then act only after approval.
 - When a command might fail or have side effects, say so before running it.
 - **Do not start subagents, workers or workflows without the owner's explicit yes.** They spend the owner's plan allowance. Decided 3 October 2026, after a Sonnet worker pilot used 20% of a session. A yes covers the run it was given for, not later ones. Where a rule in this file needs an agent (the independent check, under "Main Goal"), ask for the yes before the work starts, not after.
-- **Do NOT run commands on the production VPS without permission** (no SSH / `gcloud compute ssh`). The owner handles all server-side actions and deploys. Make local repo edits and hand over commands. Note: `git push` triggers the webhook deploy on the VPS, so do not push unless explicitly told. You can override this restriction with explicit approval from the user. Permission so far has been given per session, and only for read-only checks and for `tmp/new-posts/publish.py` after a publish go-ahead.
+- **Do NOT run commands on the production VPS without permission** (no SSH / `gcloud compute ssh`). The owner handles all server-side actions and deploys. Make local repo edits and hand over commands. Note: `git push` triggers the webhook deploy on the VPS, so do not push unless explicitly told. You can override this restriction with explicit approval from the user. Permission so far has been given per session, and only for read-only checks and for `pipeline/publish.py` after a publish go-ahead.
 
 ## Honest Reporting (added 4 October 2026, after a session went wrong)
 
@@ -61,7 +61,7 @@ posts on current cases are live, and those are original. The work is new
 articles, toward 5,000, then 10,000, with 100,000 or more as the long-term
 direction, and replacing the copied legacy text.
 The order of work is in `docs/ROADMAP.md`. The runbook for new posts is
-`tmp/new-posts/PLAN.md`. `docs/CONTENT_SCALE_PLAN.md` is the record of the
+`pipeline/PLAN.md`. `docs/CONTENT_SCALE_PLAN.md` is the record of the
 earlier audits and pilots.
 
 - Why: This is a charity project that will eventually run Google AdSense to cover server/domain costs. If Google detects plagiarism, Wikipedia reuse, or padded filler, AdSense is denied and the charity dies.
@@ -69,7 +69,7 @@ earlier audits and pilots.
 - **Wikipedia rule (owner, 4 October 2026): "You can visit Wikipedia and even use the same sources there. The main point is our page shouldn't look like a wiki clone but our own original research."** In practice:
   - Research independently first. Then read the Wikipedia article and its reference list, to find original sources and to see whether a major event is missing. Open those original pages yourself; they may be cited.
   - A fact goes into an article only when a page you opened supports it. Wikipedia's own text is never that support, and Wikipedia is never cited or linked.
-  - The page must not look like Wikipedia's: our own structure and section headings, our own emphasis, our own sentences. Not a paraphrase. `tmp/new-posts/check_new.py` tests this against the saved Wikipedia page (its flags start with `WIKI`).
+  - The page must not look like Wikipedia's: our own structure and section headings, our own emphasis, our own sentences. Not a paraphrase. `pipeline/check_new.py` tests this against the saved Wikipedia page (its flags start with `WIKI`).
   - Never write "never Wikipedia" into a runbook, prompt or tool. That was an agent's wording, stricter than the owner's rule.
   - Measure it, never assume it. Checks of length, filler and links do not show copied wording. On 3 October the legacy rewrite was reported as "essentially done" on those checks; the clone test then showed most of it was still Wikipedia's text.
 - Articles are written in a narrative crime-journalism voice.
@@ -79,10 +79,10 @@ earlier audits and pilots.
 - The same XML structure is preserved so CSS/frontend never breaks: `<intro-data>` (5 rows), `<details>` (6 to 12 rows), `<sources>` (ul.list), `<related>` (left empty until internal links are reviewed), `<content>` (h2 sections and paragraphs separated by hr, starting with `Introduction`, as many as the subject requires). The contract is `tools/crimewiki-content-kit/contracts/five-block-contract.md`.
 - Sources are real pages the writer opened (court records, official reports, newspapers, books). No Wikipedia links anywhere in a post.
 - **Independent check before publishing (required).** The automatic checker cannot see a sentence that claims more than its source says. On 3 October a separate check stage found 6 to 22 such over-claims per article after the checker had passed them. So every batch is checked, sentence by sentence against the saved pages, by a reader other than its writer: a separate agent, or a different model in a fresh session. The writer re-reading its own draft does not count. The check leaves an audit file for each article, and its fixes are applied before the batch is published. A separate agent needs the owner's yes, so ask for it before writing the batch. If the answer is no, say before publishing that the batch has only its writer's re-read, and publish only if the owner accepts that.
-- Writing route: the main Claude Code session researches and writes each article, following `tmp/new-posts/PLAN.md`. Agents and workflows run only on the owner's yes for that run. History: the owner stopped the Sonnet worker pilot on 3 October, then ran two workflow trials the same evening for topics 5 to 11. Those scripts are `tmp/new-posts/new_posts_workflow.js` and `tmp/new-posts/one_post_parallel_workflow.js`.
-- Publishing (owner decisions, 3 October 2026): there is no local database, and the live database is the source of truth. New posts are inserted into it by `tmp/new-posts/publish.py` (backup first, dry run, one transaction, hash check, live-page check), in batches of 5. **Nothing goes live without the owner's go-ahead, and a go-ahead covers that session only.** A full database replacement needs explicit owner approval.
+- Writing route: the main Claude Code session researches and writes each article, following `pipeline/PLAN.md`. Agents and workflows run only on the owner's yes for that run. History: the owner stopped the Sonnet worker pilot on 3 October, then ran two workflow trials the same evening for topics 5 to 11. Those scripts are `pipeline/new_posts_workflow.js` and `pipeline/one_post_parallel_workflow.js`.
+- Publishing (owner decisions, 3 October 2026): there is no local database, and the live database is the source of truth. New posts are inserted into it by `pipeline/publish.py` (backup first, dry run, one transaction, hash check, live-page check), in batches of 5. **Nothing goes live without the owner's go-ahead, and a go-ahead covers that session only.** A full database replacement needs explicit owner approval.
 - Images (later goal): every post should get a proper image, and posts about a person should show that person, with usable rights and a credit. Not started; see `docs/ROADMAP.md`.
-- Earlier pipelines are historical: the Luna/Codex batch scripts (`scripts/run_luna_*.sh`), the Neuralwatt batch scripts, and the pilot `scripts/rewrite_postN.php` files. The owner has prohibited further Neuralwatt use. Do not create new per-post PHP scripts. The day-1 and day-2 rewrite queue (`tmp/rewrite-queue/`, `tmp/longform/`) is paused; `tmp/longform/BRIEF.md` is still the reference for article format and voice.
+- Earlier pipelines are historical: the Luna/Codex batch scripts (`scripts/run_luna_*.sh`), the Neuralwatt batch scripts, and the pilot `scripts/rewrite_postN.php` files. The owner has prohibited further Neuralwatt use. Do not create new per-post PHP scripts. The day-1 and day-2 rewrite queue (`tmp/rewrite-queue/`, `tmp/longform/`) is paused; `pipeline/BRIEF.md` is still the reference for article format and voice.
 
 **Live reliability goal (Priority #2 after the local rewrite path is reliable)**
 

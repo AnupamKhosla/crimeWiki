@@ -1,0 +1,21 @@
+legacy posts 1093 | compared 1092 | no wikipedia page 1 | fetch failed 0
+share of 6-word runs also in Wikipedia: median 14.5% | 75th 35.7% | 90th 58.5% | 99th 83.2% | max 91.4%
+WIKI WORDING (>=4%): 776 | >=10%: 627 | >=25%: 379
+WIKI COPIED (a 12-word run): 821 posts | total runs 17863
+WIKI STRUCTURE (3+ headings and half of ours): 116
+fails any: 837
+    889  91.4% runs  74 heads 2/4 | Bodo League massacre
+    728  89.0% runs  92 heads 3/5 | Cherry Valley massacre
+    830  88.8% runs 145 heads 3/5 | Le Paradis massacre
+    886  88.3% runs  90 heads 2/3 | Batang Kali massacre
+    969  88.2% runs  51 heads 4/4 | Monrovia Church massacre
+    811  87.9% runs 188 heads 2/6 | Coniston massacre
+    503  87.8% runs  63 heads 1/4 | Martha Rendell
+    891  86.4% runs 129 heads 2/5 | No Gun Ri massacre
+    806  85.9% runs  78 heads 2/4 | Hanapepe massacre
+    981  83.2% runs  80 heads 5/5 | Bisho massacre
+    968  83.2% runs  67 heads 4/5 | Eastern University massacre
+    860  82.9% runs  58 heads 2/3 | Huta Pieniacka massacre
+    977  82.0% runs  68 heads 3/5 | Khojaly massacre
+    509  81.8% runs  96 heads 2/7 | Marcus Einfeld
+    970  81.6% runs  33 heads 2/3 | 1990 Batticaloa massacre

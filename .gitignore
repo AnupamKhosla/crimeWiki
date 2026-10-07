@@ -8,3 +8,20 @@ include/config.php
 u586058589_crimewiki_db2.sql
 #.htaccess
 tmp/
+.claude/settings.local.json
+
+# Content pipeline (pipeline/): tools, prompts, topics and articles are tracked.
+# Not tracked: other sites' saved pages, live-database backups and release
+# packages, run scratch files, backups and usage data.
+pipeline/research/
+pipeline/update/
+pipeline/release/
+pipeline/tmp/
+pipeline/legacy-wiki-audit/wiki/
+pipeline/usage/*.json
+pipeline/usage/*.jsonl
+pipeline/r1*.txt
+pipeline/c3_*.txt
+pipeline/live-*.html
+pipeline/**/*.bak*
+__pycache__/
