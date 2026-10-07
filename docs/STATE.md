@@ -1,37 +1,39 @@
 # CrimeWiki session state
 
-Last updated: 4 October 2026, 00:47, Claude Code session (Fable 5.1).
+Last updated: 7 October 2026, about 20:25 IST, Claude Code session (Opus 5.5).
 Rewrite this file at the end of every session. Stable facts go in `docs/ROADMAP.md`.
 
 ## Do this next
 
-- **10 new posts, asked for by the owner on 4 October: topics 18 to 27** (Maxwell,
-  Kohberger, Louvre heist, Bondi Beach, Combs trial, Pelicot, Letby, Southport,
-  Butler shooting, New Orleans attack). Not started. First get two answers: who
-  does the independent check (check agents, another model, or nobody), and
-  whether to publish at once or show the owner first. Then `tmp/new-posts/PLAN.md`.
-- **Legacy posts: 837 of 1,092 still carry Wikipedia's wording**
-  (`docs/WIKIPEDIA_OVERLAP.md`, worst first; data in `tmp/legacy-wiki-audit/`).
-  The owner decides the rewrite order and whether failing posts are hidden from
-  search (noindex, no sitemap entry) until rewritten. `docs/ROADMAP.md` step 13.
-- Live new posts with no independent check: topics 1 to 4 and 12 to 17. They need
-  audit files, then an update mode for `tmp/new-posts/publish.py` (it only inserts).
+- LIVE 22:09: run 8, 29 new posts (ids 1210-1238; topics 35-37, 230-234, 236-256), written by 30
+  writer agents (pipeline/new_run8.md), each checked by a checker agent (pipeline/check_run8.md,
+  audit.md, 2-11 fixes each). Rollback pipeline/release/20261007-220850/rollback.sql; VPS backup
+  ~/crimewiki-backups/posts-before-20261007-220850.sql.gz. verify: all live.
+- LIVE 22:27: 235 "Murder of Dee Ann Warner" (id 1239; owner chose the full name). Run 8 done: 30/30 live.
+- publish.py: dry-run gate removed (owner's no-dry-run rule); backup at publish.py.bak-20261007.
+- LIVE 20:20: run 7, 40 rewrites (topics 190-229), checked. Rollback pipeline/update/20261007-202009/.
+- Tool fixes proposed, not done (owner to approve): check_new.py should (a) confirm every allow.txt
+  entry is on its page, (b) accept a publisher name that matches the source URL's domain. Checkers
+  removed false allow.txt entries and, in 195, 198, 201, 204, 211, 219, 220, 226, replaced outlet
+  names with domains or "a newspaper"; restore names once (b) exists. Also flag process wording
+  ("the pages reviewed"); checkers cut it in 199, 201, 205, 212.
+- Proposed tidy-up (owner to approve): fold lasting rules of rewrite_run2-7.md into rewrite_prompt.md,
+  move old run notes and sonnet*_prompt.md (still "exactly 2 WebSearch") to pipeline/history/.
+- Owner to decide: 60 Lawrence Bishnoi and 44 Martha Rendell held (post 1105 deleted by the merge).
+  Blocked: 161, 169, 186, 90, 96, 119. Stray pipeline/tmp/ and tmp/c218.txt: owner may delete.
+- SEARCH CONSOLE: re-inspect from about 14 Oct the 4 URLs submitted 16:21 on 7 Oct
+  (2025-louvre-heist, killing-of-iryna-zarutska, murder-of-baba-siddique,
+  2024-kolkata-rape-and-murder-case). Indexed = content passes; still out = site-level verdict.
+- Domain: GoDaddy renewal Rs 5,287.50/yr, auto-renew OFF, expires 25 Feb 2027. Cloudflare .site
+  $27.70/yr renewal, .com $10.46/yr (cfdomainpricing.com). Owner: no noindex, rewrite gradually.
 
-## Done on 4 October
+## Done on 7 October (evening)
+- Pipeline moved to pipeline/ and tracked (commits c5b9632-7111800, not pushed); Nginx denies /pipeline/
+  after next deploy. Owner: writers search as much as needed; no dry run before live updates.
+- settings.local.json env: MAX_WEB_SEARCHES_PER_SESSION=5000, MAX_CONCURRENT_SUBAGENTS=40.
 
-- Live: 1,138 posts, max id 1175. New posts: 1143, 1147-1149, 1157-1163, 1165, 1171-1175.
-- Two pushes, both deployed: commit 9dbdfa5 (`AGENTS.md` and four docs), then
-  the commit after it, which added `docs/WIKIPEDIA_OVERLAP.md` on the owner's
-  instruction. The repository is PUBLIC. All docs are committed.
-- Rules in `AGENTS.md`: the owner's Wikipedia rule, the independent check, honest
-  reporting. Tools: `fetchmany.py` saves Wikipedia as a LEAD; `check_new.py` has a
-  clone test. All 17 new posts pass it (no identical runs, under 1% shared wording).
-- Open security items moved out of the public roadmap to `tmp/SECURITY_TODO.md`.
+## Known problems
 
-## Waiting on the owner (`docs/ROADMAP.md` section 6)
-
-- The two answers for the 10 posts, and the legacy decisions above.
-- Check agents as a standing yes? The same check for topics 1 to 4?
-- Two Wikipedia-hosted icons in the post stylesheet: fix and deploy?
-- A publish go-ahead covers one session. Git ignores `tmp/new-posts/` (tools,
-  research and articles are only on this Mac). Never commit `index.php` or `.DS_Store`.
+- check_new.py re-checks every article per call (31 s alone for ~270; minutes with 30 agents).
+- docs/ edits are uncommitted (path changes plus earlier session edits). Never commit index.php
+  or .DS_Store. Nothing pushed: pushing deploys to the VPS.

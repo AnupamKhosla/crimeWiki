@@ -8,7 +8,8 @@ build [N ...]  collects the articles that check_new.py marks ok, that have an in
 dry     runs the inserts on the LIVE database inside a transaction and rolls it back.
         Nothing is kept except that the id counter moves forward.
 apply   backs up the posts table on the VPS, inserts, commits, compares hashes and
-        records the new ids in pipeline/published.jsonl. Needs a clean dry run first.
+        records the new ids in pipeline/published.jsonl. No dry run needed (owner,
+        7 October 2026: update live, then a quick check); dry remains available.
 verify  opens each published post on the live site and checks that it renders.
 New rows: creatorname 'Anupam K', image 'default.png', cleansed 1, wikilink NULL."""
 import sys,os,re,json,glob,time,hashlib,subprocess,gzip,urllib.parse
@@ -85,7 +86,6 @@ echo "MODE $MODE DONE"
 def run(mode):
     d=latest(); man=[json.loads(l) for l in open(f'{d}/manifest.jsonl',encoding='utf-8')]
     if mode=='apply':
-        if not os.path.exists(f'{d}/dry.ok'): sys.exit('run a clean dry run first: publish.py dry')
         if os.path.exists(f'{d}/apply.out'): sys.exit('this release was already applied')
     r=subprocess.run(SSH+[f'bash -s -- {mode}'],stdin=open(f'{d}/publish.sh','rb'),capture_output=True,text=True)
     out=r.stdout; open(f'{d}/{mode}.out','w',encoding='utf-8').write(out+'\n--- stderr\n'+r.stderr)

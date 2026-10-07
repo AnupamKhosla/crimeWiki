@@ -8,7 +8,7 @@ Start with `docs/ROADMAP.md`; this file holds the content detail.
 day-2 audit, the Sonnet pilot's measurements, the scale limits and the
 database sizing, as written on 3 October. The current goals, the order of
 work and the open decisions are in `docs/ROADMAP.md`; the rules are in
-`AGENTS.md`; the loop for new posts is `tmp/new-posts/PLAN.md`.
+`AGENTS.md`; the loop for new posts is `pipeline/PLAN.md`.
 
 Superseded since it was written:
 

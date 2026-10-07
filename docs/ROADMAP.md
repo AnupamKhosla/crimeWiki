@@ -65,7 +65,7 @@ earlier statement here that the rewrite was "essentially done" was wrong.
 **17 new posts are live (3 and 4 October 2026).** The site has 1,138 posts,
 and the highest id is 1175.
 
-- They are topics 1 to 17 of `tmp/new-posts/topics.jsonl`: posts 1143,
+- They are topics 1 to 17 of `pipeline/topics.jsonl`: posts 1143,
   1147-1149, 1157-1163, 1165 and 1171-1175. Each has 1,330 to 2,340 words and
   8 to 14 sources. 19 topics remain; the next is 18 (Ghislaine Maxwell).
 - **Independent check:** done for topics 5 to 11, by check agents. Not done
@@ -75,7 +75,7 @@ and the highest id is 1175.
 - **Wikipedia clone test, 4 October:** all 17 pass. No copied runs, at most
   one shared heading, and under 1% of 6-word runs shared with Wikipedia's
   page. 13 topics have a Wikipedia page and 4 have none.
-- The tools are in `tmp/new-posts/`, which git ignores. They, the research
+- The tools are in `pipeline/`, in git since 7 October (its research/ folder is not). They, the research
   folders and the articles exist only on the owner's Mac.
 
 **The day-1 and day-2 packages are research seeds, not pages.**
@@ -130,13 +130,13 @@ order the owner chooses. Each step needs the owner's go-ahead.
 1. **Finish the last legacy posts.** Rewrite posts 6 and 7 with sources,
    and check posts 1 and 2 and the one unchanged post. Not started.
 2. **Add a padding gate to the content kit**, so a padded package fails
-   validation whoever wrote it. `tmp/new-posts/check_new.py` already runs the
+   validation whoever wrote it. `pipeline/check_new.py` already runs the
    padding audit on new posts; the kit's own validator still lacks it.
 3. **Build the new-post path. Done on 3 October 2026, as tools in `tmp/`.**
-   `tmp/new-posts/publish.py` inserts new rows into the live database: backup
+   `pipeline/publish.py` inserts new rows into the live database: backup
    first, dry run in a rolled-back transaction, one transaction for the batch,
    duplicate-title guard, hash check, live-page check. Runbook:
-   `tmp/new-posts/PLAN.md`. Still open: move the tools from `tmp/` (not in
+   `pipeline/PLAN.md`. Still open: move the tools from `tmp/` (not in
    git) into the repository.
 4. **Lengthen the short legacy posts. Paused by the owner on 3 October.**
    The list is `docs/REWRITE_LIST.md`. Six rewrites wait, unpublished, in
@@ -146,10 +146,10 @@ order the owner chooses. Each step needs the owner's go-ahead.
    been tried, all on 3 October:
    - A Sonnet worker pilot. It produced three good articles but used 20% of
      a session, and the owner stopped it (`CONTENT_SCALE_PLAN.md` section 5.2).
-   - `tmp/new-posts/new_posts_workflow.js`, at the owner's request: one
+   - `pipeline/new_posts_workflow.js`, at the owner's request: one
      writer and one check agent per topic, plus a legal reviewer for topics
      8 to 10. Three topics took about 3 minutes.
-   - `tmp/new-posts/one_post_parallel_workflow.js`: 11 agents on one post
+   - `pipeline/one_post_parallel_workflow.js`: 11 agents on one post
      (5 searchers, 1 fetcher, 1 writer, 3 checkers, 1 fixer). It took about
      410,000 tokens and 5 minutes, and the checkers found 22 problems.
    - Agents cannot talk to each other, and the steps for one post run in
@@ -157,10 +157,10 @@ order the owner chooses. Each step needs the owner's go-ahead.
 6. **Fix the topic queue** so non-crime titles, generic terms and duplicates
    are removed before research starts.
 7. **Steady production of new posts. Active.** The loop is in
-   `tmp/new-posts/PLAN.md`: search, fetch, Wikipedia as a lead-finder, read,
+   `pipeline/PLAN.md`: search, fetch, Wikipedia as a lead-finder, read,
    write, automatic check, writer's re-read, independent check, the owner's
    go-ahead, publish. Batches of 5. The topic list is
-   `tmp/new-posts/topics.jsonl` (36 topics, 17 live, next is 18).
+   `pipeline/topics.jsonl` (36 topics, 17 live, next is 18).
 8. **Fill `<related>`** with reviewed internal links once the catalogue
    justifies it. Every new article currently leaves it empty.
 9. **Post URLs and search hygiene. Done and deployed 3 October 2026
@@ -207,9 +207,9 @@ order the owner chooses. Each step needs the owner's go-ahead.
     - Rewrite them from opened sources, worst first, with the new-post loop
       and an update mode for `publish.py`. Step 4's list ranks by length; this
       one ranks by copied wording, which matters more.
-    - Until a post is rewritten, keep it out of search results: a `noindex`
-      tag and no sitemap entry for the failing ids. Then an AdSense review
-      sees only original pages. This is a small code change and needs a deploy.
+    - Decided by the owner, 7 October 2026: "we dont hide our posts rather we
+      slowly rewrite our content." No `noindex` on the failing posts; they
+      stay in search and the sitemap until rewritten.
 
 ## 4. Track B: infrastructure
 
@@ -290,7 +290,7 @@ The MVC restructure stays deferred until the content pipeline is steady.
    owner asked for on 4 October wait on this answer.
 2. **Topics 1 to 4:** give them the same independent check as 12 to 17?
 3. **Git:** the docs are committed (4 October). Git still ignores
-   `tmp/new-posts/`, so the tools, the research folders and the articles exist
+   `pipeline/`, so the tools, the research folders and the articles exist
    only on the owner's Mac. Move the tools into the repository? It is public.
 4. **The two Wikipedia-hosted icons** in the post stylesheet (track A,
    step 12): fix and deploy?
@@ -318,8 +318,8 @@ Decided, listed so that nobody reopens them:
 |---|---|---|
 | `docs/ROADMAP.md` | Goals, current state, order of work | Current |
 | `docs/STATE.md` | What the last session did, what is in progress, open decisions | Current; rewritten every session |
-| `tmp/new-posts/PLAN.md` | Runbook for new posts: the loop, the checks, publishing | Current, revised 4 October. Not in git. |
-| `tmp/longform/BRIEF.md` | Article format and voice (its sections 2 and 3) | Current for format. Its queue steps belong to the paused rewrite queue. Not in git. |
+| `pipeline/PLAN.md` | Runbook for new posts: the loop, the checks, publishing | Current, revised 7 October. In git. |
+| `pipeline/BRIEF.md` | Article format and voice (its sections 2 and 3) | Current for format. Its queue steps belong to the paused rewrite queue. In git. |
 | `docs/REWRITE_LIST.md` | The short legacy posts that need lengthening | From the 3 October snapshot; work paused |
 | `docs/WIKIPEDIA_OVERLAP.md` | Every legacy post compared with Wikipedia; the failing ones, worst first | Current, measured 4 October |
 | `docs/CONTENT_SCALE_PLAN.md` | Day-2 audit, the Sonnet pilot's measurements, scale limits, database sizing | A record. Its goals and its sections 5 and 6 are superseded by this roadmap. |
@@ -363,8 +363,8 @@ rule.
   go-ahead per session); current-topic posts as the priority; and a new
   "Honest Reporting" section.
 - This roadmap: goals, current state, track A, decisions and the document map.
-- `tmp/new-posts/PLAN.md`: a Wikipedia lead-finder step, an independent-check
-  step with an audit file, and "ask before a batch". `tmp/longform/BRIEF.md`
+- `pipeline/PLAN.md`: a Wikipedia lead-finder step, an independent-check
+  step with an audit file, and "ask before a batch". `pipeline/BRIEF.md`
   and both workflow prompts no longer say "never Wikipedia".
 - Tools: `fetchmany.py` saves Wikipedia as a lead, and `check_new.py` gained
   the clone test (track A, step 12).

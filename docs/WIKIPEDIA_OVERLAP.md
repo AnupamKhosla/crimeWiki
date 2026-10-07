@@ -1,9 +1,9 @@
 # Legacy posts compared with Wikipedia
 
-Measured 4 October 2026 by `tmp/legacy-wiki-audit/audit.py`, read-only, from the live snapshot
+Measured 4 October 2026 by `pipeline/legacy-wiki-audit/audit.py`, read-only, from the live snapshot
 `tmp/live-snapshot/posts-20261003-night.tsv.gz`. Each legacy post (ids up to 1140, Blog category left out)
 was compared with the English Wikipedia page of the same title, with the same test that
-`tmp/new-posts/check_new.py` applies to new posts. Per-post data: `tmp/legacy-wiki-audit/results.jsonl`.
+`pipeline/check_new.py` applies to new posts. Per-post data: `pipeline/legacy-wiki-audit/results.jsonl`.
 
 ## Result
 
