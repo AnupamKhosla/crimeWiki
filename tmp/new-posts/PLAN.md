@@ -41,13 +41,13 @@ Do not write five articles and raise this afterwards. That happened on
   article with `check_prompt.md`, about $0.19 each. On 4 October a newly added
   agent file was picked up mid-session at medium; the edited writer file was not.
 - New topics go live with `publish.py`; rewrites of live posts with
-  `update_live.py` (backup, dry run, apply, verify). Both need `audit.md`.
+  `update_live.py`: owner, 7 October 2026: no dry run; update the live database and do a quick check. Both need `audit.md`.
 
 ## The loop, per topic
 
 1. `python3 tmp/new-posts/status.py` shows the open topics, with a search seed
    and a note for the next ones. Work in list order: this week's news comes first.
-2. **Search**: 2 or 3 `WebSearch` calls in ONE message (latest news; background
+2. **Search**: as many `WebSearch` calls as needed (owner, 7 October 2026: "as many reputable sources as possible"), several per message (latest news; background
    and timeline; official or court material). To go faster, search for the next
    2 or 3 topics in the same message. Do not filter Wikipedia out of the
    searches: a Wikipedia result is a lead for step 4.
