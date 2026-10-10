@@ -3,7 +3,7 @@
 per-agent context limit, so this reads the agent's own transcript before each
 tool call and refuses tools once its context passes the cap.
 
-Inert unless tmp/ctx_cap.json exists, e.g.
+Inert unless tmp/ctx_cap.json exists, e.g. (or a map of agent type to such a cap)
   {"agent_type": "crimewiki-rewriter", "research_stop": 75000, "hard_stop": 92000}
 Past research_stop only writing, checking and logging are allowed; past
 hard_stop every tool is refused. The main session is never touched. Every
@@ -57,7 +57,11 @@ def main():
         log('main', tool, '-', 'allow'); return
     if not os.path.exists(CAP): return
     cap = json.load(open(CAP))
-    if cap.get('agent_type') and h.get('agent_type') != cap['agent_type']: return
+    # One cap ({"agent_type": ..., ...}) or one per agent type ({"crimewiki-checker": {...}, ...}).
+    if 'hard_stop' not in cap:
+        cap = cap.get(h.get('agent_type') or '')
+        if not cap: return
+    elif cap.get('agent_type') and h.get('agent_type') != cap['agent_type']: return
     if tool == 'SubagentHandback':  # the agent's final report: never block it
         log(agent, tool, '-', 'allow'); return
     sid = h.get('session_id', '')

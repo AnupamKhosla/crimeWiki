@@ -427,7 +427,7 @@
  },
  "cw-topic-800072": {
   "ok": true,
-  "words": 2224,
+  "words": 2215,
   "sources": 8,
   "title": "Lidice massacre"
  },
@@ -799,7 +799,7 @@
  },
  "cw-topic-800137": {
   "ok": true,
-  "words": 1611,
+  "words": 1607,
   "sources": 10,
   "title": "Ogossagou massacre"
  },
@@ -901,7 +901,7 @@
  },
  "cw-topic-800154": {
   "ok": true,
-  "words": 2060,
+  "words": 2054,
   "sources": 6,
   "title": "Ma'alot massacre"
  },
@@ -949,7 +949,7 @@
  },
  "cw-topic-800163": {
   "ok": true,
-  "words": 2847,
+  "words": 2841,
   "sources": 12,
   "title": "Irish Mob"
  },
@@ -1027,7 +1027,7 @@
  },
  "cw-topic-800177": {
   "ok": true,
-  "words": 1740,
+  "words": 1736,
   "sources": 5,
   "title": "Aranthalawa massacre"
  },
@@ -1231,7 +1231,7 @@
  },
  "cw-topic-800212": {
   "ok": true,
-  "words": 2559,
+  "words": 2555,
   "sources": 12,
   "title": "Munich massacre"
  },
@@ -1357,7 +1357,7 @@
  },
  "cw-topic-800233": {
   "ok": true,
-  "words": 1796,
+  "words": 1790,
   "sources": 13,
   "title": "Killings of Christine Banfield and Joseph Ryan"
  },
@@ -1500,50 +1500,50 @@
   "title": "Watts family murders"
  },
  "cw-topic-800257": {
-  "ok": false,
-  "words": 2027,
+  "ok": true,
+  "words": 1975,
   "sources": 15,
   "title": "Gwangju Uprising"
  },
  "cw-topic-800258": {
   "ok": true,
-  "words": 1394,
+  "words": 1444,
   "sources": 11,
   "title": "Kharqamar incident"
  },
  "cw-topic-800259": {
   "ok": true,
-  "words": 1905,
+  "words": 1911,
   "sources": 10,
   "title": "Jeju uprising"
  },
  "cw-topic-800260": {
   "ok": true,
-  "words": 1717,
+  "words": 1668,
   "sources": 7,
   "title": "Hells Angels"
  },
  "cw-topic-800261": {
   "ok": true,
-  "words": 1788,
+  "words": 1867,
   "sources": 11,
   "title": "Mongols Motorcycle Club"
  },
  "cw-topic-800262": {
-  "ok": false,
-  "words": 1500,
-  "sources": 4,
+  "ok": true,
+  "words": 1486,
+  "sources": 8,
   "title": "David and Catherine Birnie"
  },
  "cw-topic-800263": {
   "ok": true,
-  "words": 1531,
+  "words": 1532,
   "sources": 6,
   "title": "1987 Lieyu massacre"
  },
  "cw-topic-800264": {
   "ok": true,
-  "words": 1411,
+  "words": 1506,
   "sources": 5,
   "title": "El Mozote massacre"
  },
@@ -1555,14 +1555,320 @@
  },
  "cw-topic-800266": {
   "ok": true,
-  "words": 1531,
+  "words": 1658,
   "sources": 6,
   "title": "Harshad Mehta"
  },
  "cw-topic-800267": {
   "ok": true,
-  "words": 1630,
+  "words": 1632,
   "sources": 7,
   "title": "Haditha massacre"
+ },
+ "cw-topic-800268": {
+  "ok": true,
+  "words": 2351,
+  "sources": 8,
+  "title": "Deir Yassin massacre"
+ },
+ "cw-topic-800269": {
+  "ok": true,
+  "words": 1822,
+  "sources": 14,
+  "title": "Cannonball Motorcycle Club"
+ },
+ "cw-topic-800270": {
+  "ok": true,
+  "words": 1085,
+  "sources": 5,
+  "title": "Beit Lid suicide bombing"
+ },
+ "cw-topic-800271": {
+  "ok": true,
+  "words": 1130,
+  "sources": 6,
+  "title": "Massacre of Kondomari"
+ },
+ "cw-topic-800272": {
+  "ok": true,
+  "words": 1555,
+  "sources": 11,
+  "title": "Sabra and Shatila massacre"
+ },
+ "cw-topic-800273": {
+  "ok": true,
+  "words": 1419,
+  "sources": 9,
+  "title": "Black Pistons Motorcycle Club"
+ },
+ "cw-topic-800275": {
+  "ok": true,
+  "words": 1974,
+  "sources": 6,
+  "title": "14K (triad)"
+ },
+ "cw-topic-800276": {
+  "ok": true,
+  "words": 2376,
+  "sources": 8,
+  "title": "Hamidian massacres"
+ },
+ "cw-topic-800277": {
+  "ok": true,
+  "words": 1963,
+  "sources": 9,
+  "title": "Robert Trimbole"
+ },
+ "cw-topic-800278": {
+  "ok": true,
+  "words": 1843,
+  "sources": 8,
+  "title": "Accomarca massacre"
+ },
+ "cw-topic-800279": {
+  "ok": true,
+  "words": 1870,
+  "sources": 6,
+  "title": "Tantura massacre"
+ },
+ "cw-topic-800280": {
+  "ok": true,
+  "words": 1429,
+  "sources": 5,
+  "title": "Queen Street massacre"
+ },
+ "cw-topic-800281": {
+  "ok": true,
+  "words": 1790,
+  "sources": 8,
+  "title": "First Battle of Bud Dajo"
+ },
+ "cw-topic-800282": {
+  "ok": true,
+  "words": 1189,
+  "sources": 6,
+  "title": "Pasquale Russo"
+ },
+ "cw-topic-800284": {
+  "ok": true,
+  "words": 1369,
+  "sources": 7,
+  "title": "Mungyeong massacre"
+ },
+ "cw-topic-800285": {
+  "ok": true,
+  "words": 1613,
+  "sources": 11,
+  "title": "Indonesian mass killings of 1965\u201366"
+ },
+ "cw-topic-800286": {
+  "ok": true,
+  "words": 1750,
+  "sources": 8,
+  "title": "Eddie Leonski"
+ },
+ "cw-topic-800287": {
+  "ok": true,
+  "words": 1636,
+  "sources": 17,
+  "title": "Milton Orkopoulos"
+ },
+ "cw-topic-800288": {
+  "ok": true,
+  "words": 1990,
+  "sources": 7,
+  "title": "Robert Eugene Brashers"
+ },
+ "cw-topic-800289": {
+  "ok": true,
+  "words": 2276,
+  "sources": 6,
+  "title": "Baylor Massacre"
+ },
+ "cw-topic-800290": {
+  "ok": true,
+  "words": 1395,
+  "sources": 6,
+  "title": "Brenden Abbott"
+ },
+ "cw-topic-800291": {
+  "ok": true,
+  "words": 1858,
+  "sources": 8,
+  "title": "Foibe massacres"
+ },
+ "cw-topic-800293": {
+  "ok": true,
+  "words": 1814,
+  "sources": 10,
+  "title": "2011 Inter-Continental Hotel Kabul attack"
+ },
+ "cw-topic-800294": {
+  "ok": true,
+  "words": 1765,
+  "sources": 8,
+  "title": "Finks Motorcycle Club"
+ },
+ "cw-topic-800295": {
+  "ok": true,
+  "words": 1153,
+  "sources": 5,
+  "title": "Patrick Power (lawyer)"
+ },
+ "cw-topic-800296": {
+  "ok": true,
+  "words": 2104,
+  "sources": 13,
+  "title": "Vineland Boys"
+ },
+ "cw-topic-800297": {
+  "ok": true,
+  "words": 1604,
+  "sources": 6,
+  "title": "Fresno Bulldogs"
+ },
+ "cw-topic-800298": {
+  "ok": true,
+  "words": 1959,
+  "sources": 13,
+  "title": "Moran family"
+ },
+ "cw-topic-800299": {
+  "ok": true,
+  "words": 1963,
+  "sources": 7,
+  "title": "Pottawatomie massacre"
+ },
+ "cw-topic-800300": {
+  "ok": true,
+  "words": 1417,
+  "sources": 10,
+  "title": "Salvatore Riina"
+ },
+ "cw-topic-800301": {
+  "ok": true,
+  "words": 1591,
+  "sources": 8,
+  "title": "February 28 incident"
+ },
+ "cw-topic-800302": {
+  "ok": true,
+  "words": 1442,
+  "sources": 9,
+  "title": "Jussie Smollett"
+ },
+ "cw-topic-800303": {
+  "ok": true,
+  "words": 1509,
+  "sources": 6,
+  "title": "Coffin Cheaters"
+ },
+ "cw-topic-800304": {
+  "ok": true,
+  "words": 1683,
+  "sources": 9,
+  "title": "Giuseppe Piromalli (born 1945)"
+ },
+ "cw-topic-800307": {
+  "ok": true,
+  "words": 1799,
+  "sources": 8,
+  "title": "Glenn Wheatley"
+ },
+ "cw-topic-800308": {
+  "ok": true,
+  "words": 1079,
+  "sources": 7,
+  "title": "Brussels massacre"
+ },
+ "cw-topic-800309": {
+  "ok": true,
+  "words": 1490,
+  "sources": 6,
+  "title": "Seoul National University Hospital massacre"
+ },
+ "cw-topic-800310": {
+  "ok": true,
+  "words": 1584,
+  "sources": 7,
+  "title": "Andijan massacre"
+ },
+ "cw-topic-800311": {
+  "ok": true,
+  "words": 2028,
+  "sources": 11,
+  "title": "Dos Erres massacre"
+ },
+ "cw-topic-800313": {
+  "ok": true,
+  "words": 1555,
+  "sources": 7,
+  "title": "Brett Peter Cowan"
+ },
+ "cw-topic-800314": {
+  "ok": true,
+  "words": 1234,
+  "sources": 8,
+  "title": "Mehul Choksi"
+ },
+ "cw-topic-800315": {
+  "ok": true,
+  "words": 2011,
+  "sources": 11,
+  "title": "Albanian mafia"
+ },
+ "cw-topic-800317": {
+  "ok": true,
+  "words": 1941,
+  "sources": 8,
+  "title": "Public Enemy No. 1 (gang)"
+ },
+ "cw-topic-800318": {
+  "ok": true,
+  "words": 1612,
+  "sources": 8,
+  "title": "Palma Sola massacre"
+ },
+ "cw-topic-800319": {
+  "ok": true,
+  "words": 2161,
+  "sources": 9,
+  "title": "NKVD prisoner massacres"
+ },
+ "cw-topic-800320": {
+  "ok": true,
+  "words": 1536,
+  "sources": 11,
+  "title": "Rawagede massacre"
+ },
+ "cw-topic-800321": {
+  "ok": true,
+  "words": 1638,
+  "sources": 9,
+  "title": "Bali Nine"
+ },
+ "cw-topic-800322": {
+  "ok": true,
+  "words": 1369,
+  "sources": 5,
+  "title": "Haun's Mill massacre"
+ },
+ "cw-topic-800324": {
+  "ok": true,
+  "words": 1532,
+  "sources": 6,
+  "title": "Anuradhapura massacre"
+ },
+ "cw-topic-800325": {
+  "ok": true,
+  "words": 1647,
+  "sources": 5,
+  "title": "Perry massacre"
+ },
+ "cw-topic-800326": {
+  "ok": true,
+  "words": 1551,
+  "sources": 9,
+  "title": "Osaka school massacre"
  }
 }

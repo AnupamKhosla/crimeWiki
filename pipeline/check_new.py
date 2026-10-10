@@ -117,6 +117,8 @@ def wiki_clone(t,x):
 def main():
     only={tid(a) for a in sys.argv[1:]}
     arts=sorted(glob.glob(f'{BASE}/articles/*.xml')); miss={}; nsrc={}
+    # With topic numbers, check only those articles (fast when many agents run at once).
+    if only: arts=[f for f in arts if os.path.basename(f)[:-4] in only]
     for f in arts:
         t=os.path.basename(f)[:-4]; miss[t],nsrc[t]=sidecar(t,open(f,encoding='utf-8').read())
     v=subprocess.run([sys.executable,'tools/crimewiki-content-kit/scripts/validate_package.py','--tasks',f'{BASE}/topics.jsonl','--output',BASE],capture_output=True,text=True)
@@ -149,6 +151,11 @@ def main():
         for k in ('numbers','names','quotes','copied','verify'):
             if g.get(k): print(f"    {'VERIFY' if k=='verify' else 'COPIED' if k=='copied' else 'UNGROUNDED '+k}: "+' | '.join(g[k][:40]))
         if w: print(f"    WIKI ({w['pages']} page{'s' if w['pages']>1 else ''}): {len(w['same'])} of {w['ours']} headings shared{' ('+', '.join(w['same'])+')' if w['same'] else ''} | {w['share']:.1%} of 6-word runs shared | {len(w['runs'])} copied runs"+''.join('\n        '+r for r in w['runs'][:10]))
-    json.dump(state,open(f'{BASE}/check-state.json','w'),indent=1)
-    print(f'articles {len(arts)} | ok {okc} | flagged {len(arts)-okc} | blocked {len(glob.glob(BASE+"/blocked/*.json"))}')
+    if only:  # merge into the saved state of every article, written atomically
+        try: full=json.load(open(f'{BASE}/check-state.json'))
+        except Exception: full={}
+        full.update(state); state=full
+    tmpf=f'{BASE}/check-state.json.{os.getpid()}'; json.dump(state,open(tmpf,'w'),indent=1); os.replace(tmpf,f'{BASE}/check-state.json')
+    okc=sum(1 for v in state.values() if v['ok'])
+    print(f'articles {len(state)} | ok {okc} | flagged {len(state)-okc} | blocked {len(glob.glob(BASE+"/blocked/*.json"))}')
 main()
