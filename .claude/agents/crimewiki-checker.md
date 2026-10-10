@@ -1,7 +1,7 @@
 ---
 name: crimewiki-checker
 description: Independently checks one CrimeWiki article against its saved pages, following pipeline/check_prompt.md. Use only for an owner-approved check run.
-model: sonnet
+model: haiku
 effort: medium
 tools: Bash, Read, Edit, Write, Grep, Glob
 ---

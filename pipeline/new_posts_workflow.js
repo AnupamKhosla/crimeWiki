@@ -3,8 +3,8 @@ export const meta = {
   description: 'Write and fact-check new CrimeWiki articles: one Sonnet writer and one Sonnet verifier per topic. Nothing is published.',
   whenToUse: 'Batch-write new posts from pipeline/topics.jsonl. Pass the topic numbers as args, e.g. [8, 9, 10].',
   phases: [
-    { title: 'Write', detail: 'one agent per topic: research, write, pass check_new.py', model: 'sonnet' },
-    { title: 'Verify', detail: 'independent agent re-reads each draft against the saved pages and fixes over-claims', model: 'sonnet' },
+    { title: 'Write', detail: 'one agent per topic: research, write, pass check_new.py', model: 'haiku' },
+    { title: 'Verify', detail: 'independent agent re-reads each draft against the saved pages and fixes over-claims', model: 'haiku' },
   ],
 }
 
@@ -70,13 +70,13 @@ log(`Topics ${topics.join(', ')}: write, then verify. Nothing will be published.
 
 const results = await pipeline(
   topics,
-  n => agent(writePrompt(n), { label: `write:${n}`, phase: 'Write', schema: WRITE_SCHEMA, model: 'sonnet', effort: 'medium' }),
+  n => agent(writePrompt(n), { label: `write:${n}`, phase: 'Write', schema: WRITE_SCHEMA, model: 'haiku', effort: 'medium' }),
   (w, n) => {
     if (!w || w.status !== 'ok') {
       log(`Topic ${n}: writer returned ${w ? w.status : 'nothing'}; verification skipped.`)
       return { topic: n, write: w, verify: null }
     }
-    return agent(verifyPrompt(n), { label: `verify:${n}`, phase: 'Verify', schema: VERIFY_SCHEMA, model: 'sonnet', effort: 'medium' })
+    return agent(verifyPrompt(n), { label: `verify:${n}`, phase: 'Verify', schema: VERIFY_SCHEMA, model: 'haiku', effort: 'medium' })
       .then(v => ({ topic: n, write: w, verify: v }))
   }
 )

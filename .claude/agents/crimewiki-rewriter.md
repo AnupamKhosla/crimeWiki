@@ -1,7 +1,7 @@
 ---
 name: crimewiki-rewriter
 description: Rewrites one copied CrimeWiki post from pages it opened, following pipeline/rewrite_prompt.md. Use only for an owner-approved rewrite run.
-model: sonnet
+model: haiku
 effort: medium
 tools: Bash, Read, Write, Edit, Grep, Glob, WebSearch
 ---

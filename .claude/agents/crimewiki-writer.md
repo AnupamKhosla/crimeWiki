@@ -1,7 +1,7 @@
 ---
 name: crimewiki-writer
 description: Writes new CrimeWiki articles from pages it opened, following the run prompt it is given. Use only for an owner-approved writing run.
-model: sonnet
+model: haiku
 effort: medium
 tools: Bash, Read, Write, Edit, Grep, Glob, WebSearch
 ---

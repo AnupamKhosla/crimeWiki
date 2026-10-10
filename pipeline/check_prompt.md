@@ -41,8 +41,8 @@ Use this format and keep it under 40 lines:
 ```
 # Audit: cw-topic-8000N, <title>
 
-- Writer: Sonnet 5.5 (high), <5-post / 10-post / 1-post> run, 4 October 2026.
-- Checker: Sonnet 5.5 (high), separate agent, 4 October 2026.
+- Writer: <model> (<effort>), <run name>, <date>.
+- Checker: <model> (<effort>), separate agent, <date>.
 - Method: <screens read; lookups made>
 
 ## Problems found and fixed

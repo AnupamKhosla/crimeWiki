@@ -26,9 +26,13 @@ it will be:
 Do not write five articles and raise this afterwards. That happened on
 3 and 4 October with topics 12 to 17.
 
-## Running writers and checkers (owner, 4 October 2026)
+## Running writers and checkers (owner, 4 October 2026; model changed 10 October 2026)
 
-- Agent type `crimewiki-writer` (`.claude/agents/crimewiki-writer.md`): Sonnet,
+- Model for all content work (owner, 10 October 2026): Haiku, `effort: medium`, set in
+  the writer, rewriter and checker agent files and in the workflow scripts. On 10 October
+  10 Haiku rewriters stayed under 100,000 tokens of context (peaks 68K-96K) at about
+  3 cents each, API-priced.
+- Agent type `crimewiki-writer` (`.claude/agents/crimewiki-writer.md`): Haiku,
   `effort: medium`. The session reads that file when it starts, so an edit to it
   counts only in a new session. Before saying what effort agents run on, check
   `pipeline/usage/agents_latest.json`; on 4 October agents ran on high after the file
@@ -37,9 +41,16 @@ Do not write five articles and raise this afterwards. That happened on
   number and a run file: `rewrite_prompt.md` (replacing a live copied post) or
   `sonnet1_prompt.md` (new topic). Measured: about $0.50 per post; one writer
   doing 10 posts cost 13 times one post.
-- Checker: agent type `crimewiki-checker` (Sonnet, medium, no web), one per
+- Checker: agent type `crimewiki-checker` (Haiku since 10 October; Sonnet before, medium, no web), one per
   article with `check_prompt.md`, about $0.19 each. On 4 October a newly added
   agent file was picked up mid-session at medium; the edited writer file was not.
+- Context cap (10 October 2026): `pipeline/usage/ctx_guard.py` is a PreToolUse hook in
+  `.claude/settings.local.json`. It is inert unless `tmp/ctx_cap.json` exists, e.g.
+  `{"agent_type": "crimewiki-rewriter", "research_stop": 68000, "hard_stop": 95000}`.
+  Past research_stop the agent may only write, Edit, run check_new.py and append to the
+  log (with `>>`; the log is too large to Read); past hard_stop every tool is refused.
+  Run notes for Haiku: `rewrite_haiku_test.md` (writers) and `check_run_haiku.md`
+  (checkers). `pipeline/usage/agent_cost.py AGENT_ID` gives an agent's exact peak context and cost.
 - New topics go live with `publish.py`; rewrites of live posts with
   `update_live.py`: owner, 7 October 2026: no dry run; update the live database and do a quick check. Both need `audit.md`.
 
